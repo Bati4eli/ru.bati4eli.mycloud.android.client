@@ -42,4 +42,8 @@ dependencies {
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core
 
+//    implementation 'io.grpc:grpc-netty-shaded:1.49.0'
+//    implementation 'io.grpc:grpc-protobuf:1.49.0'
+//    implementation 'io.grpc:grpc-stub:1.49.0'
+//    implementation 'com.squareup.okhttp3:okhttp:4.9.3'
 }
