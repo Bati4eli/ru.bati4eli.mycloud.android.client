@@ -1,0 +1,379 @@
+syntax = "proto3";
+
+package ru.bati4eli.mycloud.repo;
+
+option java_package = "ru.bati4eli.mycloud.repo";
+//option java_multiple_files = true;
+
+service FileUserRepoService {
+  // file uploaders:
+  rpc upload_file(stream FileUploadRequest) returns (FileUploadResponse);
+  rpc upload_get_uuid(UploadMeta) returns (UploadKey);
+  rpc upload_chuck_file(UploadChuckReq) returns (FileUploadResponse);
+  // for files:
+  rpc get_file_info(FileInfoRequest) returns(GrpcFile);
+  rpc download_file(DownloadFileReq) returns(stream DownloadFileResp);
+  rpc rename_file(RenameFileReq) returns (Answer);
+  rpc move_file(MoveFileReq) returns (Answer);
+  // Trashbin methods:
+  rpc delete_file(OneFileIdReq) returns (Answer);
+  rpc easy_file_recovery(OneFileIdReq) returns (Answer);
+  rpc file_recovery(MoveFileReq) returns (Answer);
+  // for Folders:
+  rpc get_sub_files(FileInfoRequest) returns (stream GrpcFile);
+  rpc create_folder(CreateFolderReq) returns (Answer);
+  rpc delete_folder(OneFileIdReq) returns (Answer); // deprecated!
+}
+
+service MediaService {
+  /** Find stream of photos and videos:   */
+  rpc find_media_files(ReqFilterMedias) returns (stream ShortMediaInfoDto);
+  /** Get file extra info: */
+  rpc get_media_file_info(ReqExif) returns (MediaFileInfoDto);
+  /** Set photo favorite:  */
+  rpc set_favorite(ReqSetFavorite) returns (MediaFileInfoDto);
+
+  // Search groups of photos:
+  rpc get_album_info(ReqAlbumInfo) returns (stream RespAlbumInfo); // FAVORITE/BACKGROUND/PHOTO/VIDEO
+  rpc get_photos_on_map(ReqPhotosOnMap) returns (stream RespAlbumInfo);
+
+  // Faces
+  rpc get_faces(GetFacesReq) returns (stream ShortFaceDto);
+  rpc merge_faces(MergeFacesReq) returns (stream ShortFaceDto);
+  rpc set_face_name(SetFaceNameReq) returns (ShortFaceDto);
+  rpc hide_face(HideFaceReq) returns (ShortFaceDto);
+  rpc exclude_face_from_group(EmptyDto) returns (ShortFaceDto);   //todo not implemented
+
+  // Custom Albums:
+  //rpc get_custom_album(EmptyDto) returns (stream AlbumDto);         // not implemented
+  //rpc create_custom_tag(EmptyDto) returns (AlbumDto);               // not implemented
+  //rpc delete_custom_tag(EmptyDto) returns (AlbumDto);               // not implemented
+  //rpc set_custom_tag_to_file(EmptyDto) returns (AlbumDto);          // not implemented
+}
+
+enum UploadStatus {
+  PENDING = 0;
+  IN_PROGRESS = 1;
+  SUCCESS = 2;
+  FAILED = 3;
+}
+
+message FileInfoRequest {
+  int64 fileId = 1;
+  bool root = 2;
+  bool trashbin = 3;
+  string pathParent = 4;
+  string fileName = 5;
+}
+
+message CreateFolderReq {
+  int64 parentId = 1;
+  string folderName = 2;
+}
+
+message FileUploadResponse {
+  UploadStatus status = 2;
+  GrpcFile file = 4;
+}
+
+message UploadKey{
+  string file_key = 1;
+}
+
+message UploadChuckReq{
+  string file_key = 1;
+  bytes content = 2;
+  int64 partition = 3;
+}
+
+message FileContent {
+  bytes content = 1;
+}
+
+message UploadMeta  {
+  int64 parentFolderId = 1;
+  string fileName = 2;
+  string created = 3;
+  string modified = 4;
+  int64 size = 5;
+  int32 currentClientVersion = 6;
+}
+
+message FileUploadRequest{
+  oneof request {
+    UploadMeta metadata = 1;
+    FileContent file = 2;
+  }
+}
+
+enum ResolveType {
+  DELETE_MOVING = 0;
+  DELETE_EXISTING = 1;
+  RENAME_MOVING = 2;
+  RENAME_EXISTING = 3;
+  CHOOSE_NEWEST = 4;
+  CANCEL_ANSWER_IN_CONFLICT = 5;
+  THROW_EXCEPTION_IN_CONFLICT = 6;
+}
+
+enum TypeOfFile {
+  FILE = 0 ;
+  DOCUMENT = 1;
+  IMAGE = 2;
+  VIDEO = 3;
+  TEXT = 4;
+  ROOT = 100;
+  TRASHBIN = 101;
+  FOLDER = 102;
+  SHARED_FOLDER = 103;
+}
+
+enum MediaType {
+  T_IMAGE = 0;
+  T_VIDEO = 1;
+}
+
+message ResponseInfo {
+  int32 status = 1;
+  string errDesc = 2;
+}
+
+message Answer {
+  GrpcFile resultFile = 1;
+  ResponseInfo responseInfo = 2;
+}
+
+message GrpcFile {
+  int64 fileId = 1;
+  string name = 2;
+  string path = 3;
+  string parentPath = 4;
+  int64 parentId = 5;
+  bool isFavorite = 6;
+  int32 version = 7;
+  string created = 8;
+  string lastModify = 9;
+  int64 size = 10;
+  string shortSize = 11;
+  TypeOfFile mediaType = 12;
+  bool deleted = 13;
+  string deletedTime = 14;
+  int32 nsfwLevel = 111;
+}
+
+
+message DownloadFileReq{
+  int64 fileId = 2;
+  DownloadType type = 3;
+}
+
+enum DownloadType {
+  ORIGIN = 0;
+  PREVIEW_MINI = 1;
+  PREVIEW_BIG = 2;
+  PREVIEW_SQUARE = 3;
+  FACE = 4;
+}
+
+message DownloadFileResp {
+  bytes data = 1;
+}
+
+message RenameFileReq {
+  int64 fileId = 1;
+  string newName = 2;
+  ResolveType resolveType = 3;
+}
+
+message MoveFileReq {
+  int64 fileId = 1;
+  int64 newParentId = 2;
+  ResolveType resolveType = 3;
+}
+
+message OnePathReq {
+  string path = 1;
+}
+
+message OneFileIdReq {
+  int64 fileId = 1;
+}
+
+//------------------------------------------------------------------
+//------ FOR MEDIA SERVICES
+//------------------------------------------------------------------
+
+message EmptyDto {
+}
+
+message SetFaceNameReq {
+  int64 memberOfFaceGroupId = 1;
+  string newName = 2;
+}
+
+message HideFaceReq {
+  int64 faceIdOrGroupId = 1;
+  bool hidden = 2;
+}
+
+message GetFacesReq {
+  bool requestHidden = 1;
+}
+
+message MergeFacesReq {
+  int64 faceIdOrGroupId1 = 1;
+  int64 faceIdOrGroupId2 = 2;
+}
+
+message ReqPhotosOnMap {
+  double latitude = 25;
+  double longitude = 26;
+  double distanceKm = 27;
+}
+
+message RespAlbumInfo {
+  int64 fileId = 1;
+  string albumId = 2;
+  string albumName = 3;
+  int32 amount = 4;
+  // for map
+  double latitude = 25;
+  double longitude = 26;
+  double radiusKm = 27;
+}
+
+message AiClassDto {
+  int64 id = 1;
+  string className = 2;
+  string category = 3;
+  int32 amountFiles = 5;
+}
+
+message ShortFaceDto {
+  int64 groupId = 10;
+  string name = 30;
+  int32 amountFiles = 40;
+}
+
+message ReqExif {
+  int64 fileId = 1;
+}
+
+message ReqSetFavorite {
+  int64 fileId = 1;
+  bool isFavorite = 2;
+}
+
+message GroupedPhotosByDate {
+  int32 year = 10;
+  int32 month = 20;
+  repeated ShortMediaInfoDto photo = 40;
+}
+
+message ShortMediaInfoDto{
+  int64 fileId = 1;
+  string fullPath = 3;
+  bool isFavorite = 5;
+  string created = 7;
+  int32 nsfwLevel = 111;
+  TypeOfFile mediaType = 15;
+  int32 videoDurationSec = 22;
+}
+
+message MediaFileInfoDto{
+  int64 fileId = 1;
+  string fileName = 2;
+  string fullPath = 3;
+  string parentPath = 4;
+  bool isFavorite = 5;
+  string created = 7;
+  string lastModify = 8;
+  int32 nsfwLevel = 111;
+  string aiDescription = 112;
+  int64 size = 12;
+  string shortSize = 13;
+  TypeOfFile mediaType = 15;
+  ExifDto exif = 16;
+  repeated AiClassDto aiClass = 17;
+  repeated ShortFaceDto faces = 18;
+}
+
+message ExifDto {
+  int64 exifId = 1;
+  int32 height = 13;
+  int32 width = 14;
+  bool isHorizontal = 15;
+  string cameraCompany = 16;
+  string cameraModel = 17;
+  string lensModel = 18;
+  string formatFileType = 19;
+  string dateTime = 20;
+  string focalLength = 21;
+  ExifPhotoInfo photoInfo = 30;
+  ExifVideoInfo videoInfo = 40;
+  ExifGpsInfo gpsInfo = 50;
+  ExifLocation location = 60;
+}
+
+message ExifPhotoInfo {
+  string photoIso = 11;
+  double photoBrightness = 12;
+  string photoShutterSpeed = 14;
+  bool photoFlash = 15;
+  string photoExposureTime = 16;
+  string photoFNumber = 17;
+  string photoWhiteBalanceMode = 18;
+  string photoFocalLength = 19;
+}
+
+message ExifVideoInfo {
+  double videoFps = 20;
+  double videoBitrate = 21;
+  int32 videoDurationSec = 22;
+}
+
+message ExifGpsInfo {
+  string gpsDirection = 23;
+  string gpsSpeed = 24;
+  double gpsLatitude = 25;
+  double gpsLongitude = 26;
+  double gpsAltitude = 27;
+}
+
+message ExifLocation {
+  string fullName = 28;
+  string shortName = 29;
+  string country = 30;
+}
+
+message ReqFilterMedias {
+  string date_start = 10;
+  string date_end = 20;
+  repeated int64 classIds = 30;
+  repeated int64 faceIds = 40;
+  repeated MediaType types = 50;
+  GBoolean isFavorite = 60;
+  ReqPhotosOnMap location = 70;
+  // pagination:
+  int32 offset = 1;
+  int32 limit = 2;
+}
+
+message ReqAlbumInfo {
+  AlbumType albumType = 1;
+}
+
+enum AlbumType {
+  AT_FAVORITE = 0;
+  AT_BACKGROUND = 1;
+  AT_PHOTO = 2;
+  AT_VIDEO = 3;
+  AT_CAMERAS = 4;
+}
+
+enum GBoolean {
+  V_NONE = 0;
+  V_TRUE = 1;
+  V_FALSE = -1;
+}
+

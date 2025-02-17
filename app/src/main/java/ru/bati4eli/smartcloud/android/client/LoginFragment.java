@@ -9,78 +9,96 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
+import io.grpc.ManagedChannel;
+import io.grpc.ManagedChannelBuilder;
+import io.grpc.StatusRuntimeException;
+import lombok.SneakyThrows;
+import lombok.var;
+import ru.bati4eli.mycloud.users.UserPrivateServiceGrpc;
+import ru.bati4eli.mycloud.users.UserService;
 import ru.bati4eli.smartcloud.android.client.databinding.FragmentLoginBinding;
+import ru.bati4eli.smartcloud.android.client.utils.ParametersUtil;
 
 public class LoginFragment extends Fragment {
     private FragmentLoginBinding binding;
-
+    private UserPrivateServiceGrpc.UserPrivateServiceBlockingStub authClient;
+    private ManagedChannel channel;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentLoginBinding.inflate(inflater, container, false);
 
-        binding.loginButton.setOnClickListener(v -> onLoginButtonClicked());
+        try {
+            channel = ManagedChannelBuilder.forAddress("bati4eli.ru", 9090)
+                    .usePlaintext()
+                    .build();
 
+            authClient = UserPrivateServiceGrpc.newBlockingStub(channel);
+        } catch (Exception e) {
+            setLabel(e.getMessage(), Color.RED);
+        }
+
+        binding.loginButton.setOnClickListener(v -> onLoginButtonClicked());
+        loadCredentials();
         return binding.getRoot();
     }
 
+    @SneakyThrows
     private void onLoginButtonClicked() {
         String username = binding.usernameEntry.getText().toString();
         String password = binding.passwordEntry.getText().toString();
 
+        binding.loadingIndicator.setVisibility(View.VISIBLE);
+
         if (username.isEmpty() || password.isEmpty()) {
-            setLabel("Пожалуйста, введите имя пользователя и пароль.", "#0000FF");
+            setLabel("Пожалуйста, введите имя пользователя и пароль.", Color.BLUE);
             return;
         }
 
         binding.progressBar.setVisibility(View.VISIBLE);
-        setLabel("", null);
+        setLabel("", Color.BLUE);
 
-//        try {
-//            JwtRequest jwtRequest = JwtRequest.newBuilder()
-//                    .setLogin(username)
-//                    .setPass(password)
-//                    .build();
-//
-//            JwtResponse response = authClient.authenticate(jwtRequest);
-        setLabel("Успешная авторизация!", "#008000");
-        NavHostFragment.findNavController(this).navigate(R.id.action_from_login_to_settings);
-//            ParametersUtil.SetSecrets(username, password);
-//            ParametersUtil.SetToken(response.getToken());
-
-//            if (ParametersUtil.NeedSetupPage()) {
-//                // Переход к следующему экрану
-//                startActivity(new Intent(this, StartSettingsActivity.class));
-//            } else {
-//                startActivity(new Intent(this, FilesActivity.class));
-//            }
-
-//        } catch (StatusRuntimeException e) {
-//            setLabel(e.getStatus().getDescription(), "#FF0000");
-//        } finally {
-//            loadingIndicator.setVisibility(View.GONE);
-//        }
-    }
-
-    private void setLabel(String message, String color) {
-        binding.messageLabel.setText(message);
-        if (color != null) {
-            binding.messageLabel.setTextColor(Color.parseColor(color));
+        try {
+            UserService.JwtResponse response = authorize(username, password);
+            setLabel("Успешная авторизация!", Color.GREEN);
+            ParametersUtil.setSecrets(requireContext(), username, password, response.getToken());
+            channel.shutdown();
+            NavHostFragment.findNavController(this).navigate(R.id.action_from_login_to_settings);
+        } catch (StatusRuntimeException e) {
+            setLabel(e.getStatus().getDescription(), Color.RED);
+        } finally {
+            binding.loadingIndicator.setVisibility(View.GONE);
         }
     }
 
-    private void loadCredentials() {
-//        String username = ParametersUtil.GetUsername();
-//        String password = ParametersUtil.GetPassword();
+    private UserService.JwtResponse authorize(String username, String password) {
+        var jwtRequest = UserService.JwtRequest.newBuilder()
+                .setLogin(username)
+                .setPass(password)
+                .build();
+        return authClient.authenticate(jwtRequest);
+    }
 
-//        if (username != null) {
-//            usernameEntry.setText(username);
-//        }
-//
-//        if (password != null) {
-//            passwordEntry.setText(password);
-//        }
+    private void setLabel(String message, int color) {
+        binding.messageLabel.setText(message);
+        binding.messageLabel.setTextColor(color);
+    }
+
+    private void loadCredentials() {
+        try {
+            String username = ParametersUtil.getUsername(requireContext());
+            String password = ParametersUtil.getPassword(requireContext());
+            if (username != null) {
+                binding.usernameEntry.setText(username);
+            }
+
+            if (password != null) {
+                binding.passwordEntry.setText(password);
+            }
+        } catch (Exception ignored) {
+
+        }
     }
 
 }

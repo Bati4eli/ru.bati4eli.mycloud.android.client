@@ -1,6 +1,9 @@
 plugins {
     alias(libs.plugins.android.application)
+    id 'com.google.protobuf'
 }
+
+def buildGen = "$DEFAULT_BUILD_DIR_NAME/generated".toString()
 
 android {
     namespace 'ru.bati4eli.smartcloud.android.client'
@@ -12,8 +15,8 @@ android {
         targetSdk 34
         versionCode 1
         versionName "1.0"
-
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
     }
 
     buildTypes {
@@ -29,9 +32,13 @@ android {
     buildFeatures {
         viewBinding true
     }
+
 }
 
+
 dependencies {
+
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation libs.appcompat
     implementation libs.material
@@ -41,9 +48,35 @@ dependencies {
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core
+    // Preferences
+    implementation libs.security.crypto
+    // lombok
+    implementation 'org.projectlombok:lombok:1.18.28'
+    annotationProcessor 'org.projectlombok:lombok:1.18.28'
+    // GRPC
+    api 'com.google.protobuf:protobuf-lite:3.0.1'
+    api 'io.grpc:grpc-okhttp:1.25.0'
+    api 'io.grpc:grpc-protobuf-lite:1.25.0'
+    api 'io.grpc:grpc-stub:1.25.0'
+    api 'javax.annotation:javax.annotation-api:1.3.2'
+}
 
-//    implementation 'io.grpc:grpc-netty-shaded:1.49.0'
-//    implementation 'io.grpc:grpc-protobuf:1.49.0'
-//    implementation 'io.grpc:grpc-stub:1.49.0'
-//    implementation 'com.squareup.okhttp3:okhttp:4.9.3'
+protobuf {
+    protoc { artifact = 'com.google.protobuf:protoc:3.21.12' }
+    plugins {
+        javalite { artifact = "com.google.protobuf:protoc-gen-javalite:3.0.0" }
+        grpc {
+            artifact = 'io.grpc:protoc-gen-grpc-java:1.25.0' // CURRENT_GRPC_VERSION
+        }
+    }
+    generateProtoTasks {
+        all().each { task ->
+            task.plugins {
+                javalite {}
+                grpc { // Options added to --grpc_out
+                    option 'lite'
+                }
+            }
+        }
+    }
 }

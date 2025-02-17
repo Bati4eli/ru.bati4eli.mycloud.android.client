@@ -1,0 +1,81 @@
+syntax = "proto3";
+
+package ru.bati4eli.mycloud.users;
+
+option java_package = "ru.bati4eli.mycloud.users";
+//option java_multiple_files = true;
+
+service UserPrivateService {
+  rpc authenticate(JwtRequest) returns (JwtResponse);
+}
+
+service UserManagementService {
+  // users
+  rpc getUsers(SearchReq) returns(stream UserModel);
+  rpc createUser(CreateUserReq) returns (UserModel);
+  rpc changeUser(ChangeUserReq) returns (UserModel);  // todo not implemented
+  // groups
+  rpc getGroups(SearchGroupsReq) returns(stream GroupModel);        // todo not implemented
+  rpc addUserToGroup(UserGroupReq) returns (stream GroupModel);     // todo not implemented
+  rpc dropUserFromGroup(UserGroupReq) returns (stream GroupModel);  // todo not implemented
+}
+
+message JwtRequest {
+  string login = 1;
+  string pass = 2;
+}
+message JwtResponse {
+  string token = 1;
+}
+
+message SearchReq {
+  string groupName = 1;
+  string userName = 2;
+}
+
+message UserModel {
+  string id = 1;
+  string login = 2;
+  string email = 3;
+  AppRole role = 4;
+}
+
+enum AppRole {
+  APP_OWNER = 0;
+  APP_ADMIN = 1;
+  APP_USER = 2;
+}
+
+enum GroupRole {
+  GROUP_ADMIN = 0;
+  GROUP_USER = 1;
+}
+
+message CreateUserReq {
+  string login = 1;
+  string pass = 2;
+  string email = 3;
+  AppRole role = 4;
+}
+
+message ChangeUserReq {
+  string loginWhichChanging = 1;
+  string pass = 2;
+  string email = 3;
+  AppRole role = 4;
+}
+
+message SearchGroupsReq {
+  string login = 1;
+}
+
+message GroupModel {
+  int64 groupId = 1;
+  string groupName = 2;
+  GroupRole groupRole = 3;
+}
+
+message UserGroupReq {
+  string login = 1;
+  int64 groupId = 2;
+}
