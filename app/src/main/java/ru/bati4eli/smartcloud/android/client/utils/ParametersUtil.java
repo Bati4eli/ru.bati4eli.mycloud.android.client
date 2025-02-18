@@ -79,7 +79,7 @@ public class ParametersUtil {
         return new File(mainFolder);
     }
 
-    public static boolean needSetupPage(Context context) {
+    public static boolean getNeedSetupPage(Context context) {
         SharedPreferences preferences = getSharedPreferences(context);
         return preferences.getBoolean("NeedSetupPage", true);
     }
@@ -94,5 +94,29 @@ public class ParametersUtil {
     public static boolean showTabBar(Context context) {
         SharedPreferences preferences = getSharedPreferences(context);
         return preferences.getBoolean("ShowTabBar", true);
+    }
+
+    public static void setNeedSpliteByYears(Context context, boolean isNeedYears) {
+        SharedPreferences preferences = getSharedPreferences(context);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean("NeedSpliteByYears", isNeedYears);
+        editor.apply();
+    }
+
+    public static boolean getNeedSpliteByYears(Context context) {
+        SharedPreferences preferences = getSharedPreferences(context);
+        return preferences.getBoolean("NeedSpliteByYears", true);
+    }
+
+    public static void setNeedScreenshots(Context context, boolean isNeedYears) {
+        SharedPreferences preferences = getSharedPreferences(context);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean("NeedScreenshots", isNeedYears);
+        editor.apply();
+    }
+
+    public static boolean getNeedScreenshots(Context context) {
+        SharedPreferences preferences = getSharedPreferences(context);
+        return preferences.getBoolean("NeedScreenshots", true);
     }
 }

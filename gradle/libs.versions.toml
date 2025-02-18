@@ -13,6 +13,7 @@ navigationUi = "2.6.0"
 protobufGradlePlugin = "0.9.4"
 protobufJavalite = "3.23.4"
 securityCrypto = "1.1.0-alpha06"
+preference = "1.2.1"
 
 [libraries]
 google-protobuf-gradle-plugin = { module = "com.google.protobuf:protobuf-gradle-plugin" }
@@ -32,6 +33,7 @@ navigation-ui = { group = "androidx.navigation", name = "navigation-ui", version
 protobuf-gradle-plugin = { module = "com.google.protobuf:protobuf-gradle-plugin", version.ref = "protobufGradlePlugin" }
 protobuf-javalite = { module = "com.google.protobuf:protobuf-javalite", version.ref = "protobufJavalite" }
 security-crypto = { module = "androidx.security:security-crypto", version.ref = "securityCrypto" }
+preference = { group = "androidx.preference", name = "preference", version.ref = "preference" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

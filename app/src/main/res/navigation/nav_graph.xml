@@ -13,16 +13,18 @@
 
         <action
                 android:id="@+id/action_from_login_to_settings"
-                app:destination="@id/SecondFragment"/>
+                app:destination="@id/StartSettingsFragment"/>
     </fragment>
+
     <fragment
-            android:id="@+id/SecondFragment"
-            android:name="ru.bati4eli.smartcloud.android.client.SecondFragment"
-            android:label="@string/second_fragment_label"
-            tools:layout="@layout/fragment_second">
+            android:id="@+id/StartSettingsFragment"
+            android:name="ru.bati4eli.smartcloud.android.client.StartSettingsFragment"
+            android:label="@string/start_settings_label"
+            tools:layout="@layout/fragment_start_settings">
 
         <action
                 android:id="@+id/return_to_login"
                 app:destination="@id/LoginFragment"/>
     </fragment>
+
 </navigation>
