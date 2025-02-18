@@ -49,14 +49,12 @@ public class LoginFragment extends Fragment {
         String username = binding.usernameEntry.getText().toString();
         String password = binding.passwordEntry.getText().toString();
 
-        binding.loadingIndicator.setVisibility(View.VISIBLE);
-
         if (username.isEmpty() || password.isEmpty()) {
             setLabel("Пожалуйста, введите имя пользователя и пароль.", Color.BLUE);
             return;
         }
 
-        binding.progressBar.setVisibility(View.VISIBLE);
+        binding.loadingIndicator.setVisibility(View.VISIBLE);
         setLabel("", Color.BLUE);
 
         try {
