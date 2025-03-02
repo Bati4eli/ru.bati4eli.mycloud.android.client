@@ -25,6 +25,17 @@
         <action
                 android:id="@+id/return_to_login"
                 app:destination="@id/LoginFragment"/>
+
+        <action
+            android:id="@+id/go_to_main"
+            app:destination="@+id/MainFragment"/>
+    </fragment>
+
+    <fragment
+            android:id="@+id/MainFragment"
+            android:name="ru.bati4eli.smartcloud.android.client.MainFragment"
+            android:label="@string/start_settings_label"
+            tools:layout="@layout/fragment_main">
     </fragment>
 
 </navigation>

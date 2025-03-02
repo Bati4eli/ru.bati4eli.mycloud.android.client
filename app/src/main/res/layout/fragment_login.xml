@@ -33,7 +33,7 @@
         <ImageView
                 android:layout_width="200dp"
                 android:layout_height="200dp"
-                android:src="@drawable/cloud_brain_wb2"
+                android:src="@drawable/main_app_ico"
                 android:visibility="visible"/>
 
         <EditText

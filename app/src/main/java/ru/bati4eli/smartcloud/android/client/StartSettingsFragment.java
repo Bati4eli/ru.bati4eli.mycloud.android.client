@@ -82,10 +82,6 @@ public class StartSettingsFragment extends Fragment {
         ParametersUtil.setNeedSpliteByYears(requireContext(), isNeedYears);
         ParametersUtil.setNeedScreenshots(requireContext(), isNeedScreens);
 
-        //todo Логика перехода на новый фрагмент
-        // getActivity().getSupportFragmentManager().beginTransaction()
-        //         .replace(R.id.fragment_container, new FilesFragment())
-        //         .addToBackStack(null)
-        //         .commit();
+        NavHostFragment.findNavController(this).navigate(R.id.go_to_main);
     }
 }
