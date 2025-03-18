@@ -27,6 +27,8 @@ public class LoginFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        ParametersUtil.setContext(requireContext());
+
         binding = FragmentLoginBinding.inflate(inflater, container, false);
 
         try {
@@ -60,7 +62,7 @@ public class LoginFragment extends Fragment {
         try {
             UserService.JwtResponse response = authorize(username, password);
             setLabel("Успешная авторизация!", Color.GREEN);
-            ParametersUtil.setSecrets(requireContext(), username, password, response.getToken());
+            ParametersUtil.setSecrets( username, password, response.getToken());
             channel.shutdown();
             NavHostFragment.findNavController(this).navigate(R.id.action_from_login_to_settings);
         } catch (StatusRuntimeException e) {
@@ -85,8 +87,8 @@ public class LoginFragment extends Fragment {
 
     private void loadCredentials() {
         try {
-            String username = ParametersUtil.getUsername(requireContext());
-            String password = ParametersUtil.getPassword(requireContext());
+            String username = ParametersUtil.getUsername();
+            String password = ParametersUtil.getPassword();
             if (username != null) {
                 binding.usernameEntry.setText(username);
             }

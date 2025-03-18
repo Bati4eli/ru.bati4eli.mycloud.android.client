@@ -2,12 +2,7 @@ package ru.bati4eli.smartcloud.android.client;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.DocumentsContract;
-import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,10 +32,10 @@ public class StartSettingsFragment extends Fragment {
 //        Log.i("SERG", Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES).getAbsolutePath());
 
         // Установка значений по умолчанию
-        binding.selectedPathEntry.setText(ParametersUtil.getMainFolder(requireContext()));
+        binding.selectedPathEntry.setText(ParametersUtil.getMainFolder());
         binding.selectedPathEntry.setText(DCIM_PATH);
-        binding.switchNeedScreenshots.setChecked(ParametersUtil.getNeedScreenshots(requireContext()));
-        binding.switchNeedYears.setChecked(ParametersUtil.getNeedSpliteByYears(requireContext()));
+        binding.switchNeedScreenshots.setChecked(ParametersUtil.getNeedScreenshots());
+        binding.switchNeedYears.setChecked(ParametersUtil.getNeedSpliteByYears());
         // Установка действий кнопок
         binding.prevButton.setOnClickListener(v -> NavHostFragment.findNavController(this).navigate(R.id.return_to_login));
         binding.nextButton.setOnClickListener(v -> onNextButtonClicked());
@@ -77,10 +72,10 @@ public class StartSettingsFragment extends Fragment {
             return;
         }
 
-        ParametersUtil.setMainFolder(requireContext(), syncFolder);
-        ParametersUtil.setNeedSetupPage(requireContext(), false);
-        ParametersUtil.setNeedSpliteByYears(requireContext(), isNeedYears);
-        ParametersUtil.setNeedScreenshots(requireContext(), isNeedScreens);
+        ParametersUtil.setMainFolder(syncFolder);
+        ParametersUtil.setNeedSetupPage(false);
+        ParametersUtil.setNeedSpliteByYears(isNeedYears);
+        ParametersUtil.setNeedScreenshots(isNeedScreens);
 
         NavHostFragment.findNavController(this).navigate(R.id.go_to_main);
     }
