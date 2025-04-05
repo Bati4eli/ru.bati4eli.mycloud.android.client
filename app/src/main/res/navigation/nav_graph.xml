@@ -27,8 +27,8 @@
                 app:destination="@id/LoginFragment"/>
 
         <action
-            android:id="@+id/go_to_main"
-            app:destination="@+id/MainFragment"/>
+                android:id="@+id/go_to_main"
+                app:destination="@+id/MainFragment"/>
     </fragment>
 
     <fragment

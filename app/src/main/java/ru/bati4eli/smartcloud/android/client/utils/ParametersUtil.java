@@ -85,14 +85,14 @@ public class ParametersUtil {
         return preferences.getBoolean("ShowTabBar", true);
     }
 
-    public static void setNeedSpliteByYears( boolean isNeedYears) {
+    public static void setNeedSplitsByYears(boolean isNeedYears) {
         SharedPreferences preferences = getSharedPreferences(context);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putBoolean("NeedSpliteByYears", isNeedYears);
         editor.apply();
     }
 
-    public static boolean getNeedSpliteByYears() {
+    public static boolean getNeedSplitsByYears() {
         SharedPreferences preferences = getSharedPreferences(context);
         return preferences.getBoolean("NeedSpliteByYears", true);
     }

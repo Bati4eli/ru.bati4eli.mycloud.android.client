@@ -35,7 +35,7 @@ public class StartSettingsFragment extends Fragment {
         binding.selectedPathEntry.setText(ParametersUtil.getMainFolder());
         binding.selectedPathEntry.setText(DCIM_PATH);
         binding.switchNeedScreenshots.setChecked(ParametersUtil.getNeedScreenshots());
-        binding.switchNeedYears.setChecked(ParametersUtil.getNeedSpliteByYears());
+        binding.switchNeedYears.setChecked(ParametersUtil.getNeedSplitsByYears());
         // Установка действий кнопок
         binding.prevButton.setOnClickListener(v -> NavHostFragment.findNavController(this).navigate(R.id.return_to_login));
         binding.nextButton.setOnClickListener(v -> onNextButtonClicked());
@@ -74,7 +74,7 @@ public class StartSettingsFragment extends Fragment {
 
         ParametersUtil.setMainFolder(syncFolder);
         ParametersUtil.setNeedSetupPage(false);
-        ParametersUtil.setNeedSpliteByYears(isNeedYears);
+        ParametersUtil.setNeedSplitsByYears(isNeedYears);
         ParametersUtil.setNeedScreenshots(isNeedScreens);
 
         NavHostFragment.findNavController(this).navigate(R.id.go_to_main);
