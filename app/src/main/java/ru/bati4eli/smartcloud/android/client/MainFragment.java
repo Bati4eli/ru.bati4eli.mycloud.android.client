@@ -11,7 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 import com.google.android.material.navigation.NavigationBarView;
 import ru.bati4eli.smartcloud.android.client.databinding.FragmentMainBinding;
-import ru.bati4eli.smartcloud.android.client.tabs.ViewPagerAdapter;
+import ru.bati4eli.smartcloud.android.client.tabs.helpers.ViewPagerAdapter;
 
 public class MainFragment extends Fragment {
 

@@ -1,9 +1,9 @@
-package ru.bati4eli.smartcloud.android.client.utils;
+package ru.bati4eli.smartcloud.android.client.service;
 
 import android.util.Log;
+import io.grpc.Channel;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
-import ru.bati4eli.smartcloud.android.client.service.GrpcService;
 
 import java.lang.reflect.Proxy;
 import java.util.HashMap;
@@ -15,7 +15,14 @@ public class MiserableDI {
     private static Map<Class, Object> services = new HashMap<>();
 
     public static void initializeComponents() {
+        set(new AuthInterceptor());
+        // Without Auth
         setAsync(ManagedChannel.class, () -> ManagedChannelBuilder.forAddress("bati4eli.ru", 9090).usePlaintext().build());
+        // With Auth
+        setAsync(Channel.class, () -> ManagedChannelBuilder.forAddress("bati4eli.ru", 9090)
+                .usePlaintext() // Если у вас не использует TLS
+                .intercept(MiserableDI.get(AuthInterceptor.class)) // Добавляем интерцептор
+                .build());
         set(GrpcService.init());
     }
 

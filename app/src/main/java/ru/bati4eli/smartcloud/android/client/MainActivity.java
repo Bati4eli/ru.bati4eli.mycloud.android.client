@@ -10,7 +10,7 @@ import ru.bati4eli.smartcloud.android.client.databinding.ActivityMainBinding;
 
 import android.view.Menu;
 import android.view.MenuItem;
-import ru.bati4eli.smartcloud.android.client.utils.MiserableDI;
+import ru.bati4eli.smartcloud.android.client.service.MiserableDI;
 
 public class MainActivity extends AppCompatActivity {
 

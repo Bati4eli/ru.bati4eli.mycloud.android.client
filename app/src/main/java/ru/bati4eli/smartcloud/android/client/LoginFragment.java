@@ -13,7 +13,7 @@ import io.grpc.StatusRuntimeException;
 import lombok.SneakyThrows;
 import ru.bati4eli.smartcloud.android.client.databinding.FragmentLoginBinding;
 import ru.bati4eli.smartcloud.android.client.service.GrpcService;
-import ru.bati4eli.smartcloud.android.client.utils.MiserableDI;
+import ru.bati4eli.smartcloud.android.client.service.MiserableDI;
 import ru.bati4eli.smartcloud.android.client.utils.ParametersUtil;
 
 public class LoginFragment extends Fragment {
@@ -46,7 +46,7 @@ public class LoginFragment extends Fragment {
         try {
             grpcService.authorize(username, password);
             setLabel("Успешная авторизация!", Color.GREEN);
-            //grpcService.shutdown();
+//            grpcService.shutdown();
             NavHostFragment.findNavController(this).navigate(R.id.action_from_login_to_settings);
         } catch (StatusRuntimeException e) {
             setLabel(e.getStatus().getDescription(), Color.RED);

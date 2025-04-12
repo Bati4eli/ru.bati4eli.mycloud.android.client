@@ -1,20 +1,20 @@
 package ru.bati4eli.smartcloud.android.client.service;
 
 import android.util.Log;
+import io.grpc.Channel;
 import io.grpc.ManagedChannel;
 import lombok.var;
 import ru.bati4eli.mycloud.repo.FileRepoService;
 import ru.bati4eli.mycloud.repo.FileUserRepoServiceGrpc;
 import ru.bati4eli.mycloud.users.UserPrivateServiceGrpc;
 import ru.bati4eli.mycloud.users.UserService;
-import ru.bati4eli.smartcloud.android.client.utils.MiserableDI;
 import ru.bati4eli.smartcloud.android.client.utils.ParametersUtil;
 
 import java.util.Iterator;
+import java.util.concurrent.TimeUnit;
 
 public class GrpcService {
 
-    private ManagedChannel channel;
     private UserPrivateServiceGrpc.UserPrivateServiceBlockingStub authClient;
     private FileUserRepoServiceGrpc.FileUserRepoServiceBlockingStub repoClient;
 
@@ -22,11 +22,11 @@ public class GrpcService {
         return new GrpcService();
     }
 
-    public GrpcService() {
+    private GrpcService() {
         try {
-            channel = MiserableDI.get(ManagedChannel.class);
-            authClient = UserPrivateServiceGrpc.newBlockingStub(channel);
-            repoClient = FileUserRepoServiceGrpc.newBlockingStub(channel);
+            authClient = UserPrivateServiceGrpc.newBlockingStub(MiserableDI.get(ManagedChannel.class));
+            repoClient = FileUserRepoServiceGrpc.newBlockingStub(MiserableDI.get(Channel.class))
+                    .withDeadlineAfter(1, TimeUnit.SECONDS);
         } catch (Exception e) {
             //setLabel(e.getMessage(), Color.RED);
             Log.e("serg", e.getLocalizedMessage());
@@ -51,7 +51,7 @@ public class GrpcService {
         return repoClient.getSubFiles(request);
     }
 
-    public void shutdown() {
-        channel.shutdown();
-    }
+//    public void shutdown() {
+//        channel.shutdown();
+//    }
 }
