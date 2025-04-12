@@ -11,7 +11,6 @@ import ru.bati4eli.mycloud.users.UserService;
 import ru.bati4eli.smartcloud.android.client.utils.ParametersUtil;
 
 import java.util.Iterator;
-import java.util.concurrent.TimeUnit;
 
 public class GrpcService {
 
@@ -25,8 +24,7 @@ public class GrpcService {
     private GrpcService() {
         try {
             authClient = UserPrivateServiceGrpc.newBlockingStub(MiserableDI.get(ManagedChannel.class));
-            repoClient = FileUserRepoServiceGrpc.newBlockingStub(MiserableDI.get(Channel.class))
-                    .withDeadlineAfter(1, TimeUnit.SECONDS);
+            repoClient = FileUserRepoServiceGrpc.newBlockingStub(MiserableDI.get(Channel.class));
         } catch (Exception e) {
             //setLabel(e.getMessage(), Color.RED);
             Log.e("serg", e.getLocalizedMessage());

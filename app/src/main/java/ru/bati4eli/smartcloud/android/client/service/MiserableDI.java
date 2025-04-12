@@ -8,6 +8,7 @@ import io.grpc.ManagedChannelBuilder;
 import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
 public class MiserableDI {
@@ -22,6 +23,7 @@ public class MiserableDI {
         setAsync(Channel.class, () -> ManagedChannelBuilder.forAddress("bati4eli.ru", 9090)
                 .usePlaintext() // Если у вас не использует TLS
                 .intercept(MiserableDI.get(AuthInterceptor.class)) // Добавляем интерцептор
+                .idleTimeout(1, TimeUnit.SECONDS)
                 .build());
         set(GrpcService.init());
     }
