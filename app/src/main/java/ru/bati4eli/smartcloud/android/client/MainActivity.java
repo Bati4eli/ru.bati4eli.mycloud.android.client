@@ -1,9 +1,7 @@
 package ru.bati4eli.smartcloud.android.client;
 
 import android.os.Bundle;
-import com.google.android.material.snackbar.Snackbar;
 import androidx.appcompat.app.AppCompatActivity;
-import android.view.View;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -12,6 +10,7 @@ import ru.bati4eli.smartcloud.android.client.databinding.ActivityMainBinding;
 
 import android.view.Menu;
 import android.view.MenuItem;
+import ru.bati4eli.smartcloud.android.client.utils.MiserableDI;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -21,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        MiserableDI.initializeComponents();
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());

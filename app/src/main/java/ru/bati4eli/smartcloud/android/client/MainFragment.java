@@ -36,7 +36,7 @@ public class MainFragment extends Fragment {
             @Override
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
-                Log.i("SERG", "### registerOnPageChangeCallback Position: " + position);
+                // Log.i("SERG", "### registerOnPageChangeCallback Position: " + position);
                 // Синхронизация BottomNavigationView с ViewPager
                 binding.bottomNavigationView
                         .getMenu()

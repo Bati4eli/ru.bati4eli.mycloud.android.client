@@ -9,38 +9,22 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
-import io.grpc.ManagedChannel;
-import io.grpc.ManagedChannelBuilder;
 import io.grpc.StatusRuntimeException;
 import lombok.SneakyThrows;
-import lombok.var;
-import ru.bati4eli.mycloud.users.UserPrivateServiceGrpc;
-import ru.bati4eli.mycloud.users.UserService;
 import ru.bati4eli.smartcloud.android.client.databinding.FragmentLoginBinding;
+import ru.bati4eli.smartcloud.android.client.service.GrpcService;
+import ru.bati4eli.smartcloud.android.client.utils.MiserableDI;
 import ru.bati4eli.smartcloud.android.client.utils.ParametersUtil;
 
 public class LoginFragment extends Fragment {
     private FragmentLoginBinding binding;
-    private UserPrivateServiceGrpc.UserPrivateServiceBlockingStub authClient;
-    private ManagedChannel channel;
+    private GrpcService grpcService = MiserableDI.get(GrpcService.class);
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         ParametersUtil.setContext(requireContext());
-
         binding = FragmentLoginBinding.inflate(inflater, container, false);
-
-        try {
-            channel = ManagedChannelBuilder.forAddress("bati4eli.ru", 9090)
-                    .usePlaintext()
-                    .build();
-
-            authClient = UserPrivateServiceGrpc.newBlockingStub(channel);
-        } catch (Exception e) {
-            setLabel(e.getMessage(), Color.RED);
-        }
-
         binding.loginButton.setOnClickListener(v -> onLoginButtonClicked());
         loadCredentials();
         return binding.getRoot();
@@ -60,10 +44,9 @@ public class LoginFragment extends Fragment {
         setLabel("", Color.BLUE);
 
         try {
-            UserService.JwtResponse response = authorize(username, password);
+            grpcService.authorize(username, password);
             setLabel("Успешная авторизация!", Color.GREEN);
-            ParametersUtil.setSecrets( username, password, response.getToken());
-            channel.shutdown();
+            //grpcService.shutdown();
             NavHostFragment.findNavController(this).navigate(R.id.action_from_login_to_settings);
         } catch (StatusRuntimeException e) {
             setLabel(e.getStatus().getDescription(), Color.RED);
@@ -72,13 +55,6 @@ public class LoginFragment extends Fragment {
         }
     }
 
-    private UserService.JwtResponse authorize(String username, String password) {
-        var jwtRequest = UserService.JwtRequest.newBuilder()
-                .setLogin(username)
-                .setPass(password)
-                .build();
-        return authClient.authenticate(jwtRequest);
-    }
 
     private void setLabel(String message, int color) {
         binding.messageLabel.setText(message);
