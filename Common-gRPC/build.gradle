@@ -1,0 +1,39 @@
+plugins {
+    id 'java-library'
+    id 'com.google.protobuf' version("${googleProtobufPluginVersion}")
+}
+
+group 'ru.bati4eli'
+version '2.0.0'
+
+dependencies {
+    // GRPC
+    implementation "io.grpc:grpc-stub:$grpcVersion"
+    //implementation "io.grpc:grpc-netty:$grpcVersion"
+    implementation "io.grpc:grpc-protobuf:$grpcVersion"
+    implementation "com.google.protobuf:protobuf-java"
+    implementation "javax.annotation:javax.annotation-api:$javaxVersion"
+}
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:${googleProtobufCompilerVersion}"
+    }
+    plugins {
+        grpc {
+            artifact = "io.grpc:protoc-gen-grpc-java:${grpcVersion}"
+        }
+    }
+    generateProtoTasks {
+        all()*.plugins {
+            grpc {}
+        }
+    }
+}
+// protoc --java_out=Common-gRPC/src/main/groovy  Common-gRPC/src/main/proto/admin.proto
+// protoc --java_out=Common-gRPC/src/main/groovy  Common-gRPC/src/main/proto/file_service.proto
+
+compileJava {
+    options.encoding = 'UTF-8'
+}
+

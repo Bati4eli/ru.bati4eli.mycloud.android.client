@@ -3,6 +3,8 @@ package ru.bati4eli.smartcloud.android.client.utils;
 import android.content.Context;
 import android.widget.Toast;
 import ru.bati4eli.mycloud.repo.FileRepoService;
+import ru.bati4eli.mycloud.repo.GrpcFile;
+import ru.bati4eli.mycloud.repo.TypeOfFile;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -162,11 +164,11 @@ public class MyUtils {
         Toast.makeText(context, text, Toast.LENGTH_LONG).show();
     }
 
-    public static String getFullPath(FileRepoService.GrpcFile grpcFile) {
+    public static String getFullPath(GrpcFile grpcFile) {
         String remoteParentPath = removeRootInPath(grpcFile.getParentPath());
         String mainFolder = ParametersUtil.getMainFolder();
 
-        if (grpcFile.getMediaType() == FileRepoService.TypeOfFile.ROOT) {
+        if (grpcFile.getMediaType() == TypeOfFile.ROOT) {
             return mainFolder;
         }
 

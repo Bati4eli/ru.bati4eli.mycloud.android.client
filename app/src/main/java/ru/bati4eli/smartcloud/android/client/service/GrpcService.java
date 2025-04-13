@@ -4,10 +4,12 @@ import android.util.Log;
 import io.grpc.Channel;
 import io.grpc.ManagedChannel;
 import lombok.var;
-import ru.bati4eli.mycloud.repo.FileRepoService;
+import ru.bati4eli.mycloud.repo.FileInfoRequest;
 import ru.bati4eli.mycloud.repo.FileUserRepoServiceGrpc;
+import ru.bati4eli.mycloud.repo.GrpcFile;
+import ru.bati4eli.mycloud.users.JwtRequest;
+import ru.bati4eli.mycloud.users.JwtResponse;
 import ru.bati4eli.mycloud.users.UserPrivateServiceGrpc;
-import ru.bati4eli.mycloud.users.UserService;
 import ru.bati4eli.smartcloud.android.client.utils.ParametersUtil;
 
 import java.util.Iterator;
@@ -31,19 +33,19 @@ public class GrpcService {
         }
     }
 
-    public UserService.JwtResponse authorize(String username, String password) {
-        var jwtRequest = UserService.JwtRequest.newBuilder()
+    public JwtResponse authorize(String username, String password) {
+        var jwtRequest = JwtRequest.newBuilder()
                 .setLogin(username)
                 .setPass(password)
                 .build();
-        UserService.JwtResponse response = authClient.authenticate(jwtRequest);
+        JwtResponse response = authClient.authenticate(jwtRequest);
 
         ParametersUtil.setSecrets(username, password, response.getToken());
         return response;
     }
 
-    public Iterator<FileRepoService.GrpcFile> getRootFiles() {
-        var request = FileRepoService.FileInfoRequest.newBuilder()
+    public Iterator<GrpcFile> getRootFiles() {
+        var request = FileInfoRequest.newBuilder()
                 .setRoot(true)
                 .build();
         return repoClient.getSubFiles(request);

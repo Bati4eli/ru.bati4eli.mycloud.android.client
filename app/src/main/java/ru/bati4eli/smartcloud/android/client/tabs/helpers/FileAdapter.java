@@ -6,15 +6,15 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import ru.bati4eli.mycloud.repo.FileRepoService;
+import ru.bati4eli.mycloud.repo.GrpcFile;
 import ru.bati4eli.smartcloud.android.client.R;
 
 import java.util.List;
 
 public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileViewHolder> {
-    private List<FileRepoService.GrpcFile> files;
+    private List<GrpcFile> files;
 
-    public FileAdapter(List<FileRepoService.GrpcFile> files) {
+    public FileAdapter(List<GrpcFile> files) {
         this.files = files;
     }
 
@@ -45,7 +45,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileViewHolder
             fileNameView = itemView.findViewById(R.id.fileName);
         }
 
-        public void bind(FileRepoService.GrpcFile file) {
+        public void bind(GrpcFile file) {
             fileNameView.setText(file.getName()); // Предположим, что у объекта есть метод getName()
         }
     }
