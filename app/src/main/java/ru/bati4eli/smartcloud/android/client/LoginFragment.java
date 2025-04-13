@@ -50,6 +50,8 @@ public class LoginFragment extends Fragment {
             NavHostFragment.findNavController(this).navigate(R.id.action_from_login_to_settings);
         } catch (StatusRuntimeException e) {
             setLabel(e.getStatus().getDescription(), Color.RED);
+        } catch (Exception e) {
+            setLabel(e.getMessage(), Color.RED);
         } finally {
             binding.loadingIndicator.setVisibility(View.GONE);
         }

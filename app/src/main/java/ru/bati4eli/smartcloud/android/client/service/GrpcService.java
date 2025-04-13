@@ -3,21 +3,22 @@ package ru.bati4eli.smartcloud.android.client.service;
 import android.util.Log;
 import io.grpc.Channel;
 import io.grpc.ManagedChannel;
+import io.grpc.stub.StreamObserver;
 import lombok.var;
+import org.jetbrains.annotations.NotNull;
 import ru.bati4eli.mycloud.repo.FileInfoRequest;
 import ru.bati4eli.mycloud.repo.FileUserRepoServiceGrpc;
 import ru.bati4eli.mycloud.repo.GrpcFile;
 import ru.bati4eli.mycloud.users.JwtRequest;
 import ru.bati4eli.mycloud.users.JwtResponse;
 import ru.bati4eli.mycloud.users.UserPrivateServiceGrpc;
+import ru.bati4eli.smartcloud.android.client.tabs.helpers.FileAdapter;
 import ru.bati4eli.smartcloud.android.client.utils.ParametersUtil;
-
-import java.util.Iterator;
 
 public class GrpcService {
 
     private UserPrivateServiceGrpc.UserPrivateServiceBlockingStub authClient;
-    private FileUserRepoServiceGrpc.FileUserRepoServiceBlockingStub repoClient;
+    private FileUserRepoServiceGrpc.FileUserRepoServiceStub repoClient;
 
     public static GrpcService init() {
         return new GrpcService();
@@ -26,9 +27,8 @@ public class GrpcService {
     private GrpcService() {
         try {
             authClient = UserPrivateServiceGrpc.newBlockingStub(MiserableDI.get(ManagedChannel.class));
-            repoClient = FileUserRepoServiceGrpc.newBlockingStub(MiserableDI.get(Channel.class));
+            repoClient = FileUserRepoServiceGrpc.newStub(MiserableDI.get(Channel.class));
         } catch (Exception e) {
-            //setLabel(e.getMessage(), Color.RED);
             Log.e("serg", e.getLocalizedMessage());
         }
     }
@@ -44,11 +44,34 @@ public class GrpcService {
         return response;
     }
 
-    public Iterator<GrpcFile> getRootFiles() {
+    public void getRootFiles(FileAdapter fileAdapter) {
         var request = FileInfoRequest.newBuilder()
                 .setRoot(true)
                 .build();
-        return repoClient.getSubFiles(request);
+
+        repoClient.getSubFiles(request, getGrpcFileStreamObserver(fileAdapter));
+    }
+
+    @NotNull
+    private static StreamObserver<GrpcFile> getGrpcFileStreamObserver(FileAdapter fileAdapter) {
+        return new StreamObserver<GrpcFile>() {
+            @Override
+            public void onNext(GrpcFile grpcFile) {
+                Log.d("serg", grpcFile.getName());
+                fileAdapter.add(grpcFile);
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                Log.d("serg", throwable.getLocalizedMessage());
+            }
+
+            @Override
+            public void onCompleted() {
+                Log.d("serg", "### COMPLETED!!!!");
+                fileAdapter.notifyDataSetChanged();
+            }
+        };
     }
 
 //    public void shutdown() {

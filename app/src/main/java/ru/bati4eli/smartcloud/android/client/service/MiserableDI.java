@@ -44,7 +44,8 @@ public class MiserableDI {
             return proxy;
         } else if (service instanceof Supplier) {
             Supplier<T> supplier = (Supplier) service;
-            return supplier.get();
+            T t = supplier.get();
+            return t;
         }
         return (T) service;
     }
