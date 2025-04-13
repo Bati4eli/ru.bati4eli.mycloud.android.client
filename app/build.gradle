@@ -28,12 +28,6 @@ android {
     buildFeatures {
         viewBinding true
     }
-
-    packagingOptions {
-        // Игнорировать конфликтующие файлы, оставив только первый найденный
-        //pickFirst 'META-INF/INDEX.LIST'
-        pickFirst 'META-INF/io.netty.versions.properties'
-    }
 }
 
 dependencies {
@@ -56,10 +50,7 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.28'
     // GRPC
     implementation "io.grpc:grpc-stub:$grpcVersion"
-   // implementation "io.grpc:grpc-netty:$grpcVersion"
     implementation "io.grpc:grpc-protobuf:$grpcVersion"
-    // implementation "com.google.protobuf:protobuf-java"
-    implementation "javax.annotation:javax.annotation-api:$javaxVersion"
 
     // ORMLite
     implementation 'com.j256.ormlite:ormlite-android:5.7'

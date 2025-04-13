@@ -3,20 +3,19 @@ package ru.bati4eli.smartcloud.android.client.tabs.helpers;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import lombok.Getter;
 import ru.bati4eli.mycloud.repo.GrpcFile;
 import ru.bati4eli.smartcloud.android.client.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileViewHolder> {
-    private List<GrpcFile> files;
+public class FileAdapter extends RecyclerView.Adapter<FileViewHolder> {
 
-    public FileAdapter(List<GrpcFile> files) {
-        this.files = files;
-    }
+    @Getter
+    private List<GrpcFile> files = new ArrayList<>();
 
     @NonNull
     @Override
@@ -37,16 +36,11 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileViewHolder
         return files.size();
     }
 
-    public static class FileViewHolder extends RecyclerView.ViewHolder {
-        private TextView fileNameView;
+    public void add(GrpcFile grpcFile) {
+        files.add(grpcFile);
+    }
 
-        public FileViewHolder(@NonNull View itemView) {
-            super(itemView);
-            fileNameView = itemView.findViewById(R.id.fileName);
-        }
-
-        public void bind(GrpcFile file) {
-            fileNameView.setText(file.getName()); // Предположим, что у объекта есть метод getName()
-        }
+    public void clear() {
+        files.clear();
     }
 }
