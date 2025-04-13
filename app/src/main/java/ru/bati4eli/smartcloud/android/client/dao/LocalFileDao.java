@@ -39,10 +39,10 @@ public class LocalFileDao {
     private int version = 0;
 
     @DatabaseField
-    private LocalDateTime created = LocalDateTime.now();
+    private LocalDateTime created /* = LocalDateTime.now() */;
 
     @DatabaseField
-    private LocalDateTime lastModify = LocalDateTime.now();
+    private LocalDateTime lastModify /* = LocalDateTime.now() */;
 
     @DatabaseField
     private Long size = 0L;

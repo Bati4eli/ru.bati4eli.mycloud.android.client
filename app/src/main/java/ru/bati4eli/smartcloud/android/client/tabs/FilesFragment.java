@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import ru.bati4eli.mycloud.repo.FileRepoService;
+import ru.bati4eli.mycloud.repo.GrpcFile;
 import ru.bati4eli.smartcloud.android.client.databinding.TabFilesBinding;
 import ru.bati4eli.smartcloud.android.client.service.GrpcService;
 import ru.bati4eli.smartcloud.android.client.service.MiserableDI;
@@ -22,7 +23,7 @@ public class FilesFragment extends Fragment {
     private TabFilesBinding binding;
     private FileAdapter fileAdapter;
     private GrpcService grpcService = MiserableDI.get(GrpcService.class);
-    private List<FileRepoService.GrpcFile> fileList = new ArrayList<>();
+    private List<GrpcFile> fileList = new ArrayList<>();
 
     @Nullable
     @Override
@@ -39,7 +40,7 @@ public class FilesFragment extends Fragment {
 
     private void loadFiles() {
         new Thread(() -> {
-            Iterator<FileRepoService.GrpcFile> fileIterator = grpcService.getRootFiles();
+            Iterator<GrpcFile> fileIterator = grpcService.getRootFiles();
             while (true) {
                 fileList.add(fileIterator.next());
                 fileAdapter.notifyDataSetChanged();

@@ -3,7 +3,7 @@ syntax = "proto3";
 package ru.bati4eli.mycloud.users;
 
 option java_package = "ru.bati4eli.mycloud.users";
-//option java_multiple_files = true;
+option java_multiple_files = true;
 
 service UserPrivateService {
   rpc authenticate(JwtRequest) returns (JwtResponse);
