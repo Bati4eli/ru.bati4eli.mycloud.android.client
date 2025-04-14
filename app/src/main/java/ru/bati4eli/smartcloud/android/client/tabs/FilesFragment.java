@@ -24,8 +24,9 @@ public class FilesFragment extends Fragment {
         binding = TabFilesBinding.inflate(inflater, container, false);
 
         fileAdapter = new FileAdapter();
-        binding.recyclerViewFiles.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.recyclerViewFiles.setAdapter(fileAdapter);
+        binding.recyclerViewFiles.setLayoutManager(new LinearLayoutManager(getContext()));
+        fileAdapter.notifyDataSetChanged();
         loadFiles();
 
         return binding.getRoot();
@@ -34,6 +35,5 @@ public class FilesFragment extends Fragment {
     private void loadFiles() {
         fileAdapter.clear();
         grpcService.getRootFiles(fileAdapter);
-
     }
 }

@@ -24,7 +24,4 @@
             app:labelVisibilityMode="labeled"
     />
 
-    <!--            app:backgroundTint="?attr/colorPrimary"-->
-    <!--            app:itemIconTint="?attr/colorOnPrimary"-->
-    <!--            app:itemTextColor="?attr/colorOnPrimary"-->
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

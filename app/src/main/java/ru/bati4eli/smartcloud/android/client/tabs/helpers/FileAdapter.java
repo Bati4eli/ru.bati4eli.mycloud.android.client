@@ -38,6 +38,8 @@ public class FileAdapter extends RecyclerView.Adapter<FileViewHolder> {
 
     public void add(GrpcFile grpcFile) {
         files.add(grpcFile);
+        //super.notifyItemChanged(files.size() - 1);
+        //super.notifyDataSetChanged();
     }
 
     public void clear() {

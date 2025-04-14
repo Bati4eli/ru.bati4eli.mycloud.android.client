@@ -15,6 +15,7 @@ import ru.bati4eli.smartcloud.android.client.databinding.FragmentLoginBinding;
 import ru.bati4eli.smartcloud.android.client.service.GrpcService;
 import ru.bati4eli.smartcloud.android.client.service.MiserableDI;
 import ru.bati4eli.smartcloud.android.client.utils.ParametersUtil;
+import ru.bati4eli.smartcloud.android.client.utils.TokenValidator;
 
 public class LoginFragment extends Fragment {
     private FragmentLoginBinding binding;
@@ -27,6 +28,12 @@ public class LoginFragment extends Fragment {
         binding = FragmentLoginBinding.inflate(inflater, container, false);
         binding.loginButton.setOnClickListener(v -> onLoginButtonClicked());
         loadCredentials();
+
+        if (TokenValidator.isTokenExpired(ParametersUtil.getToken())) {
+            onLoginButtonClicked();
+        } else {
+            navigateNextPage();
+        }
         return binding.getRoot();
     }
 
@@ -47,13 +54,21 @@ public class LoginFragment extends Fragment {
             grpcService.authorize(username, password);
             setLabel("Успешная авторизация!", Color.GREEN);
 //            grpcService.shutdown();
-            NavHostFragment.findNavController(this).navigate(R.id.action_from_login_to_settings);
+            navigateNextPage();
         } catch (StatusRuntimeException e) {
             setLabel(e.getStatus().getDescription(), Color.RED);
         } catch (Exception e) {
             setLabel(e.getMessage(), Color.RED);
         } finally {
             binding.loadingIndicator.setVisibility(View.GONE);
+        }
+    }
+
+    private void navigateNextPage() {
+        if (ParametersUtil.getNeedSetupPage()) {
+            NavHostFragment.findNavController(this).navigate(R.id.action_from_login_to_settings);
+        } else {
+            NavHostFragment.findNavController(this).navigate(R.id.action_from_login_to_main);
         }
     }
 

@@ -14,7 +14,14 @@
         <action
                 android:id="@+id/action_from_login_to_settings"
                 app:destination="@id/StartSettingsFragment"/>
+
+        <action
+                android:id="@+id/action_from_login_to_main"
+                app:destination="@id/MainFragment"
+                app:popUpTo="@id/LoginFragment"
+                app:popUpToInclusive="true"/>
     </fragment>
+
 
     <fragment
             android:id="@+id/StartSettingsFragment"
@@ -28,13 +35,15 @@
 
         <action
                 android:id="@+id/go_to_main"
-                app:destination="@+id/MainFragment"/>
+                app:destination="@+id/MainFragment"
+                app:popUpTo="@id/LoginFragment"
+                app:popUpToInclusive="true"/>
     </fragment>
 
     <fragment
             android:id="@+id/MainFragment"
             android:name="ru.bati4eli.smartcloud.android.client.MainFragment"
-            android:label="@string/start_settings_label"
+            android:label=""
             tools:layout="@layout/fragment_main">
     </fragment>
 
