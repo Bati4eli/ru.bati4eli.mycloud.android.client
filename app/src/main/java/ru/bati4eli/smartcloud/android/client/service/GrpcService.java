@@ -5,15 +5,17 @@ import io.grpc.Channel;
 import io.grpc.ManagedChannel;
 import io.grpc.stub.StreamObserver;
 import lombok.var;
-import org.jetbrains.annotations.NotNull;
+import ru.bati4eli.mycloud.repo.DownloadFileReq;
+import ru.bati4eli.mycloud.repo.DownloadType;
 import ru.bati4eli.mycloud.repo.FileInfoRequest;
 import ru.bati4eli.mycloud.repo.FileUserRepoServiceGrpc;
 import ru.bati4eli.mycloud.repo.GrpcFile;
 import ru.bati4eli.mycloud.users.JwtRequest;
 import ru.bati4eli.mycloud.users.JwtResponse;
 import ru.bati4eli.mycloud.users.UserPrivateServiceGrpc;
-import ru.bati4eli.smartcloud.android.client.tabs.helpers.FileAdapter;
 import ru.bati4eli.smartcloud.android.client.utils.ParametersUtil;
+
+import static ru.bati4eli.smartcloud.android.client.utils.Constants.TAG;
 
 public class GrpcService {
 
@@ -29,7 +31,7 @@ public class GrpcService {
             authClient = UserPrivateServiceGrpc.newBlockingStub(MiserableDI.get(ManagedChannel.class));
             repoClient = FileUserRepoServiceGrpc.newStub(MiserableDI.get(Channel.class));
         } catch (Exception e) {
-            Log.e("serg", e.getLocalizedMessage());
+            Log.e(TAG, e.getLocalizedMessage());
         }
     }
 
@@ -44,37 +46,23 @@ public class GrpcService {
         return response;
     }
 
-    public void getRootFiles(FileAdapter fileAdapter) {
+    public void getRootFiles(StreamObserver<GrpcFile> responseObserver) {
         var request = FileInfoRequest.newBuilder()
                 .setRoot(true)
                 .build();
 
-        repoClient.getSubFiles(request, getGrpcFileStreamObserver(fileAdapter));
+        repoClient.getSubFiles(request, responseObserver);
     }
 
-    @NotNull
-    private static StreamObserver<GrpcFile> getGrpcFileStreamObserver(FileAdapter fileAdapter) {
-        return new StreamObserver<GrpcFile>() {
-            @Override
-            public void onNext(GrpcFile grpcFile) {
-                Log.d("serg", grpcFile.getName());
-                fileAdapter.add(grpcFile);
-            }
+    public void downloadMiniPreviewSync(GrpcFile grpcFile) {
 
-            @Override
-            public void onError(Throwable throwable) {
-                Log.d("serg", throwable.getLocalizedMessage());
-            }
+        DownloadFileReq req = DownloadFileReq.newBuilder()
+                .setFileId(grpcFile.getFileId())
+                .setType(DownloadType.PREVIEW_MINI)
+                .build();
 
-            @Override
-            public void onCompleted() {
-                Log.d("serg", "### COMPLETED!!!!");
-                fileAdapter.notifyDataSetChanged();
-            }
-        };
+        DownloadFileObserver responseObserver = new DownloadFileObserver(grpcFile, DownloadType.PREVIEW_MINI);
+        repoClient.downloadFile(req, responseObserver);
+        responseObserver.waiting();
     }
-
-//    public void shutdown() {
-//        channel.shutdown();
-//    }
 }

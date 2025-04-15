@@ -1,13 +1,17 @@
 package ru.bati4eli.smartcloud.android.client.utils;
 
 import android.content.Context;
+import android.os.Build;
 import android.widget.Toast;
-import ru.bati4eli.mycloud.repo.FileRepoService;
+import androidx.annotation.RequiresApi;
+import ru.bati4eli.mycloud.repo.DownloadType;
 import ru.bati4eli.mycloud.repo.GrpcFile;
 import ru.bati4eli.mycloud.repo.TypeOfFile;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Locale;
@@ -16,6 +20,18 @@ import java.util.TimeZone;
 
 
 public class MyUtils {
+
+    public static boolean previewExists(GrpcFile grpcFile, DownloadType downloadType) {
+        return new File(getFilePath(grpcFile, downloadType)).exists();
+    }
+
+    public static String getFilePath(GrpcFile grpcFile, DownloadType downloadType) {
+        if (downloadType == DownloadType.ORIGIN) {
+            return Constants.APP_DIRECTORY + "/ORIGIN/" + grpcFile.getName();
+        } else {
+            return Constants.APP_DIRECTORY + "/PREVIEWS/" + grpcFile.getFileId() + "_" + downloadType.name() + ".jpg";
+        }
+    }
 
     public static double compareSeconds(Date dt1, Date dt2) {
         long difference = dt1.getTime() - dt2.getTime();
@@ -36,6 +52,35 @@ public class MyUtils {
         int offsetMinutes = Math.abs(offset / (60 * 1000)) % 60;
 
         return dateFormat.format(dateTime) + String.format(Locale.getDefault(), "%+03d:%02d", offsetHours, offsetMinutes);
+    }
+
+    public static String formatDate(String dateStr) {
+        // Форматируем дату и возвращаем строку
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+            return parseDate(dateStr).format(formatter);
+        } else {
+            return dateStr;
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public static String formatDate(OffsetDateTime date) {
+        // Задаем нужный формат даты
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+        // Форматируем дату и возвращаем строку
+        return date.format(formatter);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public static OffsetDateTime parseDate(String dateStr) {
+        try {
+            return OffsetDateTime.parse(dateStr);
+        } catch (Exception e) {
+            // Обработка исключения, если строка не соответствует формату
+            System.err.println("Invalid date format: " + e.getMessage());
+            return null;
+        }
     }
 
     public static boolean isFolder(String folderPath) {

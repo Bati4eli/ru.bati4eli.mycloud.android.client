@@ -13,6 +13,8 @@ import com.google.android.material.navigation.NavigationBarView;
 import ru.bati4eli.smartcloud.android.client.databinding.FragmentMainBinding;
 import ru.bati4eli.smartcloud.android.client.tabs.helpers.ViewPagerAdapter;
 
+import static ru.bati4eli.smartcloud.android.client.utils.Constants.TAG;
+
 public class MainFragment extends Fragment {
 
     private FragmentMainBinding binding;
@@ -28,6 +30,7 @@ public class MainFragment extends Fragment {
         binding.viewPager.registerOnPageChangeCallback(getOnPageChangeCallback());
         // Переключение вкладки при нажатии на кнопки меню внизу:
         binding.bottomNavigationView.setOnItemSelectedListener(getOnItemSelectedListener());
+
         return binding.getRoot();
     }
 
@@ -36,7 +39,7 @@ public class MainFragment extends Fragment {
             @Override
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
-                // Log.i("SERG", "### registerOnPageChangeCallback Position: " + position);
+                // Log.i(TAG, "### registerOnPageChangeCallback Position: " + position);
                 // Синхронизация BottomNavigationView с ViewPager
                 binding.bottomNavigationView
                         .getMenu()
@@ -48,7 +51,7 @@ public class MainFragment extends Fragment {
 
     private NavigationBarView.OnItemSelectedListener getOnItemSelectedListener() {
         return item -> {
-            Log.i("SERG", "### bottomNavigationView.setOnItemSelectedListener Position: " + item.getItemId());
+            Log.i(TAG, "### bottomNavigationView.setOnItemSelectedListener Position: " + item.getItemId());
             // Проверяем, какая вкладка выбрана, и устанавливаем соответствующую страницу ViewPager
             int position;
 

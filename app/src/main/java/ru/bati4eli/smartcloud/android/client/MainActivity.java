@@ -1,16 +1,16 @@
 package ru.bati4eli.smartcloud.android.client;
 
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import ru.bati4eli.smartcloud.android.client.databinding.ActivityMainBinding;
-
-import android.view.Menu;
-import android.view.MenuItem;
 import ru.bati4eli.smartcloud.android.client.service.MiserableDI;
+import ru.bati4eli.smartcloud.android.client.utils.Constants;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -21,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         MiserableDI.initializeComponents();
+        Constants.setAppDirectory(getApplicationContext().getFilesDir());
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());

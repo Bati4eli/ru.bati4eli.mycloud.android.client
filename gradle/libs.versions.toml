@@ -10,6 +10,7 @@ navigationFragment = "2.6.0"
 navigationUi = "2.6.0"
 securityCrypto = "1.1.0-alpha06"
 preference = "1.2.1"
+swiperefreshlayout = "1.1.0"
 
 [libraries]
 gradle = { module = "com.android.tools.build:gradle" }
@@ -23,6 +24,7 @@ navigation-fragment = { group = "androidx.navigation", name = "navigation-fragme
 navigation-ui = { group = "androidx.navigation", name = "navigation-ui", version.ref = "navigationUi" }
 security-crypto = { module = "androidx.security:security-crypto", version.ref = "securityCrypto" }
 preference = { group = "androidx.preference", name = "preference", version.ref = "preference" }
+swiperefreshlayout = { group = "androidx.swiperefreshlayout", name = "swiperefreshlayout", version.ref = "swiperefreshlayout" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

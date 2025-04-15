@@ -12,8 +12,10 @@ import ru.bati4eli.smartcloud.android.client.databinding.TabFilesBinding;
 import ru.bati4eli.smartcloud.android.client.service.GrpcService;
 import ru.bati4eli.smartcloud.android.client.service.MiserableDI;
 import ru.bati4eli.smartcloud.android.client.tabs.helpers.FileAdapter;
+import ru.bati4eli.smartcloud.android.client.service.GrpcFileStreamObserver;
 
 public class FilesFragment extends Fragment {
+    private boolean currIsRoot = true;
     private TabFilesBinding binding;
     private FileAdapter fileAdapter;
     private GrpcService grpcService = MiserableDI.get(GrpcService.class);
@@ -26,7 +28,9 @@ public class FilesFragment extends Fragment {
         fileAdapter = new FileAdapter();
         binding.recyclerViewFiles.setAdapter(fileAdapter);
         binding.recyclerViewFiles.setLayoutManager(new LinearLayoutManager(getContext()));
-        fileAdapter.notifyDataSetChanged();
+
+        // Вызов метода обновления данных
+        binding.swipeRefreshLayout.setOnRefreshListener(this::loadFiles);
         loadFiles();
 
         return binding.getRoot();
@@ -34,6 +38,7 @@ public class FilesFragment extends Fragment {
 
     private void loadFiles() {
         fileAdapter.clear();
-        grpcService.getRootFiles(fileAdapter);
+        grpcService.getRootFiles(new GrpcFileStreamObserver(fileAdapter, binding.swipeRefreshLayout));
     }
+
 }

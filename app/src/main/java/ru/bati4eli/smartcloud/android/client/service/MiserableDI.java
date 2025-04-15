@@ -11,6 +11,8 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
+import static ru.bati4eli.smartcloud.android.client.utils.Constants.TAG;
+
 public class MiserableDI {
 
     private static Map<Class, Object> services = new HashMap<>();
@@ -23,7 +25,7 @@ public class MiserableDI {
         setAsync(Channel.class, () -> ManagedChannelBuilder.forAddress("bati4eli.ru", 9090)
                 .usePlaintext() // Если у вас не использует TLS
                 .intercept(MiserableDI.get(AuthInterceptor.class)) // Добавляем интерцептор
-                .idleTimeout(1, TimeUnit.SECONDS)
+                //.idleTimeout(1, TimeUnit.SECONDS)
                 .build());
         set(GrpcService.init());
     }
@@ -61,21 +63,21 @@ public class MiserableDI {
                     new Class<?>[]{serviceClass},
                     (proxy, method, args) -> {
                         // Логика перед вызовом метода
-                        Log.d("serg", "# Before call method: " + method.getName());
+                        Log.d(TAG, "# Before call method: " + method.getName());
                         // Получаем оригинальный сервис
                         T service = (T) services.get(serviceClass);
                         if (service == null) {
-                            Log.e("serg", "Service not found: " + serviceClass.getName());
+                            Log.e(TAG, "Service not found: " + serviceClass.getName());
                         }
                         // Вызов оригинального метода
                         Object result = method.invoke(service, args);
                         // Логика после вызова метода
-                        Log.d("serg", "# After call method: " + method.getName());
+                        Log.d(TAG, "# After call method: " + method.getName());
                         return result;
                     });
             return newProxyInstance;
         } catch (Exception e) {
-            Log.e("serg", e.getMessage());
+            Log.e(TAG, e.getMessage());
         }
         return null;
     }
