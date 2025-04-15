@@ -77,6 +77,9 @@ public class StartSettingsFragment extends Fragment {
         ParametersUtil.setNeedSplitsByYears(isNeedYears);
         ParametersUtil.setNeedScreenshots(isNeedScreens);
 
-        NavHostFragment.findNavController(this).navigate(R.id.go_to_main);
+        //NavHostFragment.findNavController(this).navigate(R.id.go_to_main);
+        Intent intent = new Intent(getActivity(), MainActivity.class);
+        startActivity(intent);
+        getActivity().finish(); // Завершить текущую активити, если это необходимо
     }
 }

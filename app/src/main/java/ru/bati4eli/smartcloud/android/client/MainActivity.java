@@ -1,68 +1,61 @@
 package ru.bati4eli.smartcloud.android.client;
 
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.util.Log;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
+import androidx.viewpager2.widget.ViewPager2;
+import com.google.android.material.navigation.NavigationBarView;
 import ru.bati4eli.smartcloud.android.client.databinding.ActivityMainBinding;
-import ru.bati4eli.smartcloud.android.client.service.MiserableDI;
-import ru.bati4eli.smartcloud.android.client.tabs.FilesFragment;
-import ru.bati4eli.smartcloud.android.client.utils.Constants;
+import ru.bati4eli.smartcloud.android.client.tabs.helpers.ViewPagerAdapter;
 
 public class MainActivity extends AppCompatActivity {
 
-    private AppBarConfiguration appBarConfiguration;
     private ActivityMainBinding binding;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        MiserableDI.initializeComponents();
-        Constants.setAppDirectory(getApplicationContext().getFilesDir());
-
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
-        setSupportActionBar(binding.toolbar);
-
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-
+        // Устанавливаем Adapter для ViewPager2
+        ViewPagerAdapter adapter = new ViewPagerAdapter(this);
+        binding.viewPager.setAdapter(adapter);
+        // Устанавливаем слушатель для перелистывания страниц
+        binding.viewPager.registerOnPageChangeCallback(getOnPageChangeCallback());
+        // Переключение вкладки при нажатии на кнопки меню внизу
+        binding.bottomNavigationView.setOnItemSelectedListener(getOnItemSelectedListener());
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
+    private ViewPager2.OnPageChangeCallback getOnPageChangeCallback() {
+        return new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                // Синхронизация BottomNavigationView с ViewPager
+                binding.bottomNavigationView
+                        .getMenu()
+                        .getItem(position)
+                        .setChecked(true);
+            }
+        };
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+    private NavigationBarView.OnItemSelectedListener getOnItemSelectedListener() {
+        return item -> {
+            Log.i("MainActivity", "### bottomNavigationView.setOnItemSelectedListener Position: " + item.getItemId());
+            // Проверяем, какая вкладка выбрана, и устанавливаем соответствующую страницу ViewPager
+            int position;
 
-//  TODO пример меню ищи в manu_main.xml
-//        if (id == R.id.action_settings) {
-//            return true;
-//        }
+            if (item.getItemId() == R.id.tab_files) position = 0;
+            else if (item.getItemId() == R.id.tab_photos) position = 1;
+            else if (item.getItemId() == R.id.tab_albums) position = 2;
+            else if (item.getItemId() == R.id.tab_map) position = 3;
+            else if (item.getItemId() == R.id.tab_settings) position = 4;
+            else position = 0;
 
-        return super.onOptionsItemSelected(item);
+            binding.viewPager.setCurrentItem(position, true);
+            return true;
+        };
     }
-
-    @Override
-    public boolean onSupportNavigateUp() {
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        return NavigationUI.navigateUp(navController, appBarConfiguration)
-                || super.onSupportNavigateUp();
-    }
-
 }

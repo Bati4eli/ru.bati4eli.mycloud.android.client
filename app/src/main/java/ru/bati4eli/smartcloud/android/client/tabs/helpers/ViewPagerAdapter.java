@@ -1,6 +1,7 @@
 package ru.bati4eli.smartcloud.android.client.tabs.helpers;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import ru.bati4eli.smartcloud.android.client.tabs.AlbumsFragment;
@@ -11,7 +12,7 @@ import ru.bati4eli.smartcloud.android.client.tabs.SettingsFragment;
 
 public class ViewPagerAdapter extends FragmentStateAdapter {
 
-    public ViewPagerAdapter(@NonNull Fragment fragment) {
+    public ViewPagerAdapter(@NonNull AppCompatActivity fragment) {
         super(fragment);
     }
 

@@ -1,7 +1,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto"
       xmlns:tools="http://schemas.android.com/tools"
-      tools:context="ru.bati4eli.smartcloud.android.client.MainActivity">
+      tools:context="ru.bati4eli.smartcloud.android.client.StartActivity">
 
 <!-- TODO пример меню ищи в MainActivity.java -->
 <!--    <item android:id="@+id/action_settings"-->
