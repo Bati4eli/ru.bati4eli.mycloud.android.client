@@ -7,12 +7,26 @@
         android:layout_height="match_parent"
         tools:context=".MainActivity">
 
-    <!-- ViewPager2 для отображения страниц -->
+    <com.google.android.material.appbar.AppBarLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:fitsSystemWindows="true">
+
+        <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"/>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <!-- ViewPager2 для отображения страниц с учетом toolbar -->
     <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/viewPager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="56dp"/>
+            android:layout_weight="1"
+            android:layout_marginBottom="56dp"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
     <!-- BottomNavigationView для навигации -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
