@@ -4,12 +4,14 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import ru.bati4eli.smartcloud.android.client.databinding.ActivityMainBinding;
 import ru.bati4eli.smartcloud.android.client.service.MiserableDI;
+import ru.bati4eli.smartcloud.android.client.tabs.FilesFragment;
 import ru.bati4eli.smartcloud.android.client.utils.Constants;
 
 public class MainActivity extends AppCompatActivity {
@@ -62,4 +64,5 @@ public class MainActivity extends AppCompatActivity {
         return NavigationUI.navigateUp(navController, appBarConfiguration)
                 || super.onSupportNavigateUp();
     }
+
 }

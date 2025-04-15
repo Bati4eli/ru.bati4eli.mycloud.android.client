@@ -43,7 +43,7 @@
     <fragment
             android:id="@+id/MainFragment"
             android:name="ru.bati4eli.smartcloud.android.client.MainFragment"
-            android:label=""
+            android:label="Files:"
             tools:layout="@layout/fragment_main">
     </fragment>
 

@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import ru.bati4eli.mycloud.repo.DownloadType;
@@ -26,8 +27,9 @@ public class FileViewHolder extends RecyclerView.ViewHolder {
     /**
      * Биндинг для каждого файла
      */
-    public void bind(GrpcFile file) {
+    public void bind(GrpcFile file, OnItemClickListener listener) {
         try {
+
             binding.fileName.setText(file.getName());
             binding.fileDate.setText(MyUtils.formatDate(file.getLastModify()));
             binding.fileSize.setText(file.getShortSize());
@@ -37,6 +39,11 @@ public class FileViewHolder extends RecyclerView.ViewHolder {
             } else {
                 setMediaIcon(file);
             }
+            binding.getRoot().setOnClickListener(v -> {
+                if (listener != null) {
+                    listener.onItemClick(getAdapterPosition());
+                }
+            });
         } catch (Throwable e) {
             Log.e(TAG,"FileViewHolder: " + e.getLocalizedMessage());
             // binding.fileIcon.setImageResource(R.drawable.ic_file);

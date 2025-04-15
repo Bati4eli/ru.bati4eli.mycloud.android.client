@@ -10,6 +10,9 @@ import ru.bati4eli.mycloud.repo.TypeOfFile;
 import ru.bati4eli.smartcloud.android.client.tabs.helpers.FileAdapter;
 import ru.bati4eli.smartcloud.android.client.utils.MyUtils;
 
+import java.io.File;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import static ru.bati4eli.smartcloud.android.client.utils.Constants.TAG;
 
 
@@ -18,6 +21,7 @@ public class GrpcFileStreamObserver implements StreamObserver<GrpcFile> {
     private final FileAdapter fileAdapter;
     private final SwipeRefreshLayout swipeRefreshLayout;
     private final GrpcService grpcService = MiserableDI.get(GrpcService.class);
+    private AtomicBoolean working = new AtomicBoolean(true);
 
     @Override
     public void onNext(GrpcFile grpcFile) {
@@ -27,7 +31,7 @@ public class GrpcFileStreamObserver implements StreamObserver<GrpcFile> {
             // Повторно не надо скачивать превью
             if (!MyUtils.previewExists(grpcFile, DownloadType.PREVIEW_MINI))
                 // Синхронный метод!
-                grpcService.downloadMiniPreviewSync(grpcFile);
+                grpcService.downloadFile(grpcFile, DownloadType.PREVIEW_MINI);
         }
     }
 
@@ -35,6 +39,7 @@ public class GrpcFileStreamObserver implements StreamObserver<GrpcFile> {
     public void onError(Throwable throwable) {
         Log.d(TAG, "GrpcFileStreamObserver: " + throwable.getLocalizedMessage());
         swipeRefreshLayout.setRefreshing(false);
+        working.set(false);
     }
 
     @Override
@@ -42,5 +47,15 @@ public class GrpcFileStreamObserver implements StreamObserver<GrpcFile> {
         Log.d(TAG, "### GrpcFileStreamObserver COMPLETED!!!!");
         fileAdapter.notifyDataSetChanged();
         swipeRefreshLayout.setRefreshing(false);
+        working.set(false);
+    }
+
+    public boolean isWorking() {
+        return working.get();
+    }
+
+    public void waiting() {
+        while (isWorking()) {
+        }
     }
 }

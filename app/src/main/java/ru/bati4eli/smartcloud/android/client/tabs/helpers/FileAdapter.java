@@ -6,13 +6,17 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import ru.bati4eli.mycloud.repo.GrpcFile;
 import ru.bati4eli.smartcloud.android.client.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@RequiredArgsConstructor
 public class FileAdapter extends RecyclerView.Adapter<FileViewHolder> {
+
+    private final OnItemClickListener listener;
 
     @Getter
     private List<GrpcFile> files = new ArrayList<>();
@@ -28,7 +32,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull FileViewHolder holder, int position) {
-        holder.bind(files.get(position));
+        holder.bind(files.get(position), listener);
     }
 
     @Override
@@ -42,5 +46,6 @@ public class FileAdapter extends RecyclerView.Adapter<FileViewHolder> {
 
     public void clear() {
         files.clear();
+        notifyDataSetChanged();
     }
 }

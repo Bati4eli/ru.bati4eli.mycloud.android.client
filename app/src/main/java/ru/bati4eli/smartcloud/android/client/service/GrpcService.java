@@ -3,7 +3,6 @@ package ru.bati4eli.smartcloud.android.client.service;
 import android.util.Log;
 import io.grpc.Channel;
 import io.grpc.ManagedChannel;
-import io.grpc.stub.StreamObserver;
 import lombok.var;
 import ru.bati4eli.mycloud.repo.DownloadFileReq;
 import ru.bati4eli.mycloud.repo.DownloadType;
@@ -46,23 +45,34 @@ public class GrpcService {
         return response;
     }
 
-    public void getRootFiles(StreamObserver<GrpcFile> responseObserver) {
+    public void getRootFilesSync(GrpcFileStreamObserver responseObserver) {
         var request = FileInfoRequest.newBuilder()
                 .setRoot(true)
                 .build();
 
         repoClient.getSubFiles(request, responseObserver);
+        responseObserver.waiting();
     }
 
-    public void downloadMiniPreviewSync(GrpcFile grpcFile) {
+    public void getSubFilesSync(GrpcFile currentFolder, GrpcFileStreamObserver responseObserver) {
+        var request = FileInfoRequest.newBuilder()
+                .setFileId(currentFolder.getFileId())
+                .build();
+
+        repoClient.getSubFiles(request, responseObserver);
+        responseObserver.waiting();
+    }
+
+    public void downloadFile(GrpcFile grpcFile, DownloadType downloadType) {
 
         DownloadFileReq req = DownloadFileReq.newBuilder()
                 .setFileId(grpcFile.getFileId())
-                .setType(DownloadType.PREVIEW_MINI)
+                .setType(downloadType)
                 .build();
 
-        DownloadFileObserver responseObserver = new DownloadFileObserver(grpcFile, DownloadType.PREVIEW_MINI);
+        DownloadFileObserver responseObserver = new DownloadFileObserver(grpcFile, downloadType);
         repoClient.downloadFile(req, responseObserver);
         responseObserver.waiting();
     }
+
 }

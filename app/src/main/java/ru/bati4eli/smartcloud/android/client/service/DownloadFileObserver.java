@@ -55,12 +55,21 @@ public class DownloadFileObserver implements StreamObserver<DownloadFileResp> {
         Log.e(TAG, "DownloadFileObserver onError(): " + throwable.getMessage());
         working.set(false);
         //Toast.makeText(getApplicationContext(), "Ошибка загрузки изображения", Toast.LENGTH_SHORT).show();
+        closeStream();
     }
 
     @Override
-    public void onCompleted() {
+    public void onCompleted()    {
         working.set(false);
-        // Действия после завершения загрузки, если необходимо
+        closeStream();
+    }
+
+    private void closeStream() {
+        try {
+            fileOutputStream.close();
+        } catch (IOException ignored) {
+        } finally {
+        }
     }
 
     public boolean isWorking() {
