@@ -29,7 +29,6 @@ public class MainActivity extends AppCompatActivity   {
         binding.viewPager.registerOnPageChangeCallback(getOnPageChangeCallback());
         // Переключение вкладки при нажатии на кнопки меню внизу
         binding.bottomNavigationView.setOnItemSelectedListener(getOnItemSelectedListener());
-        setSupportActionBar(binding.toolbar);
     }
 
     private ViewPager2.OnPageChangeCallback getOnPageChangeCallback() {

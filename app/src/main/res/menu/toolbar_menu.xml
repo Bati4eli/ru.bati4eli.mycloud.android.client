@@ -1,0 +1,25 @@
+<!-- res/menu/toolbar_menu.xml -->
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+            android:id="@+id/action_add"
+            android:title="select"
+            android:icon="@drawable/ic_select"
+            android:iconTint="@color/gray"
+            app:showAsAction="ifRoom"/>
+
+    <item
+            android:id="@+id/action_search"
+            android:title="search"
+            android:icon="@drawable/ic_search"
+            android:iconTint="@color/gray"
+            app:showAsAction="ifRoom"/>
+
+
+    <item
+            android:id="@+id/action_option"
+            android:title="options"
+            android:icon="@drawable/ic_options"
+            android:iconTint="@color/gray"
+            app:showAsAction="ifRoom"/>
+</menu>

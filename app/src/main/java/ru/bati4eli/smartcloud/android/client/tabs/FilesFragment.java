@@ -41,7 +41,7 @@ public class FilesFragment extends Fragment implements OnItemClickListener, OnBa
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = TabFilesBinding.inflate(inflater, container, false);
         activity = (MainActivity) getActivity();
-        toolbar = activity.getBinding().toolbar;
+        toolbar = binding.toolbar;
 
         fileAdapter = new FileAdapter(this);
         binding.recyclerViewFiles.setAdapter(fileAdapter);
@@ -51,7 +51,6 @@ public class FilesFragment extends Fragment implements OnItemClickListener, OnBa
         moveToFolder(grpcService.getRootFileInfo());
         return binding.getRoot();
     }
-
 
     private void updateSubFiles() {
         fileAdapter.clear();
