@@ -1,5 +1,6 @@
 package ru.bati4eli.smartcloud.android.client.tabs;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,8 +10,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import com.google.android.material.appbar.MaterialToolbar;
 import ru.bati4eli.mycloud.repo.GrpcFile;
 import ru.bati4eli.mycloud.repo.TypeOfFile;
+import ru.bati4eli.smartcloud.android.client.MainActivity;
+import ru.bati4eli.smartcloud.android.client.R;
 import ru.bati4eli.smartcloud.android.client.databinding.TabFilesBinding;
 import ru.bati4eli.smartcloud.android.client.service.GrpcService;
 import ru.bati4eli.smartcloud.android.client.service.MiserableDI;
@@ -24,27 +28,27 @@ import java.util.Stack;
 import static ru.bati4eli.smartcloud.android.client.utils.Constants.TAG;
 
 public class FilesFragment extends Fragment implements OnItemClickListener, OnBackPressedListener {
-
-    private GrpcFile currentFolder;
     private TabFilesBinding binding;
+    private MainActivity activity;
+    private MaterialToolbar toolbar;
+    private GrpcFile currentFolder;
     private FileAdapter fileAdapter;
-    private Stack<GrpcFile> folderStack = new Stack<>(); // Стек для хранения папок
+    private Stack<GrpcFile> folderStack = new Stack<>();
     private GrpcService grpcService = MiserableDI.get(GrpcService.class);
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = TabFilesBinding.inflate(inflater, container, false);
+        activity = (MainActivity) getActivity();
+        toolbar = activity.getBinding().toolbar;
 
         fileAdapter = new FileAdapter(this);
         binding.recyclerViewFiles.setAdapter(fileAdapter);
         binding.recyclerViewFiles.setLayoutManager(new LinearLayoutManager(getContext()));
-
         // Вызов метода обновления данных
         binding.swipeRefreshLayout.setOnRefreshListener(this::updateSubFiles);
-
         moveToFolder(grpcService.getRootFileInfo());
-
         return binding.getRoot();
     }
 
@@ -59,7 +63,22 @@ public class FilesFragment extends Fragment implements OnItemClickListener, OnBa
             folderStack.push(currentFolder); // добавляем текущую папку в стек перед переходом
         }
         currentFolder = grpcFile; // обновляем текущую папку
+        updateToolbarNavigationState();
         updateSubFiles();
+    }
+
+    private void updateToolbarNavigationState() {
+        if (isAtRootDirectory()) {
+            toolbar.setNavigationIcon(null);
+        } else {
+            toolbar.setNavigationIcon(R.drawable.ic_back);
+        }
+        toolbar.setTitle(isAtRootDirectory() ? "Files:" : "/" + currentFolder.getName());
+        toolbar.setNavigationOnClickListener(isAtRootDirectory() ? null : v -> activity.onBackPressed());
+    }
+
+    private boolean isAtRootDirectory() {
+        return currentFolder.getMediaType() == TypeOfFile.ROOT;
     }
 
     /**
@@ -86,5 +105,15 @@ public class FilesFragment extends Fragment implements OnItemClickListener, OnBa
         } else {
             superOnBackPressed.run();
         }
+    }
+
+    /**
+     * Метод onAttach(Context context) является частью жизненного цикла фрагмента в Android и вызывается,
+     * когда фрагмент присоединяется к активности. Этот метод предоставляет возможность получить доступ к активности,
+     * к которой данный фрагмент прикреплен, и выполнить необходимые действия на ранних этапах жизненного цикла фрагмента.
+     */
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
     }
 }

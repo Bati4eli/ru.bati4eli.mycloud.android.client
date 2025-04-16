@@ -7,12 +7,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 import com.google.android.material.navigation.NavigationBarView;
+import lombok.Getter;
 import ru.bati4eli.smartcloud.android.client.databinding.ActivityMainBinding;
 import ru.bati4eli.smartcloud.android.client.tabs.helpers.OnBackPressedListener;
 import ru.bati4eli.smartcloud.android.client.tabs.helpers.ViewPagerAdapter;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity   {
 
+    @Getter
     private ActivityMainBinding binding;
     private ViewPagerAdapter adapter;
 
@@ -72,4 +74,5 @@ public class MainActivity extends AppCompatActivity {
             super.onBackPressed();
         }
     }
+
 }

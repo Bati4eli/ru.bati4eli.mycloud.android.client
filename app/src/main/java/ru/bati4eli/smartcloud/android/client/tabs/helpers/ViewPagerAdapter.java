@@ -25,8 +25,8 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
 
     private final ViewPager2 viewPager;
 
-    public ViewPagerAdapter(@NonNull AppCompatActivity fragment, ViewPager2 viewPager) {
-        super(fragment);
+    public ViewPagerAdapter(@NonNull AppCompatActivity activity, ViewPager2 viewPager) {
+        super(activity);
         viewPager.setAdapter(this);
         this.viewPager = viewPager;
     }
