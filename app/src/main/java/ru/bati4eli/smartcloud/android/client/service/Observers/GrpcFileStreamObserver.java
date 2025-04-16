@@ -1,4 +1,4 @@
-package ru.bati4eli.smartcloud.android.client.service;
+package ru.bati4eli.smartcloud.android.client.service.Observers;
 
 import android.util.Log;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -7,10 +7,11 @@ import lombok.Data;
 import ru.bati4eli.mycloud.repo.DownloadType;
 import ru.bati4eli.mycloud.repo.GrpcFile;
 import ru.bati4eli.mycloud.repo.TypeOfFile;
+import ru.bati4eli.smartcloud.android.client.service.GrpcService;
+import ru.bati4eli.smartcloud.android.client.service.MiserableDI;
 import ru.bati4eli.smartcloud.android.client.tabs.helpers.FileAdapter;
 import ru.bati4eli.smartcloud.android.client.utils.MyUtils;
 
-import java.io.File;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static ru.bati4eli.smartcloud.android.client.utils.Constants.TAG;

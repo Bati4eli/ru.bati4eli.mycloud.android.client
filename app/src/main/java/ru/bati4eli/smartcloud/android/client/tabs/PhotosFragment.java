@@ -8,8 +8,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import ru.bati4eli.smartcloud.android.client.R;
+import ru.bati4eli.smartcloud.android.client.tabs.helpers.OnBackPressedListener;
 
-public class PhotosFragment extends Fragment {
+public class PhotosFragment extends Fragment implements OnBackPressedListener {
 
     @Nullable
     @Override
@@ -17,4 +18,8 @@ public class PhotosFragment extends Fragment {
         return inflater.inflate(R.layout.tab_photos, container, false);
     }
 
+    @Override
+    public void onBackPressed(Runnable superOnBackPressed) {
+
+    }
 }

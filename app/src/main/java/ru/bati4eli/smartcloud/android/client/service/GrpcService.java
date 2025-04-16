@@ -12,6 +12,9 @@ import ru.bati4eli.mycloud.repo.GrpcFile;
 import ru.bati4eli.mycloud.users.JwtRequest;
 import ru.bati4eli.mycloud.users.JwtResponse;
 import ru.bati4eli.mycloud.users.UserPrivateServiceGrpc;
+import ru.bati4eli.smartcloud.android.client.service.Observers.DownloadFileObserver;
+import ru.bati4eli.smartcloud.android.client.service.Observers.GrpcFileStreamObserver;
+import ru.bati4eli.smartcloud.android.client.service.Observers.SyncObserverOneResponse;
 import ru.bati4eli.smartcloud.android.client.utils.ParametersUtil;
 
 import static ru.bati4eli.smartcloud.android.client.utils.Constants.TAG;
@@ -28,7 +31,8 @@ public class GrpcService {
     private GrpcService() {
         try {
             authClient = UserPrivateServiceGrpc.newBlockingStub(MiserableDI.get(ManagedChannel.class));
-            repoClient = FileUserRepoServiceGrpc.newStub(MiserableDI.get(Channel.class));
+            Channel channel = MiserableDI.get(Channel.class);
+            repoClient = FileUserRepoServiceGrpc.newStub(channel);
         } catch (Exception e) {
             Log.e(TAG, e.getLocalizedMessage());
         }
@@ -43,6 +47,15 @@ public class GrpcService {
 
         ParametersUtil.setSecrets(username, password, response.getToken());
         return response;
+    }
+
+    public GrpcFile getRootFileInfo() {
+        var request = FileInfoRequest.newBuilder()
+                .setRoot(true)
+                .build();
+        SyncObserverOneResponse<GrpcFile> response = new SyncObserverOneResponse<>();
+        repoClient.getFileInfo(request,response);
+        return response.getResponse();
     }
 
     public void getRootFilesSync(GrpcFileStreamObserver responseObserver) {

@@ -30,7 +30,7 @@
             android:textColor="#808080"
             android:layout_below="@id/fileName"
             android:layout_toEndOf="@id/fileIcon"
-            android:layout_marginTop="4dp"/>
+            android:layout_marginTop="2dp"/>
 
     <TextView
             android:id="@+id/fileSize"

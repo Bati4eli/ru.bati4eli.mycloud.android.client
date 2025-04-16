@@ -1,4 +1,4 @@
-package ru.bati4eli.smartcloud.android.client.service;
+package ru.bati4eli.smartcloud.android.client.service.Observers;
 
 import android.util.Log;
 import io.grpc.stub.StreamObserver;

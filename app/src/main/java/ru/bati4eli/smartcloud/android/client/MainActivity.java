@@ -4,14 +4,17 @@ import android.os.Bundle;
 import android.util.Log;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 import com.google.android.material.navigation.NavigationBarView;
 import ru.bati4eli.smartcloud.android.client.databinding.ActivityMainBinding;
+import ru.bati4eli.smartcloud.android.client.tabs.helpers.OnBackPressedListener;
 import ru.bati4eli.smartcloud.android.client.tabs.helpers.ViewPagerAdapter;
 
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
+    private ViewPagerAdapter adapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -19,8 +22,7 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         // Устанавливаем Adapter для ViewPager2
-        ViewPagerAdapter adapter = new ViewPagerAdapter(this);
-        binding.viewPager.setAdapter(adapter);
+        adapter = new ViewPagerAdapter(this, binding.viewPager);
         // Устанавливаем слушатель для перелистывания страниц
         binding.viewPager.registerOnPageChangeCallback(getOnPageChangeCallback());
         // Переключение вкладки при нажатии на кнопки меню внизу
@@ -58,5 +60,16 @@ public class MainActivity extends AppCompatActivity {
             binding.viewPager.setCurrentItem(position, true);
             return true;
         };
+    }
+
+    @Override
+    public void onBackPressed() {
+        Fragment currentFragment = adapter.getCurrentFragment();
+        if (currentFragment instanceof OnBackPressedListener) {
+            // Передача эвента фрагменту
+            ((OnBackPressedListener) currentFragment).onBackPressed(super::onBackPressed);
+        } else {
+            super.onBackPressed();
+        }
     }
 }

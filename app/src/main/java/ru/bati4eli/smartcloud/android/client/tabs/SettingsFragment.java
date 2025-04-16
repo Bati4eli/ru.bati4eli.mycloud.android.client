@@ -8,8 +8,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import ru.bati4eli.smartcloud.android.client.R;
+import ru.bati4eli.smartcloud.android.client.tabs.helpers.OnBackPressedListener;
 
-public class SettingsFragment extends Fragment {
+public class SettingsFragment extends Fragment implements OnBackPressedListener {
 
     @Nullable
     @Override
@@ -17,4 +18,8 @@ public class SettingsFragment extends Fragment {
         return inflater.inflate(R.layout.tab_settings, container, false);
     }
 
+    @Override
+    public void onBackPressed(Runnable superOnBackPressed) {
+
+    }
 }

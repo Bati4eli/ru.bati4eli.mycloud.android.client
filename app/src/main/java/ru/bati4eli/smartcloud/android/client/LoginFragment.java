@@ -73,16 +73,9 @@ public class LoginFragment extends Fragment {
         if (ParametersUtil.getNeedSetupPage()) {
             NavHostFragment.findNavController(this).navigate(R.id.action_from_login_to_settings);
         } else {
-            //NavHostFragment.findNavController(this).navigate(R.id.action_from_login_to_main);
-            try {
-
-                Intent intent = new Intent(getActivity(), MainActivity.class);
-                startActivity(intent);
-                getActivity().finish(); // Завершить текущую активити, если это необходимо
-            } catch (Exception e) {
-                Log.e(TAG, "Error launching MainActivity", e);
-                Toast.makeText(getActivity(), "Failed to open MainActivity", Toast.LENGTH_SHORT).show();
-            }
+            // Navigation to MainActivity
+            startActivity(new Intent(getActivity(), MainActivity.class));
+            getActivity().finish();
         }
     }
 
