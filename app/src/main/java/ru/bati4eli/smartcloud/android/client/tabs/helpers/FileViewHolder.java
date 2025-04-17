@@ -60,6 +60,9 @@ public class FileViewHolder extends RecyclerView.ViewHolder {
                 // Если загрузка не удалась, возможно, использовать иконку файла по умолчанию
                 binding.fileIcon.setImageResource(R.drawable.ic_file);
             }
+        } else {
+            // Если загрузка не удалась, возможно, использовать иконку файла по умолчанию
+            binding.fileIcon.setImageResource(R.drawable.ic_file);
         }
     }
 }

@@ -65,7 +65,7 @@ public class GrpcFileStreamObserver implements StreamObserver<GrpcFile> {
         fileAdapter.addAll(sortedFiles);
         swipeRefreshLayout.setRefreshing(false);
         working.set(false);
-        Log.d(TAG, "### GrpcFileStreamObserver COMPLETED!!!!");
+        //Log.d(TAG, "### GrpcFileStreamObserver COMPLETED!!!!");
     }
 
 
