@@ -63,17 +63,17 @@ public class ParametersUtil {
         cache.put(groupName, value);
     }
 
-    private static ViewTypeEnum getViewType() {
+    public static ViewTypeEnum getViewType() {
         int anInt = getSharedPreferences(context).getInt(VIEW_TYPE, ViewTypeEnum.VIEW_LIST.getParameterId());
         return ViewTypeEnum.of(anInt);
     }
 
-    private static SortByEnum getSortBy() {
-        int anInt = getSharedPreferences(context).getInt(SORT_BY, SortByEnum.SORT_BY_DATE.getParameterId());
+    public static SortByEnum getSortBy() {
+        int anInt = getSharedPreferences(context).getInt(SORT_BY, SortByEnum.SORT_BY_CREATE_DATE.getParameterId());
         return SortByEnum.of(anInt);
     }
 
-    private static SortOrderEnum getSortOrder() {
+    public static SortOrderEnum getSortOrder() {
         int anInt = getSharedPreferences(context).getInt(SORT_ORDER, SortOrderEnum.SORT_ASCENDING.getParameterId());
         return SortOrderEnum.of(anInt);
     }

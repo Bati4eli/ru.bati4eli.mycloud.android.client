@@ -9,8 +9,14 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import ru.bati4eli.mycloud.repo.GrpcFile;
 import ru.bati4eli.smartcloud.android.client.R;
+import ru.bati4eli.smartcloud.android.client.enums.SortByEnum;
+import ru.bati4eli.smartcloud.android.client.enums.SortOrderEnum;
+import ru.bati4eli.smartcloud.android.client.utils.GrpcFileComparator;
+import ru.bati4eli.smartcloud.android.client.utils.ParametersUtil;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -40,12 +46,22 @@ public class FileAdapter extends RecyclerView.Adapter<FileViewHolder> {
         return files.size();
     }
 
-    public void add(GrpcFile grpcFile) {
-        files.add(grpcFile);
+    public void addAll(Collection<GrpcFile> files) {
+        this.files.clear();
+        this.files.addAll(files);
+        notifyDataSetChanged();
+    }
+
+    public void reSort(){
+        SortByEnum sortBy = ParametersUtil.getSortBy();
+        SortOrderEnum sortOrder = ParametersUtil.getSortOrder();
+        Comparator<GrpcFile> fileComparator = GrpcFileComparator.getFileComparator(sortBy, sortOrder);
+        files.sort(fileComparator);
+        notifyDataSetChanged();
     }
 
     public void clear() {
-        files.clear();
+        this.files.clear();
         notifyDataSetChanged();
     }
 }

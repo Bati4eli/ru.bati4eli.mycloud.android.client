@@ -10,9 +10,10 @@ import com.google.android.material.navigation.NavigationBarView;
 import lombok.Getter;
 import ru.bati4eli.smartcloud.android.client.databinding.ActivityMainBinding;
 import ru.bati4eli.smartcloud.android.client.tabs.helpers.OnBackPressedListener;
+import ru.bati4eli.smartcloud.android.client.tabs.helpers.OnChangedSortOrView;
 import ru.bati4eli.smartcloud.android.client.tabs.helpers.ViewPagerAdapter;
 
-public class MainActivity extends AppCompatActivity   {
+public class MainActivity extends AppCompatActivity implements OnChangedSortOrView {
 
     @Getter
     private ActivityMainBinding binding;
@@ -75,4 +76,13 @@ public class MainActivity extends AppCompatActivity   {
         }
     }
 
+    /**
+     * Получение уведомления о смене сортировки или настроек вида.
+     */
+    public void onParametersChanged(String groupName, Integer value) {
+        Fragment currentFragment = adapter.getCurrentFragment();
+        if (currentFragment instanceof OnChangedSortOrView) {
+            ((OnChangedSortOrView) currentFragment).onParametersChanged(groupName, value);
+        }
+    }
 }

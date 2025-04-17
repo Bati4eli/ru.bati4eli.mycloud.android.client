@@ -22,13 +22,14 @@ import ru.bati4eli.smartcloud.android.client.service.MiserableDI;
 import ru.bati4eli.smartcloud.android.client.service.Observers.GrpcFileStreamObserver;
 import ru.bati4eli.smartcloud.android.client.tabs.helpers.FileAdapter;
 import ru.bati4eli.smartcloud.android.client.tabs.helpers.OnBackPressedListener;
+import ru.bati4eli.smartcloud.android.client.tabs.helpers.OnChangedSortOrView;
 import ru.bati4eli.smartcloud.android.client.tabs.helpers.OnItemClickListener;
 
 import java.util.Stack;
 
 import static ru.bati4eli.smartcloud.android.client.utils.Constants.TAG;
 
-public class FilesFragment extends Fragment implements OnItemClickListener, OnBackPressedListener {
+public class FilesFragment extends Fragment implements OnItemClickListener, OnBackPressedListener , OnChangedSortOrView {
     private TabFilesBinding binding;
     private MainActivity activity;
     private MaterialToolbar toolbar;
@@ -59,7 +60,7 @@ public class FilesFragment extends Fragment implements OnItemClickListener, OnBa
      */
     public boolean onToolbarItemClicked(@NonNull MenuItem item) {
         int itemId = item.getItemId();
-        if (itemId == R.id.action_select) {// Действия для добавления
+        if (itemId == R.id.action_select) {// Действия для выбора
             return true;
         } else if (itemId == R.id.action_search) {// Действия для поиска
             return true;
@@ -126,6 +127,14 @@ public class FilesFragment extends Fragment implements OnItemClickListener, OnBa
     }
 
     /**
+     * Получение уведомления о смене сортировки или настроек вида.
+     */
+    @Override
+    public void onParametersChanged(String groupName, Integer value) {
+        fileAdapter.reSort();
+    }
+
+    /**
      * Метод onAttach(Context context) является частью жизненного цикла фрагмента в Android и вызывается,
      * когда фрагмент присоединяется к активности. Этот метод предоставляет возможность получить доступ к активности,
      * к которой данный фрагмент прикреплен, и выполнить необходимые действия на ранних этапах жизненного цикла фрагмента.
@@ -134,4 +143,5 @@ public class FilesFragment extends Fragment implements OnItemClickListener, OnBa
     public void onAttach(Context context) {
         super.onAttach(context);
     }
+
 }

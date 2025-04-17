@@ -8,6 +8,7 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import ru.bati4eli.smartcloud.android.client.MainActivity;
 import ru.bati4eli.smartcloud.android.client.R;
 import ru.bati4eli.smartcloud.android.client.databinding.BottomSheetSortingSettingsBinding;
 import ru.bati4eli.smartcloud.android.client.enums.SortByEnum;
@@ -23,7 +24,8 @@ public class BottomSheetSortingSettings extends BottomSheetDialogFragment {
             R.id.rb_view_list, ViewTypeEnum.VIEW_LIST.getParameterId(),
             R.id.rb_view_grid, ViewTypeEnum.VIEW_GRID.getParameterId(),
             //sortBy
-            R.id.rb_sort_by_date, SortByEnum.SORT_BY_DATE.getParameterId(),
+            R.id.rb_sort_by_changed, SortByEnum.SORT_BY_CHANGE_DATE.getParameterId(),
+            R.id.rb_sort_by_created, SortByEnum.SORT_BY_CREATE_DATE.getParameterId(),
             R.id.rb_sort_by_name, SortByEnum.SORT_BY_NAME.getParameterId(),
             R.id.rb_sort_by_type, SortByEnum.SORT_BY_TYPE.getParameterId(),
             R.id.rb_sort_by_size, SortByEnum.SORT_BY_SIZE.getParameterId(),
@@ -33,11 +35,13 @@ public class BottomSheetSortingSettings extends BottomSheetDialogFragment {
     );
 
     private BottomSheetSortingSettingsBinding binding;
+    private MainActivity activity;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Использование View Binding для создания представления
         binding = BottomSheetSortingSettingsBinding.inflate(inflater, container, false);
+        activity = (MainActivity) getActivity();
         return binding.getRoot();
     }
 
@@ -54,6 +58,7 @@ public class BottomSheetSortingSettings extends BottomSheetDialogFragment {
 
     /**
      * Инициализация радио-групп и их радио кнопок
+     *
      * @param radioGroup
      * @param groupName
      */
@@ -73,7 +78,9 @@ public class BottomSheetSortingSettings extends BottomSheetDialogFragment {
                     radioButton.setOnClickListener(v -> {
                         // Снимаем выбор у всех RadioButton в текущей группе
                         int id = radioButton.getId();
-                        ParametersUtil.setSortParam(groupName, MAPPING_IDS.get(id));
+                        Integer value = MAPPING_IDS.get(id);
+                        ParametersUtil.setSortParam(groupName, value);
+                        activity.onParametersChanged(groupName, value);
                         clearRadioGroupSelection(radioGroup, id);
                     });
                 }

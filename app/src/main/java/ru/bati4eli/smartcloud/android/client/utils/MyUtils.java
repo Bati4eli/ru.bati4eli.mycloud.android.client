@@ -2,6 +2,7 @@ package ru.bati4eli.smartcloud.android.client.utils;
 
 import android.content.Context;
 import android.os.Build;
+import android.util.Log;
 import android.widget.Toast;
 import androidx.annotation.RequiresApi;
 import ru.bati4eli.mycloud.repo.DownloadType;
@@ -17,6 +18,8 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 import java.util.TimeZone;
+
+import static ru.bati4eli.smartcloud.android.client.utils.Constants.TAG;
 
 
 public class MyUtils {
@@ -72,15 +75,17 @@ public class MyUtils {
         return date.format(formatter);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
+
     public static OffsetDateTime parseDate(String dateStr) {
         try {
-            return OffsetDateTime.parse(dateStr);
-        } catch (Exception e) {
-            // Обработка исключения, если строка не соответствует формату
-            System.err.println("Invalid date format: " + e.getMessage());
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                return OffsetDateTime.parse(dateStr);
+            }
+        } catch (Throwable e) {
+            Log.e(TAG, "Error parsing date: " + dateStr);
             return null;
         }
+        return null;
     }
 
     public static boolean isFolder(String folderPath) {
