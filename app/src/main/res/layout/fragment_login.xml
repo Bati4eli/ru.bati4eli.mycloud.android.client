@@ -7,7 +7,7 @@
              xmlns:tools="http://schemas.android.com/tools"
              android:orientation="vertical"
              android:gravity="top|center"
-             tools:context=".LoginFragment">
+             tools:context=".StartLoginFragment">
 
     <!-- Задний фон с предварительно загруженным изображением PNG -->
     <ImageView
@@ -28,7 +28,7 @@
             android:orientation="vertical"
             android:padding="30dp"
             android:gravity="top|center"
-            tools:context=".LoginFragment">
+            tools:context=".StartLoginFragment">
 
         <ImageView
                 android:layout_width="200dp"

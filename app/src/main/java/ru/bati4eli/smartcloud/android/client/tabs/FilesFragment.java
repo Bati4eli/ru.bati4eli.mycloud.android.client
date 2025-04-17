@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
@@ -42,6 +43,7 @@ public class FilesFragment extends Fragment implements OnItemClickListener, OnBa
         binding = TabFilesBinding.inflate(inflater, container, false);
         activity = (MainActivity) getActivity();
         toolbar = binding.toolbar;
+        toolbar.setOnMenuItemClickListener(this::onToolbarItemClicked);
 
         fileAdapter = new FileAdapter(this);
         binding.recyclerViewFiles.setAdapter(fileAdapter);
@@ -50,6 +52,23 @@ public class FilesFragment extends Fragment implements OnItemClickListener, OnBa
         binding.swipeRefreshLayout.setOnRefreshListener(this::updateSubFiles);
         moveToFolder(grpcService.getRootFileInfo());
         return binding.getRoot();
+    }
+
+    /**
+     * Обработка по клику на кнопках меню в тулбаре.
+     */
+    public boolean onToolbarItemClicked(@NonNull MenuItem item) {
+        int itemId = item.getItemId();
+        if (itemId == R.id.action_select) {// Действия для добавления
+            return true;
+        } else if (itemId == R.id.action_search) {// Действия для поиска
+            return true;
+        } else if (itemId == R.id.action_option) {
+            BottomSheetSortingSettings bottomSheetFragment = new BottomSheetSortingSettings();
+            bottomSheetFragment.show(getParentFragmentManager(), bottomSheetFragment.getTag());
+            return true;
+        }
+        return false;
     }
 
     private void updateSubFiles() {
@@ -72,7 +91,7 @@ public class FilesFragment extends Fragment implements OnItemClickListener, OnBa
         } else {
             toolbar.setNavigationIcon(R.drawable.ic_back);
         }
-        toolbar.setTitle(isAtRootDirectory() ? "Files:" : "/" + currentFolder.getName());
+        toolbar.setTitle(isAtRootDirectory() ? "Files:" : currentFolder.getName());
         toolbar.setNavigationOnClickListener(isAtRootDirectory() ? null : v -> activity.onBackPressed());
     }
 

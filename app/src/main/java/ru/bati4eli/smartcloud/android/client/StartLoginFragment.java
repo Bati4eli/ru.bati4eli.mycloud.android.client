@@ -3,11 +3,9 @@ package ru.bati4eli.smartcloud.android.client;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -20,9 +18,7 @@ import ru.bati4eli.smartcloud.android.client.service.MiserableDI;
 import ru.bati4eli.smartcloud.android.client.utils.ParametersUtil;
 import ru.bati4eli.smartcloud.android.client.utils.TokenValidator;
 
-import static ru.bati4eli.smartcloud.android.client.utils.Constants.TAG;
-
-public class LoginFragment extends Fragment {
+public class StartLoginFragment extends Fragment {
     private FragmentLoginBinding binding;
     private GrpcService grpcService = MiserableDI.get(GrpcService.class);
 

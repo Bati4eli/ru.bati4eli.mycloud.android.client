@@ -68,7 +68,8 @@ public class MainActivity extends AppCompatActivity   {
         Fragment currentFragment = adapter.getCurrentFragment();
         if (currentFragment instanceof OnBackPressedListener) {
             // Передача эвента фрагменту
-            ((OnBackPressedListener) currentFragment).onBackPressed(super::onBackPressed);
+            ((OnBackPressedListener) currentFragment)
+                    .onBackPressed(super::onBackPressed);
         } else {
             super.onBackPressed();
         }
