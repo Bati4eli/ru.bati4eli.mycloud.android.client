@@ -22,8 +22,6 @@ public class DownloadFileObserver implements StreamObserver<DownloadFileResp> {
     private String filePath;
 
     public DownloadFileObserver(GrpcFile grpcFile, DownloadType downloadType) {
-        mkdir("PREVIEWS");
-        mkdir("ORIGIN");
         filePath = MyUtils.getFilePath(grpcFile, downloadType);
         try {
             fileOutputStream = new FileOutputStream(filePath);
@@ -74,13 +72,6 @@ public class DownloadFileObserver implements StreamObserver<DownloadFileResp> {
 
     public boolean isWorking() {
         return working.get();
-    }
-
-    private static void mkdir(String PREVIEWS) {
-        File directory = new File(Constants.APP_DIRECTORY, PREVIEWS);
-        if (!directory.exists()) {
-            directory.mkdirs();
-        }
     }
 
     public File waiting() {

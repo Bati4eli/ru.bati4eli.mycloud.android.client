@@ -24,6 +24,13 @@ import static ru.bati4eli.smartcloud.android.client.utils.Constants.TAG;
 
 public class MyUtils {
 
+    public static void mkdir(String folderName) {
+        File directory = new File(Constants.APP_DIRECTORY, folderName);
+        if (!directory.exists()) {
+            directory.mkdirs();
+        }
+    }
+
     public static boolean previewExists(GrpcFile grpcFile, DownloadType downloadType) {
         return new File(getFilePath(grpcFile, downloadType)).exists();
     }
