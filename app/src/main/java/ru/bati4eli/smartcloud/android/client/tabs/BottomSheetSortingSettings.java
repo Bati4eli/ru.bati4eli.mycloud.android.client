@@ -11,6 +11,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import ru.bati4eli.smartcloud.android.client.MainActivity;
 import ru.bati4eli.smartcloud.android.client.R;
 import ru.bati4eli.smartcloud.android.client.databinding.BottomSheetSortingSettingsBinding;
+import ru.bati4eli.smartcloud.android.client.enums.GroupNameEnum;
 import ru.bati4eli.smartcloud.android.client.enums.SortByEnum;
 import ru.bati4eli.smartcloud.android.client.enums.SortOrderEnum;
 import ru.bati4eli.smartcloud.android.client.enums.ViewTypeEnum;
@@ -49,11 +50,11 @@ public class BottomSheetSortingSettings extends BottomSheetDialogFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         // Инициализация RadioGroup для выбора вида представления
-        initializeRadioGroup(binding.viewType, ParametersUtil.VIEW_TYPE);
+        initializeRadioGroup(binding.viewType, GroupNameEnum.VIEW_TYPE);
         // Инициализация RadioGroup для сортировки по
-        initializeRadioGroup(binding.sortBy, ParametersUtil.SORT_BY);
+        initializeRadioGroup(binding.sortBy, GroupNameEnum.SORT_BY);
         // Инициализация RadioGroup для порядка сортировки
-        initializeRadioGroup(binding.sortOrder, ParametersUtil.SORT_ORDER);
+        initializeRadioGroup(binding.sortOrder, GroupNameEnum.SORT_ORDER);
     }
 
     /**
@@ -62,7 +63,7 @@ public class BottomSheetSortingSettings extends BottomSheetDialogFragment {
      * @param radioGroup
      * @param groupName
      */
-    private void initializeRadioGroup(RadioGroup radioGroup, String groupName) {
+    private void initializeRadioGroup(RadioGroup radioGroup, GroupNameEnum groupName) {
         int count = radioGroup.getChildCount();
         for (int i = 0; i < count; i++) {
             // Получаем каждый LinearLayout в RadioGroup
@@ -91,7 +92,7 @@ public class BottomSheetSortingSettings extends BottomSheetDialogFragment {
     /**
      * получение флага "Выбран"
      */
-    private boolean isChecked(String groupName, RadioButton radioButton) {
+    private boolean isChecked(GroupNameEnum groupName, RadioButton radioButton) {
         // Id параметра, который соответствует radioButton Id
         Integer parameterId = MAPPING_IDS.get(radioButton.getId());
         // Сохраненный в параметрах Id

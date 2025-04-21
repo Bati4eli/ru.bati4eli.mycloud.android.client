@@ -12,6 +12,7 @@ import ru.bati4eli.smartcloud.android.client.databinding.ActivityMainBinding;
 import ru.bati4eli.smartcloud.android.client.databinding.ActivityStartBinding;
 import ru.bati4eli.smartcloud.android.client.service.MiserableDI;
 import ru.bati4eli.smartcloud.android.client.utils.Constants;
+import ru.bati4eli.smartcloud.android.client.utils.ParametersUtil;
 
 public class StartActivity extends AppCompatActivity {
 
@@ -22,6 +23,7 @@ public class StartActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Global Initialize
+        ParametersUtil.setContext(getApplicationContext());
         MiserableDI.initializeComponents();
         Constants.setAppDirectory(getApplicationContext().getFilesDir());
         // Individual

@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import com.google.android.material.appbar.MaterialToolbar;
 import ru.bati4eli.mycloud.repo.GrpcFile;
@@ -17,6 +18,8 @@ import ru.bati4eli.mycloud.repo.TypeOfFile;
 import ru.bati4eli.smartcloud.android.client.MainActivity;
 import ru.bati4eli.smartcloud.android.client.R;
 import ru.bati4eli.smartcloud.android.client.databinding.TabFilesBinding;
+import ru.bati4eli.smartcloud.android.client.enums.GroupNameEnum;
+import ru.bati4eli.smartcloud.android.client.enums.ViewTypeEnum;
 import ru.bati4eli.smartcloud.android.client.service.GrpcService;
 import ru.bati4eli.smartcloud.android.client.service.MiserableDI;
 import ru.bati4eli.smartcloud.android.client.service.Observers.GrpcFileStreamObserver;
@@ -24,12 +27,13 @@ import ru.bati4eli.smartcloud.android.client.tabs.helpers.FileAdapter;
 import ru.bati4eli.smartcloud.android.client.tabs.helpers.OnBackPressedListener;
 import ru.bati4eli.smartcloud.android.client.tabs.helpers.OnChangedSortOrView;
 import ru.bati4eli.smartcloud.android.client.tabs.helpers.OnItemClickListener;
+import ru.bati4eli.smartcloud.android.client.utils.ParametersUtil;
 
 import java.util.Stack;
 
 import static ru.bati4eli.smartcloud.android.client.utils.Constants.TAG;
 
-public class FilesFragment extends Fragment implements OnItemClickListener, OnBackPressedListener , OnChangedSortOrView {
+public class FilesFragment extends Fragment implements OnItemClickListener, OnBackPressedListener, OnChangedSortOrView {
     private TabFilesBinding binding;
     private MainActivity activity;
     private MaterialToolbar toolbar;
@@ -46,9 +50,8 @@ public class FilesFragment extends Fragment implements OnItemClickListener, OnBa
         toolbar = binding.toolbar;
         toolbar.setOnMenuItemClickListener(this::onToolbarItemClicked);
 
-        fileAdapter = new FileAdapter(this);
-        binding.recyclerViewFiles.setAdapter(fileAdapter);
-        binding.recyclerViewFiles.setLayoutManager(new LinearLayoutManager(getContext()));
+        fileAdapter = new FileAdapter(this, ParametersUtil.getViewType());
+        changeViewType();
         // Вызов метода обновления данных
         binding.swipeRefreshLayout.setOnRefreshListener(this::updateSubFiles);
         moveToFolder(grpcService.getRootFileInfo());
@@ -106,7 +109,7 @@ public class FilesFragment extends Fragment implements OnItemClickListener, OnBa
     @Override
     public void onItemClick(int position) {
         try {
-            GrpcFile grpcFile = fileAdapter.getFiles().get(position);
+            GrpcFile grpcFile = fileAdapter.get(position);
             if (grpcFile.getMediaType() == TypeOfFile.FOLDER) {
                 moveToFolder(grpcFile);
             }
@@ -130,8 +133,42 @@ public class FilesFragment extends Fragment implements OnItemClickListener, OnBa
      * Получение уведомления о смене сортировки или настроек вида.
      */
     @Override
-    public void onParametersChanged(String groupName, Integer value) {
-        fileAdapter.reSort();
+    public void onParametersChanged(GroupNameEnum groupName, Integer value) {
+        if (groupName == GroupNameEnum.VIEW_TYPE) {
+            changeViewType();
+            fileAdapter.notifyDataSetChanged();
+        } else {
+            fileAdapter.reSort();
+        }
+    }
+
+    private void changeViewType() {
+        final ViewTypeEnum viewType = ParametersUtil.getViewType();
+
+        fileAdapter.setViewType(viewType);
+        binding.recyclerViewFiles.setAdapter(fileAdapter);
+        //Log.i(TAG, "### viewType: " + viewType.name());
+        if (viewType == ViewTypeEnum.VIEW_LIST) {
+            binding.recyclerViewFiles.setLayoutManager(new LinearLayoutManager(getContext()));
+        } else {
+            int spanCount = calculateSpanCount(); // Метод для определения количества колонок
+            binding.recyclerViewFiles.setLayoutManager(new GridLayoutManager(getContext(), spanCount));
+        }
+    }
+
+    private int calculateSpanCount() {
+        // Получаем ширину дисплея в пикселях
+        int displayWidth = getResources().getDisplayMetrics().widthPixels;
+
+        // Конвертируем ширину плитки из dp в пиксели
+        int tileWidthDp = 120; // ширина плитки в dp
+        float density = getResources().getDisplayMetrics().density; // получаем плотность экрана
+
+        // Высчитываем ширину плитки в пикселях
+        int tileWidthPx = (int) (tileWidthDp * density);
+
+        // Определяем количество колонок
+        return Math.max(1, displayWidth / tileWidthPx);
     }
 
     /**
@@ -143,5 +180,4 @@ public class FilesFragment extends Fragment implements OnItemClickListener, OnBa
     public void onAttach(Context context) {
         super.onAttach(context);
     }
-
 }

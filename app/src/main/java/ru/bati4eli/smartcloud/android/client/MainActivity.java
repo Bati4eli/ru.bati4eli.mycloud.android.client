@@ -9,9 +9,11 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.google.android.material.navigation.NavigationBarView;
 import lombok.Getter;
 import ru.bati4eli.smartcloud.android.client.databinding.ActivityMainBinding;
+import ru.bati4eli.smartcloud.android.client.enums.GroupNameEnum;
 import ru.bati4eli.smartcloud.android.client.tabs.helpers.OnBackPressedListener;
 import ru.bati4eli.smartcloud.android.client.tabs.helpers.OnChangedSortOrView;
 import ru.bati4eli.smartcloud.android.client.tabs.helpers.ViewPagerAdapter;
+import ru.bati4eli.smartcloud.android.client.utils.ParametersUtil;
 
 public class MainActivity extends AppCompatActivity implements OnChangedSortOrView {
 
@@ -22,6 +24,8 @@ public class MainActivity extends AppCompatActivity implements OnChangedSortOrVi
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ParametersUtil.setContext(getApplicationContext());
+
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         // Устанавливаем Adapter для ViewPager2
@@ -79,7 +83,8 @@ public class MainActivity extends AppCompatActivity implements OnChangedSortOrVi
     /**
      * Получение уведомления о смене сортировки или настроек вида.
      */
-    public void onParametersChanged(String groupName, Integer value) {
+    @Override
+    public void onParametersChanged(GroupNameEnum groupName, Integer value) {
         Fragment currentFragment = adapter.getCurrentFragment();
         if (currentFragment instanceof OnChangedSortOrView) {
             ((OnChangedSortOrView) currentFragment).onParametersChanged(groupName, value);

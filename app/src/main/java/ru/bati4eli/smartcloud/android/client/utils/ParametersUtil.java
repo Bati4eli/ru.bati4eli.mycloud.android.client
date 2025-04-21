@@ -6,6 +6,7 @@ import androidx.security.crypto.EncryptedSharedPreferences;
 import androidx.security.crypto.MasterKey;
 import lombok.Setter;
 import lombok.SneakyThrows;
+import ru.bati4eli.smartcloud.android.client.enums.GroupNameEnum;
 import ru.bati4eli.smartcloud.android.client.enums.SortByEnum;
 import ru.bati4eli.smartcloud.android.client.enums.SortOrderEnum;
 import ru.bati4eli.smartcloud.android.client.enums.ViewTypeEnum;
@@ -13,11 +14,9 @@ import ru.bati4eli.smartcloud.android.client.enums.ViewTypeEnum;
 import java.util.HashMap;
 import java.util.Map;
 
+
 public class ParametersUtil {
     private static final String EMPTY_FOLDER = "";
-    public static final String VIEW_TYPE = "viewType";
-    public static final String SORT_BY = "sortBy";
-    public static final String SORT_ORDER = "sortOrder";
     public static final String NEED_SETUP_PAGE = "NeedSetupPage";
     public static final String SHOW_TAB_BAR = "ShowTabBar";
     public static final String NEED_SPLITE_BY_YEARS = "NeedSpliteByYears";
@@ -30,7 +29,7 @@ public class ParametersUtil {
     @Setter
     private static Context context;
 
-    private static Map<String, Integer> cache = new HashMap<>();
+    private static Map<GroupNameEnum, Integer> cache = new HashMap<>();
 
     public static void setSecrets(String username, String password, String token) {
         SharedPreferences preferences = getSharedPreferences(context);
@@ -41,40 +40,44 @@ public class ParametersUtil {
         editor.apply();
     }
 
-    public static int getSortParam(String groupName) {
+    public static int getSortParam(GroupNameEnum groupName) {
         Integer value = cache.get(groupName);
         if (value != null) {
             return value;
         }
 
-        if (groupName.equals(VIEW_TYPE)) {
-            value = getViewType().getParameterId();
-        } else if (groupName.equals(SORT_BY)) {
-            value = getSortBy().getParameterId();
-        } else if (groupName.equals(SORT_ORDER)) {
-            value = getSortOrder().getParameterId();
+        switch (groupName) {
+            case VIEW_TYPE:
+                value = getViewType().getParameterId();
+                break;
+            case SORT_BY:
+                value = getSortBy().getParameterId();
+                break;
+            case SORT_ORDER:
+                value = getSortOrder().getParameterId();
+                break;
         }
         cache.put(groupName, value);
         return value;
     }
 
-    public static void setSortParam(String groupName, Integer value) {
-        saveParam(groupName, value);
+    public static void setSortParam(GroupNameEnum groupName, Integer value) {
+        saveParam(groupName.name(), value);
         cache.put(groupName, value);
     }
 
     public static ViewTypeEnum getViewType() {
-        int anInt = getSharedPreferences(context).getInt(VIEW_TYPE, ViewTypeEnum.VIEW_LIST.getParameterId());
+        int anInt = getSharedPreferences(context).getInt(GroupNameEnum.VIEW_TYPE.name(), ViewTypeEnum.VIEW_LIST.getParameterId());
         return ViewTypeEnum.of(anInt);
     }
 
     public static SortByEnum getSortBy() {
-        int anInt = getSharedPreferences(context).getInt(SORT_BY, SortByEnum.SORT_BY_CREATE_DATE.getParameterId());
+        int anInt = getSharedPreferences(context).getInt(GroupNameEnum.SORT_BY.name(), SortByEnum.SORT_BY_CREATE_DATE.getParameterId());
         return SortByEnum.of(anInt);
     }
 
     public static SortOrderEnum getSortOrder() {
-        int anInt = getSharedPreferences(context).getInt(SORT_ORDER, SortOrderEnum.SORT_ASCENDING.getParameterId());
+        int anInt = getSharedPreferences(context).getInt(GroupNameEnum.SORT_ORDER.name(), SortOrderEnum.SORT_ASCENDING.getParameterId());
         return SortOrderEnum.of(anInt);
     }
 

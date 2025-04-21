@@ -25,7 +25,6 @@ public class StartLoginFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        ParametersUtil.setContext(requireContext());
         binding = FragmentLoginBinding.inflate(inflater, container, false);
         binding.loginButton.setOnClickListener(v -> onLoginButtonClicked());
         loadCredentials();
@@ -44,17 +43,16 @@ public class StartLoginFragment extends Fragment {
         String password = binding.passwordEntry.getText().toString();
 
         if (username.isEmpty() || password.isEmpty()) {
-            setLabel("Пожалуйста, введите имя пользователя и пароль.", Color.BLUE);
+            setLabel("Please enter the user name and password.", Color.BLUE);
             return;
         }
 
         binding.loadingIndicator.setVisibility(View.VISIBLE);
-        setLabel("", Color.BLUE);
+        setLabel("Connection..", Color.BLUE);
 
         try {
             grpcService.authorize(username, password);
-            setLabel("Успешная авторизация!", Color.GREEN);
-//            grpcService.shutdown();
+            setLabel("Successful authorization!", Color.GREEN);
             navigateNextPage();
         } catch (StatusRuntimeException e) {
             setLabel(e.getStatus().getDescription(), Color.RED);
