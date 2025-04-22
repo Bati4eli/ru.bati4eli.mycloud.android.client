@@ -22,12 +22,13 @@ import ru.bati4eli.smartcloud.android.client.enums.GroupNameEnum;
 import ru.bati4eli.smartcloud.android.client.enums.ViewTypeEnum;
 import ru.bati4eli.smartcloud.android.client.service.GrpcService;
 import ru.bati4eli.smartcloud.android.client.service.MiserableDI;
-import ru.bati4eli.smartcloud.android.client.service.observers.GrpcFileObserver;
+import ru.bati4eli.smartcloud.android.client.service.observers.AdapterItemsObserver;
 import ru.bati4eli.smartcloud.android.client.tabs.fileHelpers.BottomSheetSortingSettings;
 import ru.bati4eli.smartcloud.android.client.tabs.fileHelpers.FileAdapter;
 import ru.bati4eli.smartcloud.android.client.tabs.common.OnBackPressedListener;
 import ru.bati4eli.smartcloud.android.client.tabs.common.OnChangedSortOrView;
 import ru.bati4eli.smartcloud.android.client.tabs.common.OnItemClickListener;
+import ru.bati4eli.smartcloud.android.client.utils.GrpcFileComparator;
 import ru.bati4eli.smartcloud.android.client.utils.ParametersUtil;
 
 import java.util.Stack;
@@ -78,7 +79,8 @@ public class FilesFragment extends Fragment implements OnItemClickListener, OnBa
 
     private void updateSubFiles() {
         fileAdapter.clear();
-        grpcService.getSubFilesSync(currentFolder, new GrpcFileObserver(fileAdapter, binding.swipeRefreshLayout));
+        fileAdapter.resetNewTree(GrpcFileComparator.getFileComparator());
+        grpcService.getSubFilesSync(currentFolder, new AdapterItemsObserver<>(fileAdapter, binding.swipeRefreshLayout));
     }
 
     private void moveToFolder(GrpcFile grpcFile) {

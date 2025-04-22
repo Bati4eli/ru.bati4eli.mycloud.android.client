@@ -3,7 +3,7 @@ package ru.bati4eli.smartcloud.android.client.service.observers;
 import android.util.Log;
 import ru.bati4eli.mycloud.repo.DownloadFileResp;
 import ru.bati4eli.mycloud.repo.DownloadType;
-import ru.bati4eli.mycloud.repo.GrpcFile;
+import ru.bati4eli.smartcloud.android.client.model.ShortInfo;
 import ru.bati4eli.smartcloud.android.client.utils.MyUtils;
 
 import java.io.FileNotFoundException;
@@ -16,8 +16,8 @@ public class DownloadFileObserver extends SyncStreamObserver<DownloadFileResp> {
     private FileOutputStream fileOutputStream;
     private String filePath;
 
-    public DownloadFileObserver(GrpcFile grpcFile, DownloadType downloadType) {
-        filePath = MyUtils.getFilePath(grpcFile, downloadType);
+    public DownloadFileObserver(ShortInfo info, DownloadType downloadType) {
+        filePath = MyUtils.getFilePath(info, downloadType);
         try {
             fileOutputStream = new FileOutputStream(filePath);
         } catch (FileNotFoundException e) {
@@ -52,7 +52,7 @@ public class DownloadFileObserver extends SyncStreamObserver<DownloadFileResp> {
     }
 
     @Override
-    public void onCompleted()    {
+    public void onCompleted() {
         working.set(false);
         closeStream();
     }

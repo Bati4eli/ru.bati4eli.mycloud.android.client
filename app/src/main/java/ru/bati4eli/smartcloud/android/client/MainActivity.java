@@ -15,6 +15,8 @@ import ru.bati4eli.smartcloud.android.client.tabs.common.OnChangedSortOrView;
 import ru.bati4eli.smartcloud.android.client.tabs.common.ViewPagerAdapter;
 import ru.bati4eli.smartcloud.android.client.utils.ParametersUtil;
 
+import static ru.bati4eli.smartcloud.android.client.utils.Constants.TAG;
+
 public class MainActivity extends AppCompatActivity implements OnChangedSortOrView {
 
     @Getter

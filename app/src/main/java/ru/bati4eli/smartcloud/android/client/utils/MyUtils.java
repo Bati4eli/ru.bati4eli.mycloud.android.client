@@ -8,6 +8,7 @@ import androidx.annotation.RequiresApi;
 import ru.bati4eli.mycloud.repo.DownloadType;
 import ru.bati4eli.mycloud.repo.GrpcFile;
 import ru.bati4eli.mycloud.repo.TypeOfFile;
+import ru.bati4eli.smartcloud.android.client.model.ShortInfo;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -31,15 +32,15 @@ public class MyUtils {
         }
     }
 
-    public static boolean previewExists(GrpcFile grpcFile, DownloadType downloadType) {
-        return new File(getFilePath(grpcFile, downloadType)).exists();
+    public static boolean previewExists(ShortInfo info, DownloadType downloadType) {
+        return new File(getFilePath(info, downloadType)).exists();
     }
 
-    public static String getFilePath(GrpcFile grpcFile, DownloadType downloadType) {
+    public static String getFilePath(ShortInfo info, DownloadType downloadType) {
         if (downloadType == DownloadType.ORIGIN) {
-            return Constants.APP_DIRECTORY + "/ORIGIN/" + grpcFile.getName();
+            return Constants.APP_DIRECTORY + "/ORIGIN/" + info.getFileName();
         } else {
-            return Constants.APP_DIRECTORY + "/PREVIEWS/" + grpcFile.getFileId() + "_" + downloadType.name() + ".jpg";
+            return Constants.APP_DIRECTORY + "/PREVIEWS/" + info.getFileId() + "_" + downloadType.name() + ".jpg";
         }
     }
 

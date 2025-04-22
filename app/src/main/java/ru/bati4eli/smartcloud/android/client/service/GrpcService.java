@@ -11,12 +11,13 @@ import ru.bati4eli.mycloud.repo.FileUserRepoServiceGrpc;
 import ru.bati4eli.mycloud.repo.GrpcFile;
 import ru.bati4eli.mycloud.repo.MediaServiceGrpc;
 import ru.bati4eli.mycloud.repo.ReqFilterMedias;
+import ru.bati4eli.mycloud.repo.ShortMediaInfoDto;
 import ru.bati4eli.mycloud.users.JwtRequest;
 import ru.bati4eli.mycloud.users.JwtResponse;
 import ru.bati4eli.mycloud.users.UserPrivateServiceGrpc;
+import ru.bati4eli.smartcloud.android.client.model.ShortInfo;
+import ru.bati4eli.smartcloud.android.client.service.observers.AdapterItemsObserver;
 import ru.bati4eli.smartcloud.android.client.service.observers.DownloadFileObserver;
-import ru.bati4eli.smartcloud.android.client.service.observers.GrpcFileObserver;
-import ru.bati4eli.smartcloud.android.client.service.observers.MediaObserver;
 import ru.bati4eli.smartcloud.android.client.service.observers.SyncObserverOneResponse;
 import ru.bati4eli.smartcloud.android.client.utils.ParametersUtil;
 
@@ -63,7 +64,7 @@ public class GrpcService {
         return response.getResponse();
     }
 
-    public void getSubFilesSync(GrpcFile currentFolder, GrpcFileObserver responseObserver) {
+    public void getSubFilesSync(GrpcFile currentFolder, AdapterItemsObserver<GrpcFile, ?> responseObserver) {
         var request = FileInfoRequest.newBuilder()
                 .setFileId(currentFolder.getFileId())
                 .build();
@@ -72,22 +73,22 @@ public class GrpcService {
         responseObserver.waiting();
     }
 
-    public void getPhotos(MediaObserver responseObserver){
+    public void getPhotos(AdapterItemsObserver<ShortMediaInfoDto, ?> responseObserver) {
         ReqFilterMedias request = ReqFilterMedias.newBuilder()
+                .setLimit(100)
+                .setOffset(0)
                 .build();
 
         mediaService.findMediaFiles(request, responseObserver);
-
     }
 
-    public void downloadFile(GrpcFile grpcFile, DownloadType downloadType) {
-
+    public void downloadFile(ShortInfo info, DownloadType downloadType) {
         DownloadFileReq req = DownloadFileReq.newBuilder()
-                .setFileId(grpcFile.getFileId())
+                .setFileId(info.getFileId())
                 .setType(downloadType)
                 .build();
 
-        DownloadFileObserver responseObserver = new DownloadFileObserver(grpcFile, downloadType);
+        DownloadFileObserver responseObserver = new DownloadFileObserver(info, downloadType);
         repoClient.downloadFile(req, responseObserver);
         responseObserver.waiting();
     }
