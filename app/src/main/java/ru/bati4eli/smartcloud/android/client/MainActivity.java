@@ -10,9 +10,9 @@ import com.google.android.material.navigation.NavigationBarView;
 import lombok.Getter;
 import ru.bati4eli.smartcloud.android.client.databinding.ActivityMainBinding;
 import ru.bati4eli.smartcloud.android.client.enums.GroupNameEnum;
-import ru.bati4eli.smartcloud.android.client.tabs.helpers.OnBackPressedListener;
-import ru.bati4eli.smartcloud.android.client.tabs.helpers.OnChangedSortOrView;
-import ru.bati4eli.smartcloud.android.client.tabs.helpers.ViewPagerAdapter;
+import ru.bati4eli.smartcloud.android.client.tabs.common.OnBackPressedListener;
+import ru.bati4eli.smartcloud.android.client.tabs.common.OnChangedSortOrView;
+import ru.bati4eli.smartcloud.android.client.tabs.common.ViewPagerAdapter;
 import ru.bati4eli.smartcloud.android.client.utils.ParametersUtil;
 
 public class MainActivity extends AppCompatActivity implements OnChangedSortOrView {

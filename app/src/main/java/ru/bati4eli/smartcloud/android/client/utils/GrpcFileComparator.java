@@ -9,6 +9,10 @@ import java.util.Comparator;
 
 public class GrpcFileComparator {
 
+    public static Comparator<GrpcFile> getFileComparator() {
+        return getFileComparator(ParametersUtil.getSortBy(), ParametersUtil.getSortOrder());
+    }
+
     public static Comparator<GrpcFile> getFileComparator(SortByEnum sortBy, SortOrderEnum sortOrder) {
         Comparator<GrpcFile> foldersFirst = (f1, f2) -> {
             boolean isFolder1 = f1.getMediaType() == TypeOfFile.FOLDER;

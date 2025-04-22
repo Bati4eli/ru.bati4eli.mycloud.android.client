@@ -1,4 +1,4 @@
-package ru.bati4eli.smartcloud.android.client.tabs;
+package ru.bati4eli.smartcloud.android.client.tabs.fileHelpers;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

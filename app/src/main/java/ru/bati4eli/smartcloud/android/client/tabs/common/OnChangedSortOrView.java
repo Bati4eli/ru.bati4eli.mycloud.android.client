@@ -1,4 +1,4 @@
-package ru.bati4eli.smartcloud.android.client.tabs.helpers;
+package ru.bati4eli.smartcloud.android.client.tabs.common;
 
 import ru.bati4eli.smartcloud.android.client.enums.GroupNameEnum;
 

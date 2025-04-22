@@ -1,4 +1,4 @@
-package ru.bati4eli.smartcloud.android.client.tabs.helpers;
+package ru.bati4eli.smartcloud.android.client.tabs.fileHelpers;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -11,6 +11,7 @@ import ru.bati4eli.mycloud.repo.DownloadType;
 import ru.bati4eli.mycloud.repo.GrpcFile;
 import ru.bati4eli.mycloud.repo.TypeOfFile;
 import ru.bati4eli.smartcloud.android.client.R;
+import ru.bati4eli.smartcloud.android.client.tabs.common.OnItemClickListener;
 import ru.bati4eli.smartcloud.android.client.utils.MyUtils;
 
 public abstract class AbstractViewHolder extends RecyclerView.ViewHolder {

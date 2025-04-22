@@ -1,17 +1,13 @@
 package ru.bati4eli.smartcloud.android.client.service;
 
-import android.util.Log;
 import io.grpc.Channel;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 
-import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
-
-import static ru.bati4eli.smartcloud.android.client.utils.Constants.TAG;
 
 public class MiserableDI {
 
@@ -25,7 +21,7 @@ public class MiserableDI {
         setAsync(Channel.class, () -> ManagedChannelBuilder.forAddress("bati4eli.ru", 9090)
                 .usePlaintext() // Если у вас не использует TLS
                 .intercept(MiserableDI.get(AuthInterceptor.class)) // Добавляем интерцептор
-                //.idleTimeout(1, TimeUnit.SECONDS)
+                .idleTimeout(1, TimeUnit.SECONDS)
                 .build());
         set(GrpcService.init());
     }
@@ -40,46 +36,12 @@ public class MiserableDI {
 
     public static <T> T get(Class<T> serviceClass) {
         Object service = services.get(serviceClass);
-        if (service == null) {
-            T proxy = getProxy(serviceClass);
-            services.put(serviceClass, proxy);
-            return proxy;
-        } else if (service instanceof Supplier) {
+        if (service instanceof Supplier) {
             Supplier<T> supplier = (Supplier) service;
             T t = supplier.get();
             return t;
         }
         return (T) service;
-    }
-
-    /**
-     * Работает только с интерфейсами
-     */
-    private static <T> T getProxy(Class<T> serviceClass) {
-        // Создаем прокси-объект для оригинального сервиса
-        try {
-            T newProxyInstance = (T) Proxy.newProxyInstance(
-                    serviceClass.getClassLoader(),
-                    new Class<?>[]{serviceClass},
-                    (proxy, method, args) -> {
-                        // Логика перед вызовом метода
-                        Log.d(TAG, "# Before call method: " + method.getName());
-                        // Получаем оригинальный сервис
-                        T service = (T) services.get(serviceClass);
-                        if (service == null) {
-                            Log.e(TAG, "Service not found: " + serviceClass.getName());
-                        }
-                        // Вызов оригинального метода
-                        Object result = method.invoke(service, args);
-                        // Логика после вызова метода
-                        Log.d(TAG, "# After call method: " + method.getName());
-                        return result;
-                    });
-            return newProxyInstance;
-        } catch (Exception e) {
-            Log.e(TAG, e.getMessage());
-        }
-        return null;
     }
 
 }

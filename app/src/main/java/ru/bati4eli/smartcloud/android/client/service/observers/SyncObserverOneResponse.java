@@ -1,14 +1,6 @@
-package ru.bati4eli.smartcloud.android.client.service.Observers;
+package ru.bati4eli.smartcloud.android.client.service.observers;
 
-import io.grpc.stub.StreamObserver;
-
-import java.util.concurrent.atomic.AtomicBoolean;
-
-public class SyncObserverOneResponse<TYPE> implements StreamObserver<TYPE> {
-
-    private TYPE response;
-    private Throwable error;
-    private AtomicBoolean working = new AtomicBoolean(true);
+public class SyncObserverOneResponse<TYPE> extends SyncStreamObserver<TYPE> {
 
     @Override
     public void onNext(TYPE response) {

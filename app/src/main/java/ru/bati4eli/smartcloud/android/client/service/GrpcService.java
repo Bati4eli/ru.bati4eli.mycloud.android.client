@@ -9,12 +9,15 @@ import ru.bati4eli.mycloud.repo.DownloadType;
 import ru.bati4eli.mycloud.repo.FileInfoRequest;
 import ru.bati4eli.mycloud.repo.FileUserRepoServiceGrpc;
 import ru.bati4eli.mycloud.repo.GrpcFile;
+import ru.bati4eli.mycloud.repo.MediaServiceGrpc;
+import ru.bati4eli.mycloud.repo.ReqFilterMedias;
 import ru.bati4eli.mycloud.users.JwtRequest;
 import ru.bati4eli.mycloud.users.JwtResponse;
 import ru.bati4eli.mycloud.users.UserPrivateServiceGrpc;
-import ru.bati4eli.smartcloud.android.client.service.Observers.DownloadFileObserver;
-import ru.bati4eli.smartcloud.android.client.service.Observers.GrpcFileStreamObserver;
-import ru.bati4eli.smartcloud.android.client.service.Observers.SyncObserverOneResponse;
+import ru.bati4eli.smartcloud.android.client.service.observers.DownloadFileObserver;
+import ru.bati4eli.smartcloud.android.client.service.observers.GrpcFileObserver;
+import ru.bati4eli.smartcloud.android.client.service.observers.MediaObserver;
+import ru.bati4eli.smartcloud.android.client.service.observers.SyncObserverOneResponse;
 import ru.bati4eli.smartcloud.android.client.utils.ParametersUtil;
 
 import static ru.bati4eli.smartcloud.android.client.utils.Constants.TAG;
@@ -23,6 +26,7 @@ public class GrpcService {
 
     private UserPrivateServiceGrpc.UserPrivateServiceBlockingStub authClient;
     private FileUserRepoServiceGrpc.FileUserRepoServiceStub repoClient;
+    private MediaServiceGrpc.MediaServiceStub mediaService;
 
     public static GrpcService init() {
         return new GrpcService();
@@ -33,6 +37,7 @@ public class GrpcService {
             authClient = UserPrivateServiceGrpc.newBlockingStub(MiserableDI.get(ManagedChannel.class));
             Channel channel = MiserableDI.get(Channel.class);
             repoClient = FileUserRepoServiceGrpc.newStub(channel);
+            mediaService = MediaServiceGrpc.newStub(channel);
         } catch (Exception e) {
             Log.e(TAG, e.getLocalizedMessage());
         }
@@ -54,26 +59,25 @@ public class GrpcService {
                 .setRoot(true)
                 .build();
         SyncObserverOneResponse<GrpcFile> response = new SyncObserverOneResponse<>();
-        repoClient.getFileInfo(request,response);
+        repoClient.getFileInfo(request, response);
         return response.getResponse();
     }
 
-    public void getRootFilesSync(GrpcFileStreamObserver responseObserver) {
-        var request = FileInfoRequest.newBuilder()
-                .setRoot(true)
-                .build();
-
-        repoClient.getSubFiles(request, responseObserver);
-        responseObserver.waiting();
-    }
-
-    public void getSubFilesSync(GrpcFile currentFolder, GrpcFileStreamObserver responseObserver) {
+    public void getSubFilesSync(GrpcFile currentFolder, GrpcFileObserver responseObserver) {
         var request = FileInfoRequest.newBuilder()
                 .setFileId(currentFolder.getFileId())
                 .build();
 
         repoClient.getSubFiles(request, responseObserver);
         responseObserver.waiting();
+    }
+
+    public void getPhotos(MediaObserver responseObserver){
+        ReqFilterMedias request = ReqFilterMedias.newBuilder()
+                .build();
+
+        mediaService.findMediaFiles(request, responseObserver);
+
     }
 
     public void downloadFile(GrpcFile grpcFile, DownloadType downloadType) {

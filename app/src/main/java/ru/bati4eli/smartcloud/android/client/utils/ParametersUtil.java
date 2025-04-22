@@ -18,7 +18,6 @@ import java.util.Map;
 public class ParametersUtil {
     private static final String EMPTY_FOLDER = "";
     public static final String NEED_SETUP_PAGE = "NeedSetupPage";
-    public static final String SHOW_TAB_BAR = "ShowTabBar";
     public static final String NEED_SPLITE_BY_YEARS = "NeedSpliteByYears";
     public static final String NEED_SCREENSHOTS = "NeedScreenshots";
     public static final String MAIN_FOLDER = "MainFolder";
@@ -29,10 +28,10 @@ public class ParametersUtil {
     @Setter
     private static Context context;
 
-    private static Map<GroupNameEnum, Integer> cache = new HashMap<>();
+    private static final Map<GroupNameEnum, Integer> cache = new HashMap<>();
 
     public static void setSecrets(String username, String password, String token) {
-        SharedPreferences preferences = getSharedPreferences(context);
+        SharedPreferences preferences = getSharedPreferences();
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString(USERNAME, username);
         editor.putString(PASSWORD, password);
@@ -48,13 +47,13 @@ public class ParametersUtil {
 
         switch (groupName) {
             case VIEW_TYPE:
-                value = getViewType().getParameterId();
+                value = getSharedPreferences().getInt(GroupNameEnum.VIEW_TYPE.name(), ViewTypeEnum.VIEW_LIST.getParameterId());
                 break;
             case SORT_BY:
-                value = getSortBy().getParameterId();
+                value = getSharedPreferences().getInt(GroupNameEnum.SORT_BY.name(), SortByEnum.SORT_BY_CREATE_DATE.getParameterId());
                 break;
             case SORT_ORDER:
-                value = getSortOrder().getParameterId();
+                value = getSharedPreferences().getInt(GroupNameEnum.SORT_ORDER.name(), SortOrderEnum.SORT_ASCENDING.getParameterId());
                 break;
         }
         cache.put(groupName, value);
@@ -67,26 +66,23 @@ public class ParametersUtil {
     }
 
     public static ViewTypeEnum getViewType() {
-        int anInt = getSharedPreferences(context).getInt(GroupNameEnum.VIEW_TYPE.name(), ViewTypeEnum.VIEW_LIST.getParameterId());
-        return ViewTypeEnum.of(anInt);
+        return ViewTypeEnum.of(getSortParam(GroupNameEnum.VIEW_TYPE));
     }
 
     public static SortByEnum getSortBy() {
-        int anInt = getSharedPreferences(context).getInt(GroupNameEnum.SORT_BY.name(), SortByEnum.SORT_BY_CREATE_DATE.getParameterId());
-        return SortByEnum.of(anInt);
+        return SortByEnum.of(getSortParam(GroupNameEnum.SORT_BY));
     }
 
     public static SortOrderEnum getSortOrder() {
-        int anInt = getSharedPreferences(context).getInt(GroupNameEnum.SORT_ORDER.name(), SortOrderEnum.SORT_ASCENDING.getParameterId());
-        return SortOrderEnum.of(anInt);
+        return SortOrderEnum.of(getSortParam(GroupNameEnum.SORT_ORDER));
     }
 
     public static String getPassword() {
-        return getSharedPreferences(context).getString(PASSWORD, null);
+        return getSharedPreferences().getString(PASSWORD, null);
     }
 
     public static String getUsername() {
-        return getSharedPreferences(context).getString(USERNAME, null);
+        return getSharedPreferences().getString(USERNAME, null);
     }
 
     public static void setToken(String token) {
@@ -94,7 +90,7 @@ public class ParametersUtil {
     }
 
     public static String getToken() {
-        SharedPreferences preferences = getSharedPreferences(context);
+        SharedPreferences preferences = getSharedPreferences();
         return preferences.getString(TOKEN, null);
     }
 
@@ -104,19 +100,15 @@ public class ParametersUtil {
 
 
     public static String getMainFolder() {
-        return getSharedPreferences(context).getString(MAIN_FOLDER, EMPTY_FOLDER);
+        return getSharedPreferences().getString(MAIN_FOLDER, EMPTY_FOLDER);
     }
 
     public static boolean getNeedSetupPage() {
-        return getSharedPreferences(context).getBoolean(NEED_SETUP_PAGE, true);
+        return getSharedPreferences().getBoolean(NEED_SETUP_PAGE, true);
     }
 
     public static void setNeedSetupPage(boolean needSetupPage) {
         saveParam(NEED_SETUP_PAGE, needSetupPage);
-    }
-
-    public static boolean showTabBar() {
-        return getSharedPreferences(context).getBoolean(SHOW_TAB_BAR, true);
     }
 
     public static void setNeedSplitsByYears(boolean isNeedYears) {
@@ -124,7 +116,7 @@ public class ParametersUtil {
     }
 
     public static boolean getNeedSplitsByYears() {
-        return getSharedPreferences(context).getBoolean(NEED_SPLITE_BY_YEARS, true);
+        return getSharedPreferences().getBoolean(NEED_SPLITE_BY_YEARS, true);
     }
 
     public static void setNeedScreenshots(boolean isNeedYears) {
@@ -132,33 +124,33 @@ public class ParametersUtil {
     }
 
     public static boolean getNeedScreenshots() {
-        return getSharedPreferences(context).getBoolean(NEED_SCREENSHOTS, true);
+        return getSharedPreferences().getBoolean(NEED_SCREENSHOTS, true);
     }
 
 
     private static void saveParam(String paraName, Integer defaultValue) {
-        SharedPreferences preferences = getSharedPreferences(context);
+        SharedPreferences preferences = getSharedPreferences();
         SharedPreferences.Editor editor = preferences.edit();
         editor.putInt(paraName, defaultValue);
         editor.apply();
     }
 
     private static void saveParam(String paraName, String defaultValue) {
-        SharedPreferences preferences = getSharedPreferences(context);
+        SharedPreferences preferences = getSharedPreferences();
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString(paraName, defaultValue);
         editor.apply();
     }
 
     private static void saveParam(String paraName, boolean defaultValue) {
-        SharedPreferences preferences = getSharedPreferences(context);
+        SharedPreferences preferences = getSharedPreferences();
         SharedPreferences.Editor editor = preferences.edit();
         editor.putBoolean(paraName, defaultValue);
         editor.apply();
     }
 
     @SneakyThrows
-    private static SharedPreferences getSharedPreferences(Context context) {
+    private static SharedPreferences getSharedPreferences() {
         MasterKey masterKey = new MasterKey.Builder(context)
                 .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
                 .build();

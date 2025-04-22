@@ -22,11 +22,12 @@ import ru.bati4eli.smartcloud.android.client.enums.GroupNameEnum;
 import ru.bati4eli.smartcloud.android.client.enums.ViewTypeEnum;
 import ru.bati4eli.smartcloud.android.client.service.GrpcService;
 import ru.bati4eli.smartcloud.android.client.service.MiserableDI;
-import ru.bati4eli.smartcloud.android.client.service.Observers.GrpcFileStreamObserver;
-import ru.bati4eli.smartcloud.android.client.tabs.helpers.FileAdapter;
-import ru.bati4eli.smartcloud.android.client.tabs.helpers.OnBackPressedListener;
-import ru.bati4eli.smartcloud.android.client.tabs.helpers.OnChangedSortOrView;
-import ru.bati4eli.smartcloud.android.client.tabs.helpers.OnItemClickListener;
+import ru.bati4eli.smartcloud.android.client.service.observers.GrpcFileObserver;
+import ru.bati4eli.smartcloud.android.client.tabs.fileHelpers.BottomSheetSortingSettings;
+import ru.bati4eli.smartcloud.android.client.tabs.fileHelpers.FileAdapter;
+import ru.bati4eli.smartcloud.android.client.tabs.common.OnBackPressedListener;
+import ru.bati4eli.smartcloud.android.client.tabs.common.OnChangedSortOrView;
+import ru.bati4eli.smartcloud.android.client.tabs.common.OnItemClickListener;
 import ru.bati4eli.smartcloud.android.client.utils.ParametersUtil;
 
 import java.util.Stack;
@@ -77,7 +78,7 @@ public class FilesFragment extends Fragment implements OnItemClickListener, OnBa
 
     private void updateSubFiles() {
         fileAdapter.clear();
-        grpcService.getSubFilesSync(currentFolder, new GrpcFileStreamObserver(fileAdapter, binding.swipeRefreshLayout));
+        grpcService.getSubFilesSync(currentFolder, new GrpcFileObserver(fileAdapter, binding.swipeRefreshLayout));
     }
 
     private void moveToFolder(GrpcFile grpcFile) {
@@ -159,14 +160,11 @@ public class FilesFragment extends Fragment implements OnItemClickListener, OnBa
     private int calculateSpanCount() {
         // Получаем ширину дисплея в пикселях
         int displayWidth = getResources().getDisplayMetrics().widthPixels;
-
         // Конвертируем ширину плитки из dp в пиксели
         int tileWidthDp = 120; // ширина плитки в dp
         float density = getResources().getDisplayMetrics().density; // получаем плотность экрана
-
         // Высчитываем ширину плитки в пикселях
         int tileWidthPx = (int) (tileWidthDp * density);
-
         // Определяем количество колонок
         return Math.max(1, displayWidth / tileWidthPx);
     }

@@ -1,23 +1,18 @@
-package ru.bati4eli.smartcloud.android.client.service.Observers;
+package ru.bati4eli.smartcloud.android.client.service.observers;
 
 import android.util.Log;
-import io.grpc.stub.StreamObserver;
 import ru.bati4eli.mycloud.repo.DownloadFileResp;
 import ru.bati4eli.mycloud.repo.DownloadType;
 import ru.bati4eli.mycloud.repo.GrpcFile;
-import ru.bati4eli.smartcloud.android.client.utils.Constants;
 import ru.bati4eli.smartcloud.android.client.utils.MyUtils;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import static ru.bati4eli.smartcloud.android.client.utils.Constants.TAG;
 
-public class DownloadFileObserver implements StreamObserver<DownloadFileResp> {
-    private AtomicBoolean working = new AtomicBoolean(true);
+public class DownloadFileObserver extends SyncStreamObserver<DownloadFileResp> {
     private FileOutputStream fileOutputStream;
     private String filePath;
 
@@ -70,13 +65,4 @@ public class DownloadFileObserver implements StreamObserver<DownloadFileResp> {
         }
     }
 
-    public boolean isWorking() {
-        return working.get();
-    }
-
-    public File waiting() {
-        while (isWorking()) {
-        }
-        return new File(filePath);
-    }
 }
