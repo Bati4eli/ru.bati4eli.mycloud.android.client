@@ -8,7 +8,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
-import ru.bati4eli.smartcloud.android.client.MainActivity;
 import ru.bati4eli.smartcloud.android.client.databinding.TabPhotosBinding;
 import ru.bati4eli.smartcloud.android.client.service.GrpcService;
 import ru.bati4eli.smartcloud.android.client.service.MiserableDI;
@@ -16,6 +15,7 @@ import ru.bati4eli.smartcloud.android.client.service.observers.AdapterItemsObser
 import ru.bati4eli.smartcloud.android.client.tabs.common.OnBackPressedListener;
 import ru.bati4eli.smartcloud.android.client.tabs.common.OnItemClickListener;
 import ru.bati4eli.smartcloud.android.client.tabs.photoHelpers.PhotoAdapter;
+import ru.bati4eli.smartcloud.android.client.tabs.photoHelpers.SpacingItemDecoration;
 
 public class PhotosFragment extends Fragment implements OnBackPressedListener, OnItemClickListener {
     private TabPhotosBinding binding;
@@ -29,18 +29,17 @@ public class PhotosFragment extends Fragment implements OnBackPressedListener, O
         //activity = (MainActivity) getActivity();
         adapter = new PhotoAdapter(this);
         binding.swipeRefreshLayout.setOnRefreshListener(this::updateSubFiles);
-        int spanCount = calculateSpanCount(); // Метод для определения количества колонок
-        binding.recyclerViewPhotos.setLayoutManager(new GridLayoutManager(getContext(), spanCount));
+        binding.recyclerViewPhotos.setLayoutManager(new GridLayoutManager(getContext(), calculateSpanCount()));
         binding.recyclerViewPhotos.setAdapter(adapter);
         binding.recyclerViewPhotos.setHasFixedSize(true);
         binding.recyclerViewPhotos.setItemViewCacheSize(100);
+        binding.recyclerViewPhotos.addItemDecoration(new SpacingItemDecoration(1));
         updateSubFiles();
         return binding.getRoot();
     }
 
     private void updateSubFiles() {
         adapter.clear();
-        binding.recyclerViewPhotos.setAdapter(adapter);
         grpcService.getPhotos(new AdapterItemsObserver<>(adapter, binding.swipeRefreshLayout));
     }
 
@@ -59,7 +58,7 @@ public class PhotosFragment extends Fragment implements OnBackPressedListener, O
         // Получаем ширину дисплея в пикселях
         int displayWidth = getResources().getDisplayMetrics().widthPixels;
         // Конвертируем ширину плитки из dp в пиксели
-        int tileWidthDp = 80; // ширина плитки в dp
+        int tileWidthDp = 100; // ширина плитки в dp
         float density = getResources().getDisplayMetrics().density; // получаем плотность экрана
         // Высчитываем ширину плитки в пикселях
         int tileWidthPx = (int) (tileWidthDp * density);
