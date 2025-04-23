@@ -5,13 +5,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
-import ru.bati4eli.mycloud.repo.DownloadType;
-import ru.bati4eli.mycloud.repo.TypeOfFile;
-import ru.bati4eli.smartcloud.android.client.model.ShortInfo;
-import ru.bati4eli.smartcloud.android.client.service.GrpcService;
-import ru.bati4eli.smartcloud.android.client.service.MiserableDI;
 import ru.bati4eli.smartcloud.android.client.tabs.fileHelpers.AbstractViewHolder;
-import ru.bati4eli.smartcloud.android.client.utils.MyUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,11 +17,19 @@ public abstract class AbstractItemAdapter<TYPE> extends RecyclerView.Adapter<Abs
 
     @Getter
     protected final List<TYPE> items = new ArrayList<>();
-    private final GrpcService grpcService = MiserableDI.get(GrpcService.class);
 
     public abstract void finishAndShow();
 
-    public abstract void add(TYPE item);
+    public void add(TYPE item) {
+        items.add(item);
+        notifyItemInserted(items.size() - 1);
+        //notifyItemChanged(items.size() - 1);
+    }
+
+    @Override
+    public int getItemCount() {
+        return items.size();
+    }
 
     public final void clear() {
         this.items.clear();
@@ -43,15 +45,4 @@ public abstract class AbstractItemAdapter<TYPE> extends RecyclerView.Adapter<Abs
         holder.bind(items.get(position), listener);
     }
 
-    protected void downloadPreviewAsync(ShortInfo info, DownloadType downloadType) {
-        // Если это Видео/Фото, то загружаем превью для него!
-        if (info.getType() == TypeOfFile.IMAGE || info.getType() == TypeOfFile.VIDEO) {
-//            Executors.newSingleThreadExecutor().execute(() -> {
-            // Повторно не надо скачивать превью
-            if (!MyUtils.previewExists(info, downloadType))
-                // Синхронный метод!
-                grpcService.downloadFile(info, downloadType);
-//            });
-        }
-    }
 }

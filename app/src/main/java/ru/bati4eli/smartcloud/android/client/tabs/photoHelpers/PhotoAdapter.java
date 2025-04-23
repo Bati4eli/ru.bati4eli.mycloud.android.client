@@ -21,17 +21,8 @@ public class PhotoAdapter extends AbstractItemAdapter<ShortMediaInfoDto> {
         return new PhotoViewHolder(parent);
     }
 
-    @Override
-    public int getItemCount() {
-        return items.size();
-    }
-
     public void finishAndShow() {
         notifyDataSetChanged();
     }
 
-    public void add(ShortMediaInfoDto item) {
-        items.add(item);
-        downloadPreviewAsync(ShortInfo.of(item), DownloadType.PREVIEW_SQUARE);
-    }
 }

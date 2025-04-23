@@ -54,6 +54,7 @@ public class FilesFragment extends Fragment implements OnItemClickListener, OnBa
 
         fileAdapter = new FileAdapter(this, ParametersUtil.getViewType());
         changeViewType();
+        binding.recyclerViewFiles.setHasFixedSize(true);
         // Вызов метода обновления данных
         binding.swipeRefreshLayout.setOnRefreshListener(this::updateSubFiles);
         moveToFolder(grpcService.getRootFileInfo());

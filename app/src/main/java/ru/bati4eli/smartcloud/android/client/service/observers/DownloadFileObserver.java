@@ -15,6 +15,7 @@ import static ru.bati4eli.smartcloud.android.client.utils.Constants.TAG;
 public class DownloadFileObserver extends SyncStreamObserver<DownloadFileResp> {
     private FileOutputStream fileOutputStream;
     private String filePath;
+    private Runnable onComplete;
 
     public DownloadFileObserver(ShortInfo info, DownloadType downloadType) {
         filePath = MyUtils.getFilePath(info, downloadType);
@@ -24,6 +25,11 @@ public class DownloadFileObserver extends SyncStreamObserver<DownloadFileResp> {
             Log.e(TAG, "DownloadFileObserver(): " + e.getMessage());
             throw new RuntimeException(e);
         }
+    }
+
+    public DownloadFileObserver(ShortInfo info, DownloadType downloadType, Runnable onComplete) {
+        this(info, downloadType);
+        this.onComplete = onComplete;
     }
 
     @Override
@@ -55,6 +61,9 @@ public class DownloadFileObserver extends SyncStreamObserver<DownloadFileResp> {
     public void onCompleted() {
         working.set(false);
         closeStream();
+        if (onComplete != null) {
+            onComplete.run();
+        }
     }
 
     private void closeStream() {

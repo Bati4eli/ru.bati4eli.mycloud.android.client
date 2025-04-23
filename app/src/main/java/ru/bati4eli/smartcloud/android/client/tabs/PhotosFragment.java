@@ -32,12 +32,15 @@ public class PhotosFragment extends Fragment implements OnBackPressedListener, O
         int spanCount = calculateSpanCount(); // Метод для определения количества колонок
         binding.recyclerViewPhotos.setLayoutManager(new GridLayoutManager(getContext(), spanCount));
         binding.recyclerViewPhotos.setAdapter(adapter);
+        binding.recyclerViewPhotos.setHasFixedSize(true);
+        binding.recyclerViewPhotos.setItemViewCacheSize(100);
         updateSubFiles();
         return binding.getRoot();
     }
 
     private void updateSubFiles() {
         adapter.clear();
+        binding.recyclerViewPhotos.setAdapter(adapter);
         grpcService.getPhotos(new AdapterItemsObserver<>(adapter, binding.swipeRefreshLayout));
     }
 

@@ -34,20 +34,16 @@ public class FileAdapter extends AbstractItemAdapter<GrpcFile> {
         return viewType == ViewTypeEnum.VIEW_LIST ? new FileViewListHolder(parent) : new FileViewGridHolder(parent);
     }
 
-    @Override
-    public int getItemCount() {
-        return items.size();
-    }
 
     @Override
     public void finishAndShow() {
-        this.items.clear();
-        this.items.addAll(treeFiles);
+        super.items.clear();
+        super.items.addAll(treeFiles);
         notifyDataSetChanged();
     }
 
     public void reSort() {
-        items.sort(GrpcFileComparator.getFileComparator());
+        super.items.sort(GrpcFileComparator.getFileComparator());
         notifyDataSetChanged();
     }
 
@@ -58,7 +54,6 @@ public class FileAdapter extends AbstractItemAdapter<GrpcFile> {
     @Override
     public void add(GrpcFile item) {
         treeFiles.add(item);
-        downloadPreviewAsync(ShortInfo.of(item), DownloadType.PREVIEW_MINI);
     }
 
 }

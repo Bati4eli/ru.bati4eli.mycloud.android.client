@@ -82,7 +82,7 @@ public class GrpcService {
         mediaService.findMediaFiles(request, responseObserver);
     }
 
-    public void downloadFile(ShortInfo info, DownloadType downloadType) {
+    public void downloadFileSync(ShortInfo info, DownloadType downloadType) {
         DownloadFileReq req = DownloadFileReq.newBuilder()
                 .setFileId(info.getFileId())
                 .setType(downloadType)
@@ -91,6 +91,16 @@ public class GrpcService {
         DownloadFileObserver responseObserver = new DownloadFileObserver(info, downloadType);
         repoClient.downloadFile(req, responseObserver);
         responseObserver.waiting();
+    }
+
+    public void downloadFileAsync(ShortInfo info, DownloadType downloadType, Runnable onComplete) {
+        DownloadFileReq req = DownloadFileReq.newBuilder()
+                .setFileId(info.getFileId())
+                .setType(downloadType)
+                .build();
+
+        DownloadFileObserver responseObserver = new DownloadFileObserver(info, downloadType, onComplete);
+        repoClient.downloadFile(req, responseObserver);
     }
 
 }
