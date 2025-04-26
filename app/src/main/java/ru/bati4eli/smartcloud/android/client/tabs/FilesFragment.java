@@ -34,6 +34,7 @@ import ru.bati4eli.smartcloud.android.client.utils.ParametersUtil;
 import java.util.Stack;
 
 import static ru.bati4eli.smartcloud.android.client.utils.Constants.TAG;
+import static ru.bati4eli.smartcloud.android.client.utils.MyUtils.calculateSpanCount;
 
 public class FilesFragment extends Fragment implements OnItemClickListener, OnBackPressedListener, OnChangedSortOrView {
     private TabFilesBinding binding;
@@ -151,25 +152,12 @@ public class FilesFragment extends Fragment implements OnItemClickListener, OnBa
 
         fileAdapter.setViewType(viewType);
         binding.recyclerViewFiles.setAdapter(fileAdapter);
-        //Log.i(TAG, "### viewType: " + viewType.name());
         if (viewType == ViewTypeEnum.VIEW_LIST) {
             binding.recyclerViewFiles.setLayoutManager(new LinearLayoutManager(getContext()));
         } else {
-            int spanCount = calculateSpanCount(); // Метод для определения количества колонок
+            int spanCount = calculateSpanCount(this, 100); // Метод для определения количества колонок
             binding.recyclerViewFiles.setLayoutManager(new GridLayoutManager(getContext(), spanCount));
         }
-    }
-
-    private int calculateSpanCount() {
-        // Получаем ширину дисплея в пикселях
-        int displayWidth = getResources().getDisplayMetrics().widthPixels;
-        // Конвертируем ширину плитки из dp в пиксели
-        int tileWidthDp = 120; // ширина плитки в dp
-        float density = getResources().getDisplayMetrics().density; // получаем плотность экрана
-        // Высчитываем ширину плитки в пикселях
-        int tileWidthPx = (int) (tileWidthDp * density);
-        // Определяем количество колонок
-        return Math.max(1, displayWidth / tileWidthPx);
     }
 
     /**

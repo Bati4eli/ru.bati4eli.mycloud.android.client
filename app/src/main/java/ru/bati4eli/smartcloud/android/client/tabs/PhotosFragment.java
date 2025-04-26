@@ -17,6 +17,8 @@ import ru.bati4eli.smartcloud.android.client.tabs.common.OnItemClickListener;
 import ru.bati4eli.smartcloud.android.client.tabs.photoHelpers.PhotoAdapter;
 import ru.bati4eli.smartcloud.android.client.tabs.photoHelpers.SpacingItemDecoration;
 
+import static ru.bati4eli.smartcloud.android.client.utils.MyUtils.calculateSpanCount;
+
 public class PhotosFragment extends Fragment implements OnBackPressedListener, OnItemClickListener {
     private TabPhotosBinding binding;
     private PhotoAdapter adapter;
@@ -28,9 +30,10 @@ public class PhotosFragment extends Fragment implements OnBackPressedListener, O
         binding = TabPhotosBinding.inflate(inflater, container, false);
         //activity = (MainActivity) getActivity();
         adapter = new PhotoAdapter(this);
-        binding.swipeRefreshLayout.setOnRefreshListener(this::updateSubFiles);
-        binding.recyclerViewPhotos.setLayoutManager(new GridLayoutManager(getContext(), calculateSpanCount()));
+        int spanCount = calculateSpanCount(this, 100);
+        binding.recyclerViewPhotos.setLayoutManager(new GridLayoutManager(getContext(), spanCount));
         binding.recyclerViewPhotos.setAdapter(adapter);
+        binding.swipeRefreshLayout.setOnRefreshListener(this::updateSubFiles);
         binding.recyclerViewPhotos.setHasFixedSize(true);
         binding.recyclerViewPhotos.setItemViewCacheSize(100);
         binding.recyclerViewPhotos.addItemDecoration(new SpacingItemDecoration(1));
@@ -53,16 +56,4 @@ public class PhotosFragment extends Fragment implements OnBackPressedListener, O
 
     }
 
-
-    private int calculateSpanCount() {
-        // Получаем ширину дисплея в пикселях
-        int displayWidth = getResources().getDisplayMetrics().widthPixels;
-        // Конвертируем ширину плитки из dp в пиксели
-        int tileWidthDp = 100; // ширина плитки в dp
-        float density = getResources().getDisplayMetrics().density; // получаем плотность экрана
-        // Высчитываем ширину плитки в пикселях
-        int tileWidthPx = (int) (tileWidthDp * density);
-        // Определяем количество колонок
-        return Math.max(1, displayWidth / tileWidthPx);
-    }
 }

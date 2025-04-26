@@ -3,11 +3,17 @@
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
+             xmlns:app="http://schemas.android.com/apk/res-auto"
              tools:context=".tabs.AlbumsFragment">
 
-    <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="ALBUMS!"/>
+
+    <ru.bati4eli.smartcloud.android.client.tabs.albumsHelper.AlbumCard
+            android:id="@+id/myCard"
+            android:layout_width="205dp"
+            android:layout_height="200dp"
+            app:imgSrc="@drawable/brain"
+            app:label="My album"
+            app:amount="100"
+            app:awesomeIcon="@drawable/ic_photos"/>
 
 </FrameLayout>

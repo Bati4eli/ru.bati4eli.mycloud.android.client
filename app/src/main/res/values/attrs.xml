@@ -1,0 +1,8 @@
+<resources>
+    <declare-styleable name="AlbumCard">
+        <attr name="imgSrc" format="reference"/>
+        <attr name="label" format="string"/>
+        <attr name="amount" format="integer"/>
+        <attr name="awesomeIcon" format="reference"/>
+    </declare-styleable>
+</resources>

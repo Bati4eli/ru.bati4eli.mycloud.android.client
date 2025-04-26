@@ -1,0 +1,53 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="wrap_content"
+                android:layout_height="200dp">
+
+    <ImageView
+            android:id="@+id/album_image"
+            android:layout_width="match_parent"
+            android:layout_height="210dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_albums"/>
+
+    <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="16dp"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+        <ImageView
+                android:id="@+id/awesome_icon"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginLeft="4dp"
+                android:src="@drawable/ic_files"/>
+
+        <TextView
+                android:id="@+id/label_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/bati4eli"
+                android:textSize="20sp"
+                android:shadowColor="@android:color/white"
+                android:shadowRadius="2"
+                android:text="test album"
+                android:paddingLeft="8dp"/>
+
+    </LinearLayout>
+
+    <TextView
+            android:id="@+id/amount_text"
+            android:text="100"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:textColor="@android:color/white"
+            android:padding="4dp"
+            android:gravity="center"
+            android:background="@drawable/rounded_background"
+            android:fontFamily="sans-serif-medium"/>
+
+</RelativeLayout>

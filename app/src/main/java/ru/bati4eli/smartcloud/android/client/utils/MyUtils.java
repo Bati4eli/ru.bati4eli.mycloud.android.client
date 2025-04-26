@@ -2,9 +2,11 @@ package ru.bati4eli.smartcloud.android.client.utils;
 
 import android.content.Context;
 import android.os.Build;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.Toast;
 import androidx.annotation.RequiresApi;
+import androidx.fragment.app.Fragment;
 import ru.bati4eli.mycloud.repo.DownloadType;
 import ru.bati4eli.mycloud.repo.GrpcFile;
 import ru.bati4eli.mycloud.repo.TypeOfFile;
@@ -42,6 +44,21 @@ public class MyUtils {
         } else {
             return Constants.APP_DIRECTORY + "/PREVIEWS/" + info.getFileId() + "_" + downloadType.name() + ".jpg";
         }
+    }
+
+    /**
+     * Расчет количества колонок в зависимости от ширины плитки
+     */
+    public static int calculateSpanCount(Fragment fragment, int tileWidthDp) {
+        // Получаем ширину дисплея в пикселях
+        DisplayMetrics displayMetrics = fragment.getResources().getDisplayMetrics();
+        int displayWidth = displayMetrics.widthPixels;
+        // Конвертируем ширину плитки из dp в пиксели
+        float density = displayMetrics.density; // получаем плотность экрана
+        // Высчитываем ширину плитки в пикселях
+        int tileWidthPx = (int) (tileWidthDp * density);
+        // Определяем количество колонок
+        return Math.max(1, displayWidth / tileWidthPx);
     }
 
     public static double compareSeconds(Date dt1, Date dt2) {
