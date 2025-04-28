@@ -4,7 +4,7 @@ import io.grpc.stub.StreamObserver;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public abstract class SyncStreamObserver <TYPE> implements StreamObserver<TYPE> {
+public abstract class BaseStreamObserver<TYPE> implements StreamObserver<TYPE>  {
     protected TYPE response;
     protected Throwable error;
     protected AtomicBoolean working = new AtomicBoolean(true);

@@ -3,6 +3,7 @@ package ru.bati4eli.smartcloud.android.client.model;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import ru.bati4eli.mycloud.repo.GrpcFile;
+import ru.bati4eli.mycloud.repo.RespAlbumInfo;
 import ru.bati4eli.mycloud.repo.ShortMediaInfoDto;
 import ru.bati4eli.mycloud.repo.TypeOfFile;
 
@@ -24,6 +25,13 @@ public class ShortInfo {
         return new ShortInfo()
                 .setFileId(file.getFileId())
                 .setType(file.getMediaType())
+                .setFileName(null);
+    }
+
+    public static ShortInfo of(RespAlbumInfo albumInfo) {
+        return new ShortInfo()
+                .setFileId(albumInfo.getFileId())
+                .setType(TypeOfFile.IMAGE)
                 .setFileName(null);
     }
 }

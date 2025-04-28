@@ -1,6 +1,6 @@
 package ru.bati4eli.smartcloud.android.client.service.observers;
 
-public class SyncObserverOneResponse<TYPE> extends SyncStreamObserver<TYPE> {
+public class SyncObserverOneResponse<TYPE> extends BaseStreamObserver<TYPE> {
 
     @Override
     public void onNext(TYPE response) {

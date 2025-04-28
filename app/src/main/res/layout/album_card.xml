@@ -1,6 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="wrap_content"
-                android:layout_height="200dp">
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+android:layout_margin="2dp">
 
     <ImageView
             android:id="@+id/album_image"
@@ -13,12 +14,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_marginLeft="16dp"
             android:orientation="horizontal"
             android:gravity="center">
 
         <ImageView
-                android:id="@+id/awesome_icon"
+                android:id="@+id/label_icon"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_marginLeft="4dp"
@@ -28,10 +28,10 @@
                 android:id="@+id/label_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/bati4eli"
+                android:textColor="@android:color/white"
                 android:textSize="20sp"
-                android:shadowColor="@android:color/white"
-                android:shadowRadius="2"
+                android:shadowColor="@android:color/black"
+                android:shadowRadius="3"
                 android:text="test album"
                 android:paddingLeft="8dp"/>
 

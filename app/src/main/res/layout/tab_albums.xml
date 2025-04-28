@@ -1,19 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             xmlns:app="http://schemas.android.com/apk/res-auto"
-             tools:context=".tabs.AlbumsFragment">
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context=".tabs.AlbumsFragment">
 
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-    <ru.bati4eli.smartcloud.android.client.tabs.albumsHelper.AlbumCard
-            android:id="@+id/myCard"
-            android:layout_width="205dp"
-            android:layout_height="200dp"
-            app:imgSrc="@drawable/brain"
-            app:label="My album"
-            app:amount="100"
-            app:awesomeIcon="@drawable/ic_photos"/>
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Your albums:"
+                android:textSize="20sp"
+                android:padding="16dp"
+                android:fontFamily="sans-serif-medium" />
 
-</FrameLayout>
+        <LinearLayout
+                android:id="@+id/albums_wrapper_favorites"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+
+        <LinearLayout
+                android:id="@+id/albums_wrapper_photos"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+
+        <LinearLayout
+                android:id="@+id/albums_wrapper_videos"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Background in the photo:"
+                android:textSize="20sp"
+                android:padding="16dp"
+                android:fontFamily="sans-serif-medium" />
+
+        <LinearLayout
+                android:id="@+id/albums_wrapper_background"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cameras:"
+                android:textSize="20sp"
+                android:padding="16dp"
+                android:fontFamily="sans-serif-medium" />
+
+        <LinearLayout
+                android:id="@+id/albums_wrapper_cameras"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Faces on your photos:"
+                android:textSize="20sp"
+                android:padding="16dp"
+                android:fontFamily="sans-serif-medium" />
+
+        <LinearLayout
+                android:id="@+id/albums_wrapper_faces"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+    </LinearLayout>
+</ScrollView>

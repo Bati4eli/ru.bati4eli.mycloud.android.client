@@ -4,13 +4,16 @@ import android.util.Log;
 import io.grpc.Channel;
 import io.grpc.ManagedChannel;
 import lombok.var;
+import ru.bati4eli.mycloud.repo.AlbumType;
 import ru.bati4eli.mycloud.repo.DownloadFileReq;
 import ru.bati4eli.mycloud.repo.DownloadType;
 import ru.bati4eli.mycloud.repo.FileInfoRequest;
 import ru.bati4eli.mycloud.repo.FileUserRepoServiceGrpc;
 import ru.bati4eli.mycloud.repo.GrpcFile;
 import ru.bati4eli.mycloud.repo.MediaServiceGrpc;
+import ru.bati4eli.mycloud.repo.ReqAlbumInfo;
 import ru.bati4eli.mycloud.repo.ReqFilterMedias;
+import ru.bati4eli.mycloud.repo.RespAlbumInfo;
 import ru.bati4eli.mycloud.repo.ShortMediaInfoDto;
 import ru.bati4eli.mycloud.users.JwtRequest;
 import ru.bati4eli.mycloud.users.JwtResponse;
@@ -18,6 +21,7 @@ import ru.bati4eli.mycloud.users.UserPrivateServiceGrpc;
 import ru.bati4eli.smartcloud.android.client.model.ShortInfo;
 import ru.bati4eli.smartcloud.android.client.service.observers.AdapterItemsObserver;
 import ru.bati4eli.smartcloud.android.client.service.observers.DownloadFileObserver;
+import ru.bati4eli.smartcloud.android.client.service.observers.StreamObserverIterator;
 import ru.bati4eli.smartcloud.android.client.service.observers.SyncObserverOneResponse;
 import ru.bati4eli.smartcloud.android.client.utils.ParametersUtil;
 
@@ -101,6 +105,15 @@ public class GrpcService {
 
         DownloadFileObserver responseObserver = new DownloadFileObserver(info, downloadType, onComplete);
         repoClient.downloadFile(req, responseObserver);
+    }
+
+    public StreamObserverIterator<RespAlbumInfo> getAlbums(AlbumType albumType) {
+        ReqAlbumInfo request = ReqAlbumInfo.newBuilder()
+                .setAlbumType(albumType)
+                .build();
+        StreamObserverIterator<RespAlbumInfo> responseObserver = new StreamObserverIterator<>();
+        mediaService.getAlbumInfo(request, responseObserver);
+        return responseObserver;
     }
 
 }

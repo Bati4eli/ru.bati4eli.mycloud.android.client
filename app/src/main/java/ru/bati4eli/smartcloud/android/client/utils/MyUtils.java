@@ -1,16 +1,21 @@
 package ru.bati4eli.smartcloud.android.client.utils;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.Toast;
-import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import ru.bati4eli.mycloud.repo.DownloadType;
 import ru.bati4eli.mycloud.repo.GrpcFile;
 import ru.bati4eli.mycloud.repo.TypeOfFile;
+import ru.bati4eli.smartcloud.android.client.R;
 import ru.bati4eli.smartcloud.android.client.model.ShortInfo;
+import ru.bati4eli.smartcloud.android.client.service.GrpcService;
+import ru.bati4eli.smartcloud.android.client.service.MiserableDI;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -20,7 +25,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
-import java.util.TimeZone;
 
 import static ru.bati4eli.smartcloud.android.client.utils.Constants.TAG;
 
@@ -46,6 +50,27 @@ public class MyUtils {
         }
     }
 
+    public static void setupPreviewAsync(ShortInfo info, ImageView fileIcon, DownloadType downloadType) {
+        // Повторно не надо скачивать превью
+        if (MyUtils.previewExists(info, downloadType)) {
+            setupPreview(info, fileIcon, downloadType);
+            return;
+        }
+        MiserableDI.get(GrpcService.class)
+                .downloadFileAsync(info, downloadType, () -> setupPreview(info, fileIcon, downloadType));
+    }
+
+    public static void setupPreview(ShortInfo info, ImageView fileIcon, DownloadType downloadType) {
+        String filePath = MyUtils.getFilePath(info, downloadType);
+        Bitmap bitmap = BitmapFactory.decodeFile(filePath);
+        if (bitmap != null) {
+            fileIcon.setImageBitmap(bitmap);
+        } else {
+            // Если загрузка не удалась, возможно, использовать иконку файла по умолчанию
+            fileIcon.setImageResource(R.drawable.ic_file);
+        }
+    }
+
     /**
      * Расчет количества колонок в зависимости от ширины плитки
      */
@@ -66,22 +91,6 @@ public class MyUtils {
         return difference / 1000.0;
     }
 
-    public static String formatDate(Date dateTime) {
-        // Получаем текущую временную зону
-        TimeZone localZone = TimeZone.getDefault();
-
-        // Преобразуем дату в строку локального времени
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", Locale.getDefault());
-        dateFormat.setTimeZone(localZone);
-
-        // Добавляем смещение часового пояса
-        int offset = localZone.getRawOffset() + (localZone.inDaylightTime(dateTime) ? localZone.getDSTSavings() : 0);
-        int offsetHours = offset / (60 * 60 * 1000);
-        int offsetMinutes = Math.abs(offset / (60 * 1000)) % 60;
-
-        return dateFormat.format(dateTime) + String.format(Locale.getDefault(), "%+03d:%02d", offsetHours, offsetMinutes);
-    }
-
     public static String formatDate(String dateStr) {
         // Форматируем дату и возвращаем строку
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -91,15 +100,6 @@ public class MyUtils {
             return dateStr;
         }
     }
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    public static String formatDate(OffsetDateTime date) {
-        // Задаем нужный формат даты
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
-        // Форматируем дату и возвращаем строку
-        return date.format(formatter);
-    }
-
 
     public static OffsetDateTime parseDate(String dateStr) {
         try {

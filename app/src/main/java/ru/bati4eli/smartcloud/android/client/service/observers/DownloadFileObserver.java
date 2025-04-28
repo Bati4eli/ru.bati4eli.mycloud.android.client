@@ -12,7 +12,7 @@ import java.io.IOException;
 
 import static ru.bati4eli.smartcloud.android.client.utils.Constants.TAG;
 
-public class DownloadFileObserver extends SyncStreamObserver<DownloadFileResp> {
+public class DownloadFileObserver extends BaseStreamObserver<DownloadFileResp> {
     private FileOutputStream fileOutputStream;
     private String filePath;
     private Runnable onComplete;
