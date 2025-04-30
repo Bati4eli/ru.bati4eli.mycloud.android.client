@@ -1,81 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:context=".tabs.AlbumsFragment">
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+                                       android:layout_width="match_parent"
+                                       android:layout_height="match_parent"
+                                       android:fillViewport="true">
 
     <LinearLayout
+            android:orientation="vertical"
+            android:padding="16dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="wrap_content">
 
-        <TextView
+        <!-- YOUR ALBUMS -->
+        <com.joanzapata.iconify.widget.IconTextView
+                android:id="@+id/titleYourAlbums"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Your albums:"
-                android:textSize="20sp"
-                android:padding="16dp"
-                android:fontFamily="sans-serif-medium" />
+                android:text="{fa-image @color/ocean} Your albums:"
+                android:textAppearance="?attr/textAppearanceHeadline6"
+                android:drawablePadding="8dp"
+        />
 
-        <LinearLayout
-                android:id="@+id/albums_wrapper_favorites"
+<!--        TODO СДЕЛАЙ ЧЕРЕЗ АДАПТЕР ТУТ ЛАЙОУТ НУ ТЫ ПОНЯЛ-->
+        <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerYourAlbums"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical" />
+                android:layout_marginBottom="20dp"
+                android:minHeight="100dp"
+                android:overScrollMode="never"
+                android:nestedScrollingEnabled="false"/>
 
-        <LinearLayout
-                android:id="@+id/albums_wrapper_photos"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical" />
-
-        <LinearLayout
-                android:id="@+id/albums_wrapper_videos"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical" />
-
-        <TextView
+        <!-- BACKGROUND IN THE PHOTO -->
+        <com.joanzapata.iconify.widget.IconTextView
+                android:id="@+id/titleBackground"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Background in the photo:"
-                android:textSize="20sp"
-                android:padding="16dp"
-                android:fontFamily="sans-serif-medium" />
+                android:text="{fa-tree @color/ocean} Background in the photo:"
+                android:textAppearance="?attr/textAppearanceHeadline6"
+                android:drawablePadding="8dp"
+        />
 
-        <LinearLayout
-                android:id="@+id/albums_wrapper_background"
+        <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerBackground"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical" />
+                android:layout_marginBottom="20dp"
+                android:minHeight="100dp"
+                android:overScrollMode="never"
+                android:nestedScrollingEnabled="false"/>
 
-        <TextView
+        <!-- CAMERAS -->
+        <com.joanzapata.iconify.widget.IconTextView
+                android:id="@+id/titleCameras"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Cameras:"
-                android:textSize="20sp"
-                android:padding="16dp"
-                android:fontFamily="sans-serif-medium" />
+                android:text="{fa-camera-retro @color/ocean} Cameras:"
+                android:textAppearance="?attr/textAppearanceHeadline6"
+                android:drawablePadding="8dp"
+        />
 
-        <LinearLayout
-                android:id="@+id/albums_wrapper_cameras"
+        <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerCameras"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical" />
+                android:layout_marginBottom="20dp"
+                android:minHeight="100dp"
+                android:overScrollMode="never"
+                android:nestedScrollingEnabled="false"/>
 
-        <TextView
+        <!-- FACES -->
+        <com.joanzapata.iconify.widget.IconTextView
+                android:id="@+id/titleFaces"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Faces on your photos:"
-                android:textSize="20sp"
-                android:padding="16dp"
-                android:fontFamily="sans-serif-medium" />
+                android:text="{fa-user @color/ocean} Faces on your photos:"
+                android:textAppearance="?attr/textAppearanceHeadline6"
+                android:drawablePadding="8dp"
+        />
 
-        <LinearLayout
-                android:id="@+id/albums_wrapper_faces"
+        <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerFaces"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical" />
+                android:minHeight="100dp"
+                android:overScrollMode="never"
+                android:nestedScrollingEnabled="false"/>
     </LinearLayout>
-</ScrollView>
+</androidx.core.widget.NestedScrollView>
