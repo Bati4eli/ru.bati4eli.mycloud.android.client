@@ -51,13 +51,17 @@ public class MyUtils {
     }
 
     public static void setupPreviewAsync(ShortInfo info, ImageView fileIcon, DownloadType downloadType) {
-        // Повторно не надо скачивать превью
-        if (MyUtils.previewExists(info, downloadType)) {
-            setupPreview(info, fileIcon, downloadType);
-            return;
+        try {
+            // Повторно не надо скачивать превью
+            if (MyUtils.previewExists(info, downloadType)) {
+                setupPreview(info, fileIcon, downloadType);
+                return;
+            }
+            MiserableDI.get(GrpcService.class)
+                    .downloadFileAsync(info, downloadType, () -> setupPreview(info, fileIcon, downloadType));
+        } catch (Throwable e) {
+            Log.e(TAG, e.getMessage());
         }
-        MiserableDI.get(GrpcService.class)
-                .downloadFileAsync(info, downloadType, () -> setupPreview(info, fileIcon, downloadType));
     }
 
     public static void setupPreview(ShortInfo info, ImageView fileIcon, DownloadType downloadType) {

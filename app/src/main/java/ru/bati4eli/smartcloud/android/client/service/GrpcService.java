@@ -9,11 +9,13 @@ import ru.bati4eli.mycloud.repo.DownloadFileReq;
 import ru.bati4eli.mycloud.repo.DownloadType;
 import ru.bati4eli.mycloud.repo.FileInfoRequest;
 import ru.bati4eli.mycloud.repo.FileUserRepoServiceGrpc;
+import ru.bati4eli.mycloud.repo.GetFacesReq;
 import ru.bati4eli.mycloud.repo.GrpcFile;
 import ru.bati4eli.mycloud.repo.MediaServiceGrpc;
 import ru.bati4eli.mycloud.repo.ReqAlbumInfo;
 import ru.bati4eli.mycloud.repo.ReqFilterMedias;
 import ru.bati4eli.mycloud.repo.RespAlbumInfo;
+import ru.bati4eli.mycloud.repo.ShortFaceDto;
 import ru.bati4eli.mycloud.repo.ShortMediaInfoDto;
 import ru.bati4eli.mycloud.users.JwtRequest;
 import ru.bati4eli.mycloud.users.JwtResponse;
@@ -24,6 +26,8 @@ import ru.bati4eli.smartcloud.android.client.service.observers.DownloadFileObser
 import ru.bati4eli.smartcloud.android.client.service.observers.StreamObserverIterator;
 import ru.bati4eli.smartcloud.android.client.service.observers.SyncObserverOneResponse;
 import ru.bati4eli.smartcloud.android.client.utils.ParametersUtil;
+
+import java.util.Iterator;
 
 import static ru.bati4eli.smartcloud.android.client.utils.Constants.TAG;
 
@@ -116,4 +120,10 @@ public class GrpcService {
         return responseObserver;
     }
 
+    public Iterator<ShortFaceDto> getFaces() {
+        GetFacesReq req = GetFacesReq.newBuilder().build();
+        StreamObserverIterator<ShortFaceDto> responseObserver = new StreamObserverIterator<>();
+        mediaService.getFaces(req, responseObserver);
+        return responseObserver;
+    }
 }

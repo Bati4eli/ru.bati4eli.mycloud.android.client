@@ -11,14 +11,14 @@ import ru.bati4eli.mycloud.repo.RespAlbumInfo;
 public class AlbumCardModel {
     private String label;
     private int amount;
-    private int albumImage;
-    private int labelIconSrc;
+    private String fontAwesomeIcon;
     private RespAlbumInfo albumInfo;
 
-    public static AlbumCardModel of(RespAlbumInfo album) {
+    public static AlbumCardModel of(RespAlbumInfo album, String fontAwesomeIcon, String label) {
         return new AlbumCardModel()
+                .setLabel(label)
+                .setFontAwesomeIcon(fontAwesomeIcon)
                 .setAlbumInfo(album)
-                .setAmount(album.getAmount())
-                .setLabel(album.getAlbumName());
+                .setAmount(album.getAmount());
     }
 }

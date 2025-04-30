@@ -3,7 +3,6 @@ package ru.bati4eli.smartcloud.android.client.tabs.albumsHelper;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import lombok.Getter;
 import ru.bati4eli.mycloud.repo.DownloadType;
@@ -27,16 +26,8 @@ public class AlbumCardLayout extends RelativeLayout {
     public void setAll(AlbumCardModel model) {
         setLabel(model.getLabel());
         setAmount(model.getAmount());
-        setAwesomeIcon(model.getLabelIconSrc());
+        setAwesomeIcon(model.getFontAwesomeIcon());
         setupPreviewAsync(ShortInfo.of(model.getAlbumInfo()), binding.albumImage, DownloadType.PREVIEW_MINI);
-    }
-
-    public ImageView getAlbumImage() {
-        return binding.albumImage;
-    }
-
-    public void setAlbumImageSrc(int resId) {
-        binding.albumImage.setImageResource(resId);
     }
 
     public void setLabel(String label) {
@@ -47,7 +38,9 @@ public class AlbumCardLayout extends RelativeLayout {
         binding.amountText.setText(String.valueOf(amount));
     }
 
-    public void setAwesomeIcon(int resId) {
-        binding.labelIcon.setImageResource(resId);
+    public void setAwesomeIcon(String fontAwesomeIcon) {
+//        FontAwesomeIcons fontAwesomeIcon
+//        IconDrawable iconDrawable = new IconDrawable(getContext(), fontAwesomeIcon);
+        binding.awesomeIcon.setText(fontAwesomeIcon);
     }
 }

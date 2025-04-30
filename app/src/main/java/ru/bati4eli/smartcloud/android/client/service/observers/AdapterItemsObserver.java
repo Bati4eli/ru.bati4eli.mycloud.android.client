@@ -8,7 +8,7 @@ import ru.bati4eli.smartcloud.android.client.tabs.common.AbstractItemAdapter;
 import static ru.bati4eli.smartcloud.android.client.utils.Constants.TAG;
 
 
-@Data
+
 public class AdapterItemsObserver<TYPE, ADAPTER extends AbstractItemAdapter<TYPE>> extends BaseStreamObserver<TYPE> {
     private final ADAPTER adapter;
     private final SwipeRefreshLayout swipeRefreshLayout;
