@@ -5,10 +5,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
-import ru.bati4eli.smartcloud.android.client.tabs.fileHelpers.AbstractViewHolder;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -22,6 +20,9 @@ public abstract class AbstractItemAdapter<TYPE> extends RecyclerView.Adapter<Abs
     public abstract void finishAndShow();
 
     public void add(TYPE item) {
+        if (item == null) {
+            return;
+        }
         items.add(item);
         notifyItemInserted(items.size() - 1);
         //notifyItemChanged(items.size() - 1);

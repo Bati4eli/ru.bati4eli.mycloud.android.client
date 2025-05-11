@@ -3,12 +3,10 @@ package ru.bati4eli.smartcloud.android.client.tabs.fileHelpers;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import lombok.Setter;
-import ru.bati4eli.mycloud.repo.DownloadType;
 import ru.bati4eli.mycloud.repo.GrpcFile;
-import ru.bati4eli.mycloud.repo.ShortMediaInfoDto;
 import ru.bati4eli.smartcloud.android.client.enums.ViewTypeEnum;
-import ru.bati4eli.smartcloud.android.client.model.ShortInfo;
 import ru.bati4eli.smartcloud.android.client.tabs.common.AbstractItemAdapter;
+import ru.bati4eli.smartcloud.android.client.tabs.common.AbstractViewHolder;
 import ru.bati4eli.smartcloud.android.client.tabs.common.OnItemClickListener;
 import ru.bati4eli.smartcloud.android.client.utils.GrpcFileComparator;
 

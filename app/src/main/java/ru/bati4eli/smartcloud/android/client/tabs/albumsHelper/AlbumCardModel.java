@@ -1,24 +1,35 @@
 package ru.bati4eli.smartcloud.android.client.tabs.albumsHelper;
 
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.experimental.Accessors;
 import ru.bati4eli.mycloud.repo.RespAlbumInfo;
 
 @Data
-@NoArgsConstructor
-@Accessors(chain = true)
 public class AlbumCardModel {
-    private String label;
-    private int amount;
-    private String fontAwesomeIcon;
-    private RespAlbumInfo albumInfo;
 
-    public static AlbumCardModel of(RespAlbumInfo album, String fontAwesomeIcon, String label) {
-        return new AlbumCardModel()
-                .setLabel(label)
-                .setFontAwesomeIcon(fontAwesomeIcon)
-                .setAlbumInfo(album)
-                .setAmount(album.getAmount());
+    private final String fontAwesomeIcon;
+    private final String label;
+
+    private final Long fileId;
+    private final String albumId;
+    private final String albumName;
+    private final Integer amount;
+    // for map
+    private final Double latitude;
+    private final Double longitude;
+    private final Double radiusKm;
+
+    public AlbumCardModel(RespAlbumInfo albumInfo, String fontAwesomeIcon, String label) {
+        // from AlbumInfo
+        this.fileId = albumInfo.getFileId();
+        this.albumId = albumInfo.getAlbumId();
+        this.albumName = albumInfo.getAlbumName();
+        this.amount = albumInfo.getAmount();
+        this.latitude = albumInfo.getLatitude();
+        this.longitude = albumInfo.getLongitude();
+        this.radiusKm = albumInfo.getRadiusKm();
+        // other
+        this.fontAwesomeIcon = fontAwesomeIcon;
+        this.label = label;
     }
+
 }

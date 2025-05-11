@@ -9,6 +9,7 @@ import ru.bati4eli.mycloud.repo.GrpcFile;
 import ru.bati4eli.smartcloud.android.client.R;
 import ru.bati4eli.smartcloud.android.client.databinding.FileItemListLayoutBinding;
 import ru.bati4eli.smartcloud.android.client.model.ShortInfo;
+import ru.bati4eli.smartcloud.android.client.tabs.common.AbstractViewHolder;
 import ru.bati4eli.smartcloud.android.client.tabs.common.OnItemClickListener;
 import ru.bati4eli.smartcloud.android.client.utils.MyUtils;
 
@@ -18,7 +19,7 @@ public class FileViewListHolder extends AbstractViewHolder<GrpcFile> {
     private final FileItemListLayoutBinding binding;
 
     public FileViewListHolder(@NonNull ViewGroup parent) {
-        super(LayoutInflater.from(parent.getContext()).inflate(R.layout.file_item_list_layout, parent, false));
+        super(parent, R.layout.file_item_list_layout);
         binding = FileItemListLayoutBinding.bind(super.itemView);
     }
 
@@ -33,7 +34,7 @@ public class FileViewListHolder extends AbstractViewHolder<GrpcFile> {
             binding.fileSize.setText(item.getShortSize());
             binding.getRoot().setOnClickListener(v -> {
                 if (listener != null) {
-                    listener.onItemClick(getAdapterPosition());
+                    listener.onItemClick(getAdapterPosition(), null);
                 }
             });
             setupIcon(ShortInfo.of(item), binding.fileIcon, DownloadType.PREVIEW_MINI);

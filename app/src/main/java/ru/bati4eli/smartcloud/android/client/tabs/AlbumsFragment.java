@@ -8,12 +8,13 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import ru.bati4eli.mycloud.repo.AlbumType;
 import ru.bati4eli.mycloud.repo.RespAlbumInfo;
 import ru.bati4eli.smartcloud.android.client.databinding.TabAlbumsBinding;
 import ru.bati4eli.smartcloud.android.client.service.GrpcService;
 import ru.bati4eli.smartcloud.android.client.service.MiserableDI;
-import ru.bati4eli.smartcloud.android.client.tabs.albumsHelper.AlbumCardLayout;
+import ru.bati4eli.smartcloud.android.client.tabs.albumsHelper.AlbumAdapter;
 import ru.bati4eli.smartcloud.android.client.tabs.albumsHelper.AlbumCardModel;
 import ru.bati4eli.smartcloud.android.client.tabs.common.OnBackPressedListener;
 import ru.bati4eli.smartcloud.android.client.tabs.common.OnItemClickListener;
@@ -31,11 +32,14 @@ public class AlbumsFragment extends Fragment implements OnBackPressedListener, O
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = TabAlbumsBinding.inflate(inflater, container, false);
 
+        AlbumAdapter adapter = new AlbumAdapter(this);
+        binding.recyclerYourAlbums.setAdapter(adapter);
+        binding.recyclerYourAlbums.setLayoutManager(new GridLayoutManager(getContext(), 2));
         // Your albums (favorite, photos, videos) - как единичные items
         try {
-            addAlbum(getFirst(grpcService.getAlbums(AlbumType.AT_FAVORITE)), "{faw-heart}","Favorite");
-            addAlbum(getFirst(grpcService.getAlbums(AlbumType.AT_PHOTO)), "{faw-heart}","Photos");
-            addAlbum(getFirst(grpcService.getAlbums(AlbumType.AT_VIDEO)),"{fa-video-camera}" ,"Videos");
+            addAlbum(adapter, getFirst(grpcService.getAlbums(AlbumType.AT_FAVORITE)), "{fa-star #ffe600}", "Favorite");
+            addAlbum(adapter, getFirst(grpcService.getAlbums(AlbumType.AT_PHOTO)), "{fa-camera @color/ocean}", "Photos");
+            addAlbum(adapter, getFirst(grpcService.getAlbums(AlbumType.AT_VIDEO)), "{fa-video-camera @color/ocean}", "Videos");
         } catch (Throwable e) {
             Log.e(TAG, e.getMessage());
         }
@@ -67,10 +71,10 @@ public class AlbumsFragment extends Fragment implements OnBackPressedListener, O
         return binding.getRoot();
     }
 
-    private void addAlbum(RespAlbumInfo albumInfo, String fontAwesomeIcon, String label) {
+    private void addAlbum(AlbumAdapter adapter, RespAlbumInfo albumInfo, String fontAwesomeIcon, String label) {
         if (albumInfo != null) {
-            AlbumCardLayout child = new AlbumCardLayout(getContext(), null, AlbumCardModel.of(albumInfo, fontAwesomeIcon, label));
-            binding.recyclerYourAlbums.addView(child);
+            AlbumCardModel albumCardModel = new AlbumCardModel(albumInfo, fontAwesomeIcon, label);
+            adapter.add(albumCardModel);
         }
     }
 
@@ -84,7 +88,7 @@ public class AlbumsFragment extends Fragment implements OnBackPressedListener, O
     }
 
     @Override
-    public void onItemClick(int position) {
+    public void onItemClick(int position, String tag) {
 
     }
 }

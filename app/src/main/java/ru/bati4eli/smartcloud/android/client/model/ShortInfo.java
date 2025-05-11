@@ -6,7 +6,11 @@ import ru.bati4eli.mycloud.repo.GrpcFile;
 import ru.bati4eli.mycloud.repo.RespAlbumInfo;
 import ru.bati4eli.mycloud.repo.ShortMediaInfoDto;
 import ru.bati4eli.mycloud.repo.TypeOfFile;
+import ru.bati4eli.smartcloud.android.client.tabs.albumsHelper.AlbumCardModel;
 
+/**
+ * ДТО для скачивания файлов или превью.
+ */
 @Data
 @Accessors(chain = true)
 public class ShortInfo {
@@ -28,10 +32,11 @@ public class ShortInfo {
                 .setFileName(null);
     }
 
-    public static ShortInfo of(RespAlbumInfo albumInfo) {
+    public static ShortInfo of(AlbumCardModel albumInfo) {
         return new ShortInfo()
                 .setFileId(albumInfo.getFileId())
                 .setType(TypeOfFile.IMAGE)
                 .setFileName(null);
     }
+
 }

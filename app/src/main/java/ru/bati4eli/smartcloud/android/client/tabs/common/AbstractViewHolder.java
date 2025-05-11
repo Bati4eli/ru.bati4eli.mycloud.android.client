@@ -1,6 +1,8 @@
-package ru.bati4eli.smartcloud.android.client.tabs.fileHelpers;
+package ru.bati4eli.smartcloud.android.client.tabs.common;
 
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -9,14 +11,13 @@ import ru.bati4eli.mycloud.repo.DownloadType;
 import ru.bati4eli.mycloud.repo.TypeOfFile;
 import ru.bati4eli.smartcloud.android.client.R;
 import ru.bati4eli.smartcloud.android.client.model.ShortInfo;
-import ru.bati4eli.smartcloud.android.client.tabs.common.OnItemClickListener;
 
 import static ru.bati4eli.smartcloud.android.client.utils.MyUtils.setupPreviewAsync;
 
 public abstract class AbstractViewHolder<TYPE> extends RecyclerView.ViewHolder {
 
-    public AbstractViewHolder(@NonNull @NotNull View itemView) {
-        super(itemView);
+    public AbstractViewHolder(ViewGroup parent, int viewId) {
+        super(LayoutInflater.from(parent.getContext()).inflate(viewId, parent, false));
     }
 
     public abstract void bind(TYPE item, OnItemClickListener listener);

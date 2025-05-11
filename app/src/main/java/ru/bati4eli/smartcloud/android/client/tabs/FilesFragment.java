@@ -112,7 +112,7 @@ public class FilesFragment extends Fragment implements OnItemClickListener, OnBa
      * Событие когда кликают по одному из файлов
      */
     @Override
-    public void onItemClick(int position) {
+    public void onItemClick(int position, String tag) {
         try {
             GrpcFile grpcFile = fileAdapter.get(position);
             if (grpcFile.getMediaType() == TypeOfFile.FOLDER) {

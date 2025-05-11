@@ -52,7 +52,7 @@ public class PhotosFragment extends Fragment implements OnBackPressedListener, O
     }
 
     @Override
-    public void onItemClick(int position) {
+    public void onItemClick(int position, String tag) {
 
     }
 
