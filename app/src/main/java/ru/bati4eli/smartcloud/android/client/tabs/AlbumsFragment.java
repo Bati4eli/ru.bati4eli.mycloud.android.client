@@ -23,7 +23,7 @@ import java.util.Iterator;
 
 import static ru.bati4eli.smartcloud.android.client.utils.Constants.TAG;
 
-public class AlbumsFragment extends Fragment implements OnBackPressedListener, OnItemClickListener {
+public class AlbumsFragment extends Fragment implements OnBackPressedListener, OnItemClickListener<AlbumCardModel> {
     private TabAlbumsBinding binding;
     private GrpcService grpcService = MiserableDI.get(GrpcService.class);
 
@@ -88,7 +88,7 @@ public class AlbumsFragment extends Fragment implements OnBackPressedListener, O
     }
 
     @Override
-    public void onItemClick(int position, String tag) {
+    public void onItemClick(int position, AlbumCardModel model) {
 
     }
 }

@@ -12,7 +12,6 @@ import ru.bati4eli.smartcloud.android.client.tabs.common.AbstractViewHolder;
 import ru.bati4eli.smartcloud.android.client.tabs.common.OnItemClickListener;
 
 import static ru.bati4eli.smartcloud.android.client.utils.Constants.TAG;
-import static ru.bati4eli.smartcloud.android.client.utils.MyUtils.setupPreviewAsync;
 
 public class AlbumViewHolder extends AbstractViewHolder<AlbumCardModel> {
 
@@ -25,15 +24,18 @@ public class AlbumViewHolder extends AbstractViewHolder<AlbumCardModel> {
 
     @SuppressLint("SetTextI18n")
     @Override
-    public void bind(AlbumCardModel item, OnItemClickListener listener) {
+    public void bind(AlbumCardModel item, OnItemClickListener<AlbumCardModel> listener) {
         try {
             binding.labelText.setText(item.getLabel());
             binding.awesomeIcon.setText(item.getFontAwesomeIcon());
             binding.amountText.setText(item.getAmount().toString());
-            setupPreviewAsync(ShortInfo.of(item), binding.albumImage, DownloadType.PREVIEW_MINI);
+            setupIcon(ShortInfo.of(item), binding.albumImage, DownloadType.PREVIEW_MINI);
+            setupOnClickListener(binding.getRoot(), item, listener);
         } catch (Throwable e) {
             Log.e(TAG, "AlbumViewHolder: " + e.getLocalizedMessage());
             // binding.fileIcon.setImageResource(R.drawable.ic_file);
         }
     }
+
+
 }

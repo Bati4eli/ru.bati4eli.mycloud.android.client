@@ -27,16 +27,12 @@ public class FileViewListHolder extends AbstractViewHolder<GrpcFile> {
      * Биндинг для каждого файла
      */
     @Override
-    public void bind(GrpcFile item, OnItemClickListener listener) {
+    public void bind(GrpcFile item, OnItemClickListener<GrpcFile> listener) {
         try {
             binding.fileName.setText(item.getName());
             binding.fileDate.setText(MyUtils.formatDate(item.getLastModify()));
             binding.fileSize.setText(item.getShortSize());
-            binding.getRoot().setOnClickListener(v -> {
-                if (listener != null) {
-                    listener.onItemClick(getAdapterPosition(), null);
-                }
-            });
+            setupOnClickListener(binding.getRoot(), item, listener);
             setupIcon(ShortInfo.of(item), binding.fileIcon, DownloadType.PREVIEW_MINI);
         } catch (Throwable e) {
             Log.e(TAG, "FileViewListHolder: " + e.getLocalizedMessage());

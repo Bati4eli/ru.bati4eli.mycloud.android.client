@@ -25,14 +25,10 @@ public class FileViewGridHolder extends AbstractViewHolder<GrpcFile> {
      * Биндинг для каждого файла
      */
     @Override
-    public void bind(GrpcFile item, OnItemClickListener listener) {
+    public void bind(GrpcFile item, OnItemClickListener<GrpcFile> listener) {
         try {
             binding.fileName.setText(item.getName());
-            binding.getRoot().setOnClickListener(v -> {
-                if (listener != null) {
-                    listener.onItemClick(getAdapterPosition(), null);
-                }
-            });
+            setupOnClickListener(binding.getRoot(), item, listener);
             setupIcon(ShortInfo.of(item), binding.fileIcon, DownloadType.PREVIEW_MINI);
         } catch (Throwable e) {
             Log.e(TAG, "FileViewTileHolder: " + e.getLocalizedMessage());

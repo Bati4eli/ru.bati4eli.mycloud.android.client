@@ -25,13 +25,9 @@ public class PhotoViewHolder extends AbstractViewHolder<ShortMediaInfoDto> {
      * Биндинг для каждого фото
      */
     @Override
-    public void bind(ShortMediaInfoDto item, OnItemClickListener listener) {
+    public void bind(ShortMediaInfoDto item, OnItemClickListener<ShortMediaInfoDto> listener) {
         try {
-            binding.getRoot().setOnClickListener(v -> {
-                if (listener != null) {
-                    listener.onItemClick(getAdapterPosition(), null);
-                }
-            });
+            setupOnClickListener(binding.getRoot(), item, listener);
             setupIcon(ShortInfo.of(item), binding.photoIcon, DownloadType.PREVIEW_SQUARE);
         } catch (Throwable e) {
             Log.e(TAG, "PhotoViewHolder: " + e.getLocalizedMessage());

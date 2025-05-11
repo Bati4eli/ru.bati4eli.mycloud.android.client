@@ -36,7 +36,7 @@ import java.util.Stack;
 import static ru.bati4eli.smartcloud.android.client.utils.Constants.TAG;
 import static ru.bati4eli.smartcloud.android.client.utils.MyUtils.calculateSpanCount;
 
-public class FilesFragment extends Fragment implements OnItemClickListener, OnBackPressedListener, OnChangedSortOrView {
+public class FilesFragment extends Fragment implements OnItemClickListener<GrpcFile>, OnBackPressedListener, OnChangedSortOrView {
     private TabFilesBinding binding;
     private MainActivity activity;
     private MaterialToolbar toolbar;
@@ -112,11 +112,10 @@ public class FilesFragment extends Fragment implements OnItemClickListener, OnBa
      * Событие когда кликают по одному из файлов
      */
     @Override
-    public void onItemClick(int position, String tag) {
+    public void onItemClick(int position, GrpcFile model) {
         try {
-            GrpcFile grpcFile = fileAdapter.get(position);
-            if (grpcFile.getMediaType() == TypeOfFile.FOLDER) {
-                moveToFolder(grpcFile);
+            if (model.getMediaType() == TypeOfFile.FOLDER) {
+                moveToFolder(model);
             }
             //Toast.makeText(getActivity(), "Ты кликнул: " + grpcFile.getName(), Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
