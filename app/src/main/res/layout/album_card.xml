@@ -24,8 +24,8 @@
 
         <com.joanzapata.iconify.widget.IconTextView
                 android:id="@+id/awesome_icon"
-                android:text="{fa-video-camera}"
-                android:layout_width="20dp"
+                android:text="{fa}"
+                android:layout_width="wrap_content"
                 android:layout_height="20dp"
                 android:textColor="@android:color/white"
                 android:shadowColor="@android:color/black"

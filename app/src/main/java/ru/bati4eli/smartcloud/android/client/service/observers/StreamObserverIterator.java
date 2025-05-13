@@ -1,12 +1,43 @@
 package ru.bati4eli.smartcloud.android.client.service.observers;
 
-import java.util.Iterator;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import androidx.annotation.NonNull;
+import org.jetbrains.annotations.NotNull;
 
-public class StreamObserverIterator<TYPE> extends BaseStreamObserver<TYPE> implements Iterator<TYPE> {
+import java.util.Iterator;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.function.Consumer;
+
+public class StreamObserverIterator<TYPE> extends BaseStreamObserver<TYPE> implements Iterator<TYPE>, Iterable<TYPE> {
     private final ConcurrentLinkedQueue<TYPE> queue = new ConcurrentLinkedQueue<>();
     private final Object lock = new Object();
 
+
+    public Throwable getError() {
+        return error;
+    }
+
+    public TYPE getFirst() {
+        if (this.hasNext()) {
+            return this.next();
+        }
+        return null;
+    }
+
+    public Optional<TYPE> getFirstOptional() {
+        return Optional.ofNullable(this.getFirst());
+    }
+
+    public void ifPresent(Consumer<? super TYPE> action) {
+        TYPE value = getFirst();
+        if (value != null) {
+            action.accept(value);
+        }
+    }
+
+    /// StreamObserver
+    /// StreamObserver
+    /// StreamObserver
     @Override
     public void onNext(TYPE value) {
         queue.offer(value);
@@ -28,6 +59,9 @@ public class StreamObserverIterator<TYPE> extends BaseStreamObserver<TYPE> imple
         }
     }
 
+    /// Iterator
+    /// Iterator
+    /// Iterator
     @Override
     public boolean hasNext() {
         // Если мы еще работаем и очередь пуста, мы ждем, пока не будут получены новые элементы или завершится поток.
@@ -54,7 +88,15 @@ public class StreamObserverIterator<TYPE> extends BaseStreamObserver<TYPE> imple
         return queue.poll(); // Извлекаем элемент из очереди
     }
 
-    public Throwable getError() {
-        return error;
+    /// Iterable
+    /// Iterable
+    /// Iterable
+
+    @NonNull
+    @NotNull
+    @Override
+    public Iterator<TYPE> iterator() {
+        return this;
     }
+
 }

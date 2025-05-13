@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -22,6 +23,7 @@ import ru.bati4eli.smartcloud.android.client.tabs.common.OnItemClickListener;
 import java.util.Iterator;
 
 import static ru.bati4eli.smartcloud.android.client.utils.Constants.TAG;
+import static ru.bati4eli.smartcloud.android.client.utils.MyUtils.calculateSpanCount;
 
 public class AlbumsFragment extends Fragment implements OnBackPressedListener, OnItemClickListener<AlbumCardModel> {
     private TabAlbumsBinding binding;
@@ -31,36 +33,42 @@ public class AlbumsFragment extends Fragment implements OnBackPressedListener, O
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = TabAlbumsBinding.inflate(inflater, container, false);
-
-        AlbumAdapter adapter = new AlbumAdapter(this);
-        binding.recyclerYourAlbums.setAdapter(adapter);
-        binding.recyclerYourAlbums.setLayoutManager(new GridLayoutManager(getContext(), 2));
-        // Your albums (favorite, photos, videos) - как единичные items
+        int spanCount = calculateSpanCount(this, 200);
         try {
-            addAlbum(adapter, getFirst(grpcService.getAlbums(AlbumType.AT_FAVORITE)), "{fa-star #ffe600}", "Favorite");
-            addAlbum(adapter, getFirst(grpcService.getAlbums(AlbumType.AT_PHOTO)), "{fa-camera @color/ocean}", "Photos");
-            addAlbum(adapter, getFirst(grpcService.getAlbums(AlbumType.AT_VIDEO)), "{fa-video-camera @color/ocean}", "Videos");
+            // Your albums (favorite, photos, videos)
+            AlbumAdapter adapter = new AlbumAdapter(this);
+            binding.recyclerYourAlbums.setAdapter(adapter);
+            binding.recyclerYourAlbums.setLayoutManager(new GridLayoutManager(getContext(), spanCount));
+
+            grpcService.getAlbums(AlbumType.AT_FAVORITE)
+                    .ifPresent(album -> addAlbum(adapter, album, "{fa-star #ffe600}", "Favorite"));
+            grpcService.getAlbums(AlbumType.AT_PHOTO)
+                    .ifPresent(album -> addAlbum(adapter, album, "{fa-camera @color/ocean}", "Photos"));
+            grpcService.getAlbums(AlbumType.AT_VIDEO)
+                    .ifPresent(album -> addAlbum(adapter, album, "{fa-video-camera @color/ocean}", "Videos"));
+
+            // Background in the photo
+            AlbumAdapter backgroundAdapter = new AlbumAdapter(this);
+            binding.recyclerBackground.setAdapter(backgroundAdapter);
+            binding.recyclerBackground.setLayoutManager(new GridLayoutManager(getContext(), spanCount));
+            grpcService.getAlbums(AlbumType.AT_BACKGROUND)
+                    .forEach(albumInfo ->
+                            addAlbum(backgroundAdapter, albumInfo, "", albumInfo.getAlbumName())
+                    );
+
+            // Cameras
+            AlbumAdapter camerasAdapter = new AlbumAdapter(this);
+            binding.recyclerCameras.setAdapter(camerasAdapter);
+            binding.recyclerCameras.setLayoutManager(new GridLayoutManager(getContext(), spanCount));
+            grpcService.getAlbums(AlbumType.AT_CAMERAS)
+                    .forEach(albumInfo ->
+                            addAlbum(camerasAdapter, albumInfo, "", albumInfo.getAlbumId() + " " + albumInfo.getAlbumName())
+                    );
         } catch (Throwable e) {
             Log.e(TAG, e.getMessage());
         }
+
 /*
-        //albumsAdapter = new AlbumCardAdapter(  this).addAll(yourAlbums);
-        binding.recyclerYourAlbums.setAdapter(albumsAdapter);
-
-        // Background in the photo
-        Iterator<RespAlbumInfo> bgIterator = grpcService.getAlbums(AlbumType.AT_BACKGROUND);
-        backgroundAdapter = new AlbumCardAdapter( album -> {
-            // обработка клика
-        });
-        binding.recyclerBackground.setAdapter(backgroundAdapter);
-
-        // Cameras
-        Iterator<RespAlbumInfo> camIterator = grpcService.getAlbums(AlbumType.AT_CAMERAS);
-        camerasAdapter = new AlbumCardAdapter( album -> {
-            // обработка клика
-        });
-        binding.recyclerCameras.setAdapter(camerasAdapter);
-
         // Faces on your photos
         Iterator<ShortFaceDto> facesIterator = grpcService.getFaces(); // замените на свой источник
         facesAdapter = new FaceCardAdapter( face -> {
@@ -89,6 +97,6 @@ public class AlbumsFragment extends Fragment implements OnBackPressedListener, O
 
     @Override
     public void onItemClick(int position, AlbumCardModel model) {
-
+        Toast.makeText(getActivity(), "Ты кликнул: " + model.getAlbumName(), Toast.LENGTH_SHORT).show();
     }
 }
