@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" >
+<!-- item_photo_layout.xml -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:padding="@dimen/photo_spacing">
 
     <ImageView
             android:id="@+id/photoIcon"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            android:src="@drawable/ic_file"
-            android:contentDescription="img"/>
+            android:src="@drawable/ic_file"/>
 
-</RelativeLayout>
+</FrameLayout>

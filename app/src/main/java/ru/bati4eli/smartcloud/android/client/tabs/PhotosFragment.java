@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import ru.bati4eli.mycloud.repo.ShortMediaInfoDto;
+import ru.bati4eli.smartcloud.android.client.R;
 import ru.bati4eli.smartcloud.android.client.databinding.TabPhotosBinding;
 import ru.bati4eli.smartcloud.android.client.service.GrpcService;
 import ru.bati4eli.smartcloud.android.client.service.MiserableDI;
@@ -17,8 +18,8 @@ import ru.bati4eli.smartcloud.android.client.service.observers.AdapterItemsObser
 import ru.bati4eli.smartcloud.android.client.tabs.common.OnBackPressedListener;
 import ru.bati4eli.smartcloud.android.client.tabs.common.OnItemClickListener;
 import ru.bati4eli.smartcloud.android.client.tabs.photoHelpers.PhotoAdapter;
-import ru.bati4eli.smartcloud.android.client.tabs.photoHelpers.SpacingItemDecoration;
 
+import static ru.bati4eli.smartcloud.android.client.utils.MyUtils.calculateItemSize;
 import static ru.bati4eli.smartcloud.android.client.utils.MyUtils.calculateSpanCount;
 
 public class PhotosFragment extends Fragment implements OnBackPressedListener, OnItemClickListener<ShortMediaInfoDto> {
@@ -30,17 +31,27 @@ public class PhotosFragment extends Fragment implements OnBackPressedListener, O
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = TabPhotosBinding.inflate(inflater, container, false);
-        //activity = (MainActivity) getActivity();
-        adapter = new PhotoAdapter(this);
-        int spanCount = calculateSpanCount(this, 100);
+
+        int spacing = getSpacing();
+        int tileWidthDp = 80; // НУЖНО чтобы при свайпе tileWidthDp менялось от 80 до 120 с шагом 10
+        int spanCount = calculateSpanCount(this, tileWidthDp);
+        int itemSize = calculateItemSize(this, spacing, spanCount);
+
+        adapter = new PhotoAdapter(this).setItemSize(itemSize);
+
         binding.recyclerViewPhotos.setLayoutManager(new GridLayoutManager(getContext(), spanCount));
         binding.recyclerViewPhotos.setAdapter(adapter);
-        binding.swipeRefreshLayout.setOnRefreshListener(this::updateSubFiles);
         binding.recyclerViewPhotos.setHasFixedSize(true);
-        binding.recyclerViewPhotos.setItemViewCacheSize(100);
-        binding.recyclerViewPhotos.addItemDecoration(new SpacingItemDecoration(1));
+        binding.swipeRefreshLayout.setOnRefreshListener(this::updateSubFiles);
         updateSubFiles();
         return binding.getRoot();
+    }
+
+    /**
+     * отступы между плитками.
+     */
+    private int getSpacing() {
+        return getResources().getDimensionPixelSize(R.dimen.photo_spacing);
     }
 
     private void updateSubFiles() {

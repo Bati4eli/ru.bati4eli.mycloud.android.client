@@ -16,9 +16,17 @@ import static ru.bati4eli.smartcloud.android.client.utils.Constants.TAG;
 public class PhotoViewHolder extends AbstractViewHolder<ShortMediaInfoDto> {
     private final ItemPhotoLayoutBinding binding;
 
-    public PhotoViewHolder(@NonNull ViewGroup parent) {
+    public PhotoViewHolder(@NonNull ViewGroup parent, int size) {
         super(parent, R.layout.item_photo_layout);
         binding = ItemPhotoLayoutBinding.bind(super.itemView);
+        ViewGroup.LayoutParams params = itemView.getLayoutParams();
+        if (params == null) {
+            params = new ViewGroup.LayoutParams(size, size);
+        } else {
+            params.width = size;
+            params.height = size;
+        }
+        itemView.setLayoutParams(params);
     }
 
     /**

@@ -62,7 +62,7 @@ public class AlbumsFragment extends Fragment implements OnBackPressedListener, O
             binding.recyclerCameras.setLayoutManager(new GridLayoutManager(getContext(), spanCount));
             grpcService.getAlbums(AlbumType.AT_CAMERAS)
                     .forEach(albumInfo ->
-                            addAlbum(camerasAdapter, albumInfo, "", albumInfo.getAlbumId() + " " + albumInfo.getAlbumName())
+                            addAlbum(camerasAdapter, albumInfo, "", albumInfo.getAlbumId() + "\n" + albumInfo.getAlbumName())
                     );
         } catch (Throwable e) {
             Log.e(TAG, e.getMessage());

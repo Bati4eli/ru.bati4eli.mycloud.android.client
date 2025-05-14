@@ -16,6 +16,7 @@ import ru.bati4eli.smartcloud.android.client.R;
 import ru.bati4eli.smartcloud.android.client.model.ShortInfo;
 import ru.bati4eli.smartcloud.android.client.service.GrpcService;
 import ru.bati4eli.smartcloud.android.client.service.MiserableDI;
+import ru.bati4eli.smartcloud.android.client.tabs.PhotosFragment;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -88,6 +89,12 @@ public class MyUtils {
         int tileWidthPx = (int) (tileWidthDp * density);
         // Определяем количество колонок
         return Math.max(1, displayWidth / tileWidthPx);
+    }
+
+    public static int calculateItemSize(Fragment fragment, int spacing, int spanCount) {
+        int totalSpacing = spacing * (spanCount + 1);
+        int screenWidth = fragment.getResources().getDisplayMetrics().widthPixels;
+        return (screenWidth - totalSpacing) / spanCount;
     }
 
     public static double compareSeconds(Date dt1, Date dt2) {

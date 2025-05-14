@@ -20,7 +20,7 @@ public abstract class AbstractViewHolder<TYPE> extends RecyclerView.ViewHolder {
 
     public abstract void bind(TYPE item, OnItemClickListener<TYPE> listener);
 
-    protected void setupOnClickListener(RelativeLayout root, TYPE item, OnItemClickListener<TYPE> listener) {
+    protected void setupOnClickListener(ViewGroup root, TYPE item, OnItemClickListener<TYPE> listener) {
         root.setOnClickListener(v -> {
             if (listener != null) {
                 listener.onItemClick(getAdapterPosition(), item);
