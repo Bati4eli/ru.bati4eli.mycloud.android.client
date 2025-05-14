@@ -35,7 +35,9 @@ public class AdapterItemsObserver<TYPE, ADAPTER extends AbstractItemAdapter<TYPE
     }
 
     private void onFinally() {
-        swipeRefreshLayout.setRefreshing(false);
+        if (swipeRefreshLayout != null) {
+            swipeRefreshLayout.setRefreshing(false);
+        }
         adapter.finishAndShow();
         working.set(false);
     }

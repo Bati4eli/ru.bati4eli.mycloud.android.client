@@ -15,8 +15,6 @@ import ru.bati4eli.smartcloud.android.client.tabs.common.OnChangedSortOrView;
 import ru.bati4eli.smartcloud.android.client.tabs.common.ViewPagerAdapter;
 import ru.bati4eli.smartcloud.android.client.utils.ParametersUtil;
 
-import static ru.bati4eli.smartcloud.android.client.utils.Constants.TAG;
-
 public class MainActivity extends AppCompatActivity implements OnChangedSortOrView {
 
     @Getter
@@ -36,6 +34,7 @@ public class MainActivity extends AppCompatActivity implements OnChangedSortOrVi
         binding.viewPager.registerOnPageChangeCallback(getOnPageChangeCallback());
         // Переключение вкладки при нажатии на кнопки меню внизу
         binding.bottomNavigationView.setOnItemSelectedListener(getOnItemSelectedListener());
+        //binding.viewPager.setUserInputEnabled(false);
     }
 
     private ViewPager2.OnPageChangeCallback getOnPageChangeCallback() {
