@@ -11,6 +11,7 @@ navigationUi = "2.6.0"
 securityCrypto = "1.1.0-alpha06"
 preference = "1.2.1"
 swiperefreshlayout = "1.1.0"
+recyclerview = "1.4.0"
 
 [libraries]
 gradle = { module = "com.android.tools.build:gradle" }
@@ -25,6 +26,7 @@ navigation-ui = { group = "androidx.navigation", name = "navigation-ui", version
 security-crypto = { module = "androidx.security:security-crypto", version.ref = "securityCrypto" }
 preference = { group = "androidx.preference", name = "preference", version.ref = "preference" }
 swiperefreshlayout = { group = "androidx.swiperefreshlayout", name = "swiperefreshlayout", version.ref = "swiperefreshlayout" }
+recyclerview = { group = "androidx.recyclerview", name = "recyclerview", version.ref = "recyclerview" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

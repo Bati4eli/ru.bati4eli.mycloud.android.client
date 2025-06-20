@@ -17,7 +17,7 @@ public class PhotoAdapter extends AbstractItemAdapter<ShortMediaInfoDto> {
         return this;
     }
 
-    public PhotoAdapter(OnItemClickListener clickListener/*, ViewTypeEnum viewType*/) {
+    public PhotoAdapter(OnItemClickListener clickListener) {
         super(clickListener);
     }
 

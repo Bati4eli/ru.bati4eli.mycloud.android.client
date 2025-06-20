@@ -50,7 +50,7 @@ public abstract class AbstractItemAdapter<TYPE> extends RecyclerView.Adapter<Abs
 
     @Override
     public void onBindViewHolder(@NonNull @NotNull AbstractViewHolder<TYPE> holder, int position) {
-        holder.bind(items.get(position), listener);
+        holder.bind(get(position), listener);
     }
 
 }

@@ -23,10 +23,9 @@ import ru.bati4eli.smartcloud.android.client.tabs.common.OnItemClickListener;
 import ru.bati4eli.smartcloud.android.client.tabs.photoHelpers.PhotoAdapter;
 
 import static ru.bati4eli.smartcloud.android.client.utils.MyUtils.calculateItemSize;
-import static ru.bati4eli.smartcloud.android.client.utils.MyUtils.calculateSpanCount;
 
 public class PhotosFragment extends Fragment implements OnBackPressedListener, OnItemClickListener<ShortMediaInfoDto> {
-    private int tileWidthDp = 80;
+    private int spanCount = 5;
     private TabPhotosBinding binding;
     private PhotoAdapter adapter;
     private ScaleGestureDetector scaleDetector;
@@ -39,12 +38,10 @@ public class PhotosFragment extends Fragment implements OnBackPressedListener, O
         binding = TabPhotosBinding.inflate(inflater, container, false);
 
         int spacing = getSpacing();
-        int spanCount = calculateSpanCount(this, tileWidthDp);
-        int itemSize =    calculateItemSize(this, spacing, spanCount);
-
+        int itemSize = calculateItemSize(this, spacing, spanCount);
+        scaleDetector = getScaleDetector();
         adapter = new PhotoAdapter(this).setItemSize(itemSize);
 
-        scaleDetector = getScaleDetector();
         binding.recyclerViewPhotos.setLayoutManager(new GridLayoutManager(getContext(), spanCount));
         binding.recyclerViewPhotos.setAdapter(adapter);
         binding.recyclerViewPhotos.setHasFixedSize(true);
@@ -70,9 +67,9 @@ public class PhotosFragment extends Fragment implements OnBackPressedListener, O
                 float scaleFactor = detector.getScaleFactor();
                 // Определяем увеличивать или уменьшать
                 if (scaleFactor > 1.05f) {
-                    changeTileWidth(+10);
+                    changeTileWidth(-1);
                 } else if (scaleFactor < 0.95f) {
-                    changeTileWidth(-10);
+                    changeTileWidth(+1);
                 }
                 return true;
             }
@@ -80,21 +77,20 @@ public class PhotosFragment extends Fragment implements OnBackPressedListener, O
     }
 
     private void changeTileWidth(int delta) {
-        int newWidth = tileWidthDp + delta;
-        if (newWidth < 80) newWidth = 80;
-        if (newWidth > 148) newWidth = 148;
-        if (newWidth == tileWidthDp) return; // Нет изменений
+        int newSpanCount = spanCount + delta;
+        if (newSpanCount < 2) newSpanCount = 2;
+        if (newSpanCount > 6) newSpanCount = 6;
+        if (newSpanCount == spanCount) return; // Нет изменений
 
-        tileWidthDp = newWidth;
+        spanCount = newSpanCount;
 
         int spacing = getSpacing();
-        int spanCount = calculateSpanCount(this, tileWidthDp);
-        int itemSize =  calculateItemSize(this, spacing, spanCount);
+        //int spanCount = calculateSpanCount(this, tileWidthDp);
+        int itemSize = calculateItemSize(this, spacing, spanCount);
 
         // Обновляем LayoutManager и размер плиток
-        GridLayoutManager glm = new GridLayoutManager(getContext(), spanCount);
-        binding.recyclerViewPhotos.setLayoutManager(glm);
-        adapter.setItemSize(itemSize); // тут notifyDataSetChanged не нужен, есть внутри setItemSize() по твоей структуре.
+        adapter.setItemSize(itemSize);
+        binding.recyclerViewPhotos.setLayoutManager(new GridLayoutManager(getContext(), spanCount));
     }
 
     /**
@@ -106,7 +102,7 @@ public class PhotosFragment extends Fragment implements OnBackPressedListener, O
 
     private void updateSubFiles() {
         adapter.clear();
-        grpcService.getPhotos(new AdapterItemsObserver<>(adapter, null /*binding.swipeRefreshLayout*/));
+        grpcService.getPhotos(new AdapterItemsObserver<>(adapter, binding.swipeRefreshLayout));
     }
 
     @Override
