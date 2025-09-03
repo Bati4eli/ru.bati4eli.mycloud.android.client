@@ -1,11 +1,9 @@
 package ru.bati4eli.smartcloud.android.client;
 
 import android.os.Bundle;
-import android.util.Log;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.viewpager2.widget.ViewPager2;
 import com.google.android.material.navigation.NavigationBarView;
 import lombok.Getter;
 import ru.bati4eli.smartcloud.android.client.databinding.ActivityMainBinding;
@@ -30,45 +28,25 @@ public class MainActivity extends AppCompatActivity implements OnChangedSortOrVi
         setContentView(binding.getRoot());
         // Устанавливаем Adapter для ViewPager2
         adapter = new ViewPagerAdapter(this, binding.viewPager);
-        // Устанавливаем слушатель для перелистывания страниц
-        binding.viewPager.registerOnPageChangeCallback(getOnPageChangeCallback());
+        adapter.registerOnPageChangeCallback(binding.bottomNavigationView);
         // Переключение вкладки при нажатии на кнопки меню внизу
         binding.bottomNavigationView.setOnItemSelectedListener(getOnItemSelectedListener());
         //binding.viewPager.setUserInputEnabled(false);
     }
 
-    private ViewPager2.OnPageChangeCallback getOnPageChangeCallback() {
-        return new ViewPager2.OnPageChangeCallback() {
-            @Override
-            public void onPageSelected(int position) {
-                super.onPageSelected(position);
-                // Синхронизация BottomNavigationView с ViewPager
-                binding.bottomNavigationView
-                        .getMenu()
-                        .getItem(position)
-                        .setChecked(true);
-            }
-        };
-    }
-
+    /**
+     * Перелистывает страницы, при клике кнопок внизу.
+     */
     private NavigationBarView.OnItemSelectedListener getOnItemSelectedListener() {
         return item -> {
-            Log.i("MainActivity", "### bottomNavigationView.setOnItemSelectedListener Position: " + item.getItemId());
-            // Проверяем, какая вкладка выбрана, и устанавливаем соответствующую страницу ViewPager
-            int position;
-
-            if (item.getItemId() == R.id.tab_files) position = 0;
-            else if (item.getItemId() == R.id.tab_photos) position = 1;
-            else if (item.getItemId() == R.id.tab_albums) position = 2;
-            else if (item.getItemId() == R.id.tab_map) position = 3;
-            else if (item.getItemId() == R.id.tab_settings) position = 4;
-            else position = 0;
-
-            binding.viewPager.setCurrentItem(position, true);
+            adapter.setupPosition(item);
             return true;
         };
     }
 
+    /**
+     * При нажатии НАЗАД передается вызов текущей странице
+     */
     @Override
     public void onBackPressed() {
         Fragment currentFragment = adapter.getCurrentFragment();

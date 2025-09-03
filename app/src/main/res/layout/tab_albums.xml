@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-                                       android:layout_width="match_parent"
-                                       android:layout_height="match_parent"
-                                       android:fillViewport="true">
+<androidx.core.widget.NestedScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
     <LinearLayout
             android:orientation="vertical"
@@ -20,7 +21,7 @@
                 android:drawablePadding="8dp"
         />
 
-<!--        TODO СДЕЛАЙ ЧЕРЕЗ АДАПТЕР ТУТ ЛАЙОУТ НУ ТЫ ПОНЯЛ-->
+        <!--        TODO СДЕЛАЙ ЧЕРЕЗ АДАПТЕР ТУТ ЛАЙОУТ НУ ТЫ ПОНЯЛ-->
         <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerYourAlbums"
                 android:layout_width="match_parent"
