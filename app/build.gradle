@@ -47,8 +47,8 @@ dependencies {
     // Preferences
     implementation libs.security.crypto
     // lombok
-    implementation 'org.projectlombok:lombok:1.18.28'
-    annotationProcessor 'org.projectlombok:lombok:1.18.28'
+    implementation libs.projectlombok.lombok
+    annotationProcessor libs.projectlombok.lombok
     // GRPC
     implementation "io.grpc:grpc-stub:$grpcVersion"
     implementation "io.grpc:grpc-protobuf:$grpcVersion"
