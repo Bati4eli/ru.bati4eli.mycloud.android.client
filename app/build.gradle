@@ -57,6 +57,12 @@ dependencies {
     implementation 'com.j256.ormlite:ormlite-android:5.7'
     implementation 'com.j256.ormlite:ormlite-core:5.7'
 
+    // Map
+    implementation 'com.google.android.gms:play-services-maps:18.2.0'
+    implementation "com.google.android.gms:play-services-location:21.3.0"  // для геолокации, my-location, FusedLocationProvider
+    implementation "com.google.maps.android:android-maps-utils:3.8.2"     // утилиты: кластеризация, heatmaps и т.п. (опционально)
+    implementation "com.google.android.libraries.places:places:3.5.0"     // Places API (опционально)
+
     // FontAwesome
 //    implementation 'com.joanzapata.iconify:android-iconify:2.2.2'
     implementation 'com.joanzapata.iconify:android-iconify-fontawesome:2.2.2' // (v4.5)
