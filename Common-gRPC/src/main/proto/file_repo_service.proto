@@ -28,6 +28,8 @@ service FileUserRepoService {
 service MediaService {
   /** Find stream of photos and videos:   */
   rpc find_media_files(ReqFilterMedias) returns (stream ShortMediaInfoDto);
+  /**  */
+  rpc find_media_files_counters(ReqFilterMedias) returns (stream DateCounterResponse);
   /** Get file extra info: */
   rpc get_media_file_info(ReqExif) returns (MediaFileInfoDto);
   /** Set photo favorite:  */
@@ -278,6 +280,12 @@ message ShortMediaInfoDto{
   int32 nsfwLevel = 111;
   TypeOfFile mediaType = 15;
   int32 videoDurationSec = 22;
+}
+
+message DateCounterResponse {
+  int32 month = 1;
+  int32 year = 2;
+  int64 amount = 3;
 }
 
 message MediaFileInfoDto{

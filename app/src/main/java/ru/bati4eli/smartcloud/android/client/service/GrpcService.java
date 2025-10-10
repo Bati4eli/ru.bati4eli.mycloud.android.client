@@ -88,6 +88,7 @@ public class GrpcService {
                 .build();
 
         mediaService.findMediaFiles(request, responseObserver);
+        responseObserver.waiting(); // Это важно, асинхронно пока не получается получать список фото
     }
 
     public void downloadFileSync(ShortInfo info, DownloadType downloadType) {
