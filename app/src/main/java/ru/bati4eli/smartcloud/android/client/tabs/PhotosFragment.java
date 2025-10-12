@@ -37,7 +37,7 @@ public class PhotosFragment extends Fragment implements OnBackPressedListener, O
         int spacing = getSpacing();
         int itemSize = calculateItemSize(this, spacing, SPAN_COUNT);
         adapter = new PhotoAdapter(this).setItemSize(itemSize);
-
+        adapter.setSwipeRefreshLayout(binding.swipeRefreshLayout);
         binding.recyclerViewPhotos.setLayoutManager(new GridLayoutManager(getContext(), SPAN_COUNT));
         binding.recyclerViewPhotos.setAdapter(adapter);
         binding.swipeRefreshLayout.setOnRefreshListener(this::updateSubFiles);
@@ -55,7 +55,7 @@ public class PhotosFragment extends Fragment implements OnBackPressedListener, O
 
     private void updateSubFiles() {
         adapter.clear();
-        grpcService.getPhotos(new AdapterItemsObserver<>(adapter, binding.swipeRefreshLayout));
+        // grpcService.getPhotos(, , new AdapterItemsObserver<>(adapter));
     }
 
     @Override

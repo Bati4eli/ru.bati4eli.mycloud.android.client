@@ -1,10 +1,12 @@
 package ru.bati4eli.smartcloud.android.client.service;
 
 import android.util.Log;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import io.grpc.Channel;
 import io.grpc.ManagedChannel;
 import lombok.var;
 import ru.bati4eli.mycloud.repo.AlbumType;
+import ru.bati4eli.mycloud.repo.DateCounterResponse;
 import ru.bati4eli.mycloud.repo.DownloadFileReq;
 import ru.bati4eli.mycloud.repo.DownloadType;
 import ru.bati4eli.mycloud.repo.FileInfoRequest;
@@ -25,8 +27,10 @@ import ru.bati4eli.smartcloud.android.client.service.observers.AdapterItemsObser
 import ru.bati4eli.smartcloud.android.client.service.observers.DownloadFileObserver;
 import ru.bati4eli.smartcloud.android.client.service.observers.StreamObserverIterator;
 import ru.bati4eli.smartcloud.android.client.service.observers.SyncObserverOneResponse;
+import ru.bati4eli.smartcloud.android.client.tabs.photoHelpers.PhotoAdapter;
 import ru.bati4eli.smartcloud.android.client.utils.ParametersUtil;
 
+import java.time.OffsetDateTime;
 import java.util.Iterator;
 
 import static ru.bati4eli.smartcloud.android.client.utils.Constants.TAG;
@@ -81,16 +85,6 @@ public class GrpcService {
         responseObserver.waiting();
     }
 
-    public void getPhotos(AdapterItemsObserver<ShortMediaInfoDto, ?> responseObserver) {
-        ReqFilterMedias request = ReqFilterMedias.newBuilder()
-                .setLimit(100)
-                .setOffset(0)
-                .build();
-
-        mediaService.findMediaFiles(request, responseObserver);
-        responseObserver.waiting(); // Это важно, асинхронно пока не получается получать список фото
-    }
-
     public void downloadFileSync(ShortInfo info, DownloadType downloadType) {
         DownloadFileReq req = DownloadFileReq.newBuilder()
                 .setFileId(info.getFileId())
@@ -126,5 +120,32 @@ public class GrpcService {
         StreamObserverIterator<ShortFaceDto> responseObserver = new StreamObserverIterator<>();
         mediaService.getFaces(req, responseObserver);
         return responseObserver;
+    }
+
+    public Iterator<DateCounterResponse> getAllPhotosDateCounters() {
+        ReqFilterMedias req = ReqFilterMedias.newBuilder().build();
+        StreamObserverIterator<DateCounterResponse> responseObserver = new StreamObserverIterator<>();
+        mediaService.findMediaFilesCounters(req, responseObserver);
+        return responseObserver;
+    }
+
+    public void getPhotos(OffsetDateTime start, OffsetDateTime end, AdapterItemsObserver<ShortMediaInfoDto, ?> responseObserver) {
+        ReqFilterMedias request = ReqFilterMedias.newBuilder()
+                .setDateStart(start.toString())
+                .setDateEnd(end.toString())
+                .build();
+
+        mediaService.findMediaFiles(request, responseObserver);
+        responseObserver.waiting();
+    }
+
+    public void getPhotos(OffsetDateTime start, OffsetDateTime end, PhotoAdapter adapter) {
+        ReqFilterMedias request = ReqFilterMedias.newBuilder()
+                .setDateStart(start.toString())
+                .setDateEnd(end.toString())
+                .build();
+        var observer = new AdapterItemsObserver<>(adapter);
+        mediaService.findMediaFiles(request, observer);
+        observer.waiting();
     }
 }

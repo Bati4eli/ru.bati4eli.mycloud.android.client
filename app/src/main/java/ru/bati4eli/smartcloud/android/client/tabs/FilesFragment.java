@@ -54,6 +54,7 @@ public class FilesFragment extends Fragment implements OnItemClickListener<GrpcF
         toolbar.setOnMenuItemClickListener(this::onToolbarItemClicked);
 
         fileAdapter = new FileAdapter(this, ParametersUtil.getViewType());
+        fileAdapter.setSwipeRefreshLayout(binding.swipeRefreshLayout);
         changeViewType();
         binding.recyclerViewFiles.setHasFixedSize(true);
         // Вызов метода обновления данных
@@ -82,7 +83,7 @@ public class FilesFragment extends Fragment implements OnItemClickListener<GrpcF
     private void updateSubFiles() {
         fileAdapter.clear();
         fileAdapter.resetNewTree(GrpcFileComparator.getFileComparator());
-        grpcService.getSubFilesSync(currentFolder, new AdapterItemsObserver<>(fileAdapter, binding.swipeRefreshLayout));
+        grpcService.getSubFilesSync(currentFolder, new AdapterItemsObserver<>(fileAdapter));
     }
 
     private void moveToFolder(GrpcFile grpcFile) {

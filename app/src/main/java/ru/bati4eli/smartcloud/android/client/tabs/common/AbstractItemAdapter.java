@@ -2,8 +2,10 @@ package ru.bati4eli.smartcloud.android.client.tabs.common;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -16,6 +18,10 @@ public abstract class AbstractItemAdapter<TYPE> extends RecyclerView.Adapter<Abs
 
     @Getter
     protected final List<TYPE> items = new ArrayList<>();
+
+    @Getter
+    @Setter
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     public abstract void finishAndShow();
 

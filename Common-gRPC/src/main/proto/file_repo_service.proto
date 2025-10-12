@@ -266,11 +266,11 @@ message ReqSetFavorite {
   bool isFavorite = 2;
 }
 
-message GroupedPhotosByDate {
-  int32 year = 10;
-  int32 month = 20;
-  repeated ShortMediaInfoDto photo = 40;
-}
+//message GroupedPhotosByDate {
+//  int32 year = 10;
+//  int32 month = 20;
+//  repeated ShortMediaInfoDto photo = 40;
+//}
 
 message ShortMediaInfoDto{
   int64 fileId = 1;
