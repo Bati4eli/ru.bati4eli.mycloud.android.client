@@ -1,7 +1,6 @@
 package ru.bati4eli.smartcloud.android.client.service;
 
 import android.util.Log;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import io.grpc.Channel;
 import io.grpc.ManagedChannel;
 import lombok.var;
@@ -27,7 +26,7 @@ import ru.bati4eli.smartcloud.android.client.service.observers.AdapterItemsObser
 import ru.bati4eli.smartcloud.android.client.service.observers.DownloadFileObserver;
 import ru.bati4eli.smartcloud.android.client.service.observers.StreamObserverIterator;
 import ru.bati4eli.smartcloud.android.client.service.observers.SyncObserverOneResponse;
-import ru.bati4eli.smartcloud.android.client.tabs.photoHelpers.PhotoAdapter;
+import ru.bati4eli.smartcloud.android.client.tabs.photoHelpers.PhotoObserver;
 import ru.bati4eli.smartcloud.android.client.utils.ParametersUtil;
 
 import java.time.OffsetDateTime;
@@ -122,30 +121,29 @@ public class GrpcService {
         return responseObserver;
     }
 
-    public Iterator<DateCounterResponse> getAllPhotosDateCounters() {
+    public Iterator<DateCounterResponse> getMonthCounters() {
         ReqFilterMedias req = ReqFilterMedias.newBuilder().build();
         StreamObserverIterator<DateCounterResponse> responseObserver = new StreamObserverIterator<>();
         mediaService.findMediaFilesCounters(req, responseObserver);
         return responseObserver;
     }
 
-    public void getPhotos(OffsetDateTime start, OffsetDateTime end, AdapterItemsObserver<ShortMediaInfoDto, ?> responseObserver) {
+    public StreamObserverIterator<ShortMediaInfoDto> getAllPhotos() {
         ReqFilterMedias request = ReqFilterMedias.newBuilder()
-                .setDateStart(start.toString())
-                .setDateEnd(end.toString())
                 .build();
-
-        mediaService.findMediaFiles(request, responseObserver);
-        responseObserver.waiting();
-    }
-
-    public void getPhotos(OffsetDateTime start, OffsetDateTime end, PhotoAdapter adapter) {
-        ReqFilterMedias request = ReqFilterMedias.newBuilder()
-                .setDateStart(start.toString())
-                .setDateEnd(end.toString())
-                .build();
-        var observer = new AdapterItemsObserver<>(adapter);
+        var observer = new StreamObserverIterator<ShortMediaInfoDto>();
         mediaService.findMediaFiles(request, observer);
         observer.waiting();
+        return observer;
+    }
+
+    public void getPhotosByDate(OffsetDateTime start, OffsetDateTime end, PhotoObserver observer) {
+        Log.i(TAG, "LOADING getPhotosByDate " + start.toString() + " TO " + end.toString());
+        ReqFilterMedias request = ReqFilterMedias.newBuilder()
+                .setDateStart(start.toString())
+                .setDateEnd(end.toString())
+                .build();
+        //var observer = new StreamObserverIterator<ShortMediaInfoDto>();
+        mediaService.findMediaFiles(request, observer);
     }
 }
