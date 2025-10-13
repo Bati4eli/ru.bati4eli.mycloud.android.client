@@ -11,8 +11,13 @@ import java.time.YearMonth;
 @Accessors(chain = true)
 @RequiredArgsConstructor
 public class PhotoItem implements Item {
-    final YearMonth yearMonth;
-    final ShortMediaInfoDto photo;
-    boolean loaded = false;
+    private final YearMonth yearMonth;
+    private final MonthBucket bucket;
+    private ShortMediaInfoDto photo;
+    private boolean loaded = false;
 
+    public PhotoItem(MonthBucket bucket) {
+        this.yearMonth = bucket.getYearMonth();
+        this.bucket = bucket;
+    }
 }

@@ -8,6 +8,7 @@ import java.time.OffsetDateTime;
 import java.time.YearMonth;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 
 @Data
@@ -15,13 +16,19 @@ import java.time.temporal.ChronoUnit;
 public class MonthBucket {
     private final YearMonth yearMonth;
     private final long amount;
-    private final boolean loaded = false;
-    private final int startIndexPhoto = 0;
-    private final int endIndexPhoto = 0;
+    private boolean loaded = false;
+    private int startIndexPhoto = 0;
+    private AtomicInteger index = new AtomicInteger(0);
+    private int endIndexPhoto = 0;
 
     public MonthBucket(DateCounterResponse response) {
         this.yearMonth = YearMonth.of(response.getYear(), response.getMonth());
         this.amount = response.getAmount();
+    }
+
+    public void setStartIndexPhoto(int startIndexPhoto) {
+        this.startIndexPhoto = startIndexPhoto;
+        this.index.set(startIndexPhoto);
     }
 
     public OffsetDateTime getStartFilter() {
@@ -31,7 +38,6 @@ public class MonthBucket {
     public OffsetDateTime getEndFilter() {
         return yearMonth.plusMonths(1)
                 .atDay(1)
-                .minus(1, ChronoUnit.MILLIS)
                 .atStartOfDay()
                 .atOffset(ZoneOffset.UTC);
     }

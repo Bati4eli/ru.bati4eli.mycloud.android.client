@@ -1,5 +1,6 @@
 package ru.bati4eli.smartcloud.android.client.tabs.photoHelpers;
 
+import android.util.Log;
 import android.view.ViewGroup;
 import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
@@ -16,6 +17,7 @@ import ru.bati4eli.smartcloud.android.client.tabs.common.AbstractViewHolder;
 import ru.bati4eli.smartcloud.android.client.tabs.common.OnItemClickListener;
 import ru.bati4eli.smartcloud.android.client.tabs.photoHelpers.models.HeaderItem;
 import ru.bati4eli.smartcloud.android.client.tabs.photoHelpers.models.Item;
+import ru.bati4eli.smartcloud.android.client.tabs.photoHelpers.models.MonthBucket;
 import ru.bati4eli.smartcloud.android.client.tabs.photoHelpers.models.PhotoItem;
 
 import java.lang.annotation.Retention;
@@ -26,12 +28,12 @@ import java.util.List;
 
 import static ru.bati4eli.smartcloud.android.client.tabs.photoHelpers.models.ItemTypes.VT_HEADER;
 import static ru.bati4eli.smartcloud.android.client.tabs.photoHelpers.models.ItemTypes.VT_PHOTO;
+import static ru.bati4eli.smartcloud.android.client.utils.Constants.TAG;
 
 @Accessors(chain = true)
 public class PhotoAdapter extends RecyclerView.Adapter<AbstractViewHolder<Item>> {
     private List<Item> items = new ArrayList();
     private int pixelSize = 120;
-    private int totalItemsSize = 0;
     private GrpcService grpcService = MiserableDI.get(GrpcService.class);
 
     public YearMonth getMonthForPosition(int position) {
@@ -42,31 +44,57 @@ public class PhotoAdapter extends RecyclerView.Adapter<AbstractViewHolder<Item>>
                 .getYearMonth();
     }
 
+    /**
+     * Заполняем items пустыми ячейками, и подгоняем по размерам его до указанных в счетчиках
+     */
+    public void initListFromCounters(List<MonthBucket> monthBuckets) {
+        monthBuckets.forEach(bucket -> {
+            items.add(new HeaderItem(bucket));
+            bucket.setStartIndexPhoto(items.size() - 1); // Начало будет указывать на заголовок бакета
+            for (long i = 0; i < bucket.getAmount(); i++) {
+                items.add(new PhotoItem(bucket));
+            }
+            bucket.setEndIndexPhoto(items.size() - 1); // Запоминаем индекс последнего фото для этой даты
+        });
+    }
+
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({VT_HEADER, VT_PHOTO})
     public @interface ViewType {
     }
 
-    public int addHeader(YearMonth ym) {
-        HeaderItem header = new HeaderItem(ym);
-        items.add(header);
-        int pos = items.size() - 1;
-        notifyItemInserted(pos);
-        return pos;
-    }
+//    public int addHeader(YearMonth ym) {
+//        HeaderItem header = new HeaderItem(ym);
+//        items.add(header);
+//        int pos = items.size() - 1;
+//        notifyItemInserted(pos);
+//        return pos;
+//    }
+//
+//    public void addPhoto(YearMonth ym, ShortMediaInfoDto photo) {
+//        // Гарантируем, что перед фотками соответствующего месяца уже есть заголовок.
+//        // Здесь упрощённо: считаем, что заголовок добавлен ранее через addHeader().
+//        PhotoItem pi = new PhotoItem(ym, photo);
+//        items.add(pi);
+//        notifyItemInserted(items.size() - 1);
+//    }
 
-    public void addPhoto(YearMonth ym, ShortMediaInfoDto photo) {
-        // Гарантируем, что перед фотками соответствующего месяца уже есть заголовок.
-        // Здесь упрощённо: считаем, что заголовок добавлен ранее через addHeader().
-        PhotoItem pi = new PhotoItem(ym, photo);
-        items.add(pi);
-        notifyItemInserted(items.size() - 1);
+
+    public void addPhoto(MonthBucket bucket, ShortMediaInfoDto mediaInfoDto) {
+        int index = bucket.getIndex().incrementAndGet(); // инкрементируем индекс в бакете для вставки
+        if (index > bucket.getEndIndexPhoto()) {
+            Log.w(TAG, "Индекс вышел за рамки вставки! Требуется пересборка списка счетчиков!");
+            return;
+        }
+        PhotoItem item = (PhotoItem) items.get(index);
+        item.setPhoto(mediaInfoDto);
+        item.setLoaded(true);
+        bucket.setLoaded(true);
+        notifyItemChanged(index);
     }
 
     @Override
     public int getItemViewType(int position) {
-        if(items.isEmpty()) return VT_HEADER; //todo fixme
-
         Item it = items.get(position);
         if (it instanceof HeaderItem) return VT_HEADER;
         return VT_PHOTO;
@@ -92,7 +120,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<AbstractViewHolder<Item>>
         //LayoutInflater inf = LayoutInflater.from(parent.getContext());
         if (viewType == VT_HEADER) {
             //View v = inf.inflate(R.layout.item_month_header, parent, false);
-            return new HeaderVH(parent);
+            return new HeaderViewHolder(parent);
         } else {
             //View v = inf.inflate(R.layout.item_photo_layout, parent, false);
             return new PhotoViewHolder(parent, pixelSize);
@@ -102,12 +130,12 @@ public class PhotoAdapter extends RecyclerView.Adapter<AbstractViewHolder<Item>>
     @Override
     public void onBindViewHolder(@NonNull @NotNull AbstractViewHolder holder, int position) {
         Item it = items.get(position);
-        if (holder instanceof HeaderVH && it instanceof HeaderItem) {
+        if (holder instanceof HeaderViewHolder && it instanceof HeaderItem) {
             HeaderItem hi = (HeaderItem) it;
-            ((HeaderVH) holder).bind(hi, null);
+            holder.bind(hi, null);
         } else if (holder instanceof PhotoViewHolder && it instanceof PhotoItem) {
             PhotoItem pi = (PhotoItem) it;
-            ((PhotoViewHolder) holder).bind(pi, listener);
+            holder.bind(pi, listener);
         }
     }
 
@@ -115,19 +143,5 @@ public class PhotoAdapter extends RecyclerView.Adapter<AbstractViewHolder<Item>>
     public int getItemCount() {
         return items.size() + 1;
     }
-
-//    @SuppressLint("NewApi")
-//    public void start() {
-//        Iterator<DateCounterResponse> counters = grpcService.getAllPhotosDateCounters();
-//        counters.forEachRemaining(counter -> {
-//            int year = counter.getYear();
-//            int month = counter.getMonth();
-//            long amount = counter.getAmount();
-//            YearMonth yearMonth = YearMonth.of(year, month);
-//            //items.computeIfAbsent(yearMonth, k -> new PhotosContainer().setSize(amount));
-//            totalItemsSize += amount + 1; // +1 Заголовок
-//            Log.i(TAG, "Loading photos for " + year + "-" + month);
-//        });
-//    }
 
 }

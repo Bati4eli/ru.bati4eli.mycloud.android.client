@@ -11,5 +11,10 @@ import java.time.YearMonth;
 @RequiredArgsConstructor
 public class HeaderItem implements Item {
     private final YearMonth yearMonth;
+    private final MonthBucket monthBucket;
 
+    public HeaderItem(MonthBucket monthBucket) {
+        this.yearMonth = monthBucket.getYearMonth();
+        this.monthBucket = monthBucket;
+    }
 }

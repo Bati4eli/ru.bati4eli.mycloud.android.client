@@ -87,9 +87,9 @@ public class PhotosFragment extends Fragment implements OnBackPressedListener, O
         photosRecyclerView.setAdapter(adapter);
         isViewActive = true;
 
-        setupScrollListeners();
         loadMonthCounters();
 
+        setupScrollListeners();
         // binding.swipeRefreshLayout.setOnRefreshListener(this::updateSubFiles);
         // updateSubFiles();
         return binding.getRoot();
@@ -100,11 +100,6 @@ public class PhotosFragment extends Fragment implements OnBackPressedListener, O
      */
     private int getSpacing() {
         return super.getResources().getDimensionPixelSize(R.dimen.photo_spacing);
-    }
-
-    @SuppressLint("NewApi")
-    private void updateSubFiles() {
-        //todo  adapter.start();
     }
 
     @Override
@@ -127,6 +122,12 @@ public class PhotosFragment extends Fragment implements OnBackPressedListener, O
         grpcService.getMonthCounters().forEachRemaining(counter -> monthBuckets.add(new MonthBucket(counter)));
         // Преобразуем в YearMonth + amount, сортируем по убыванию даты (новые сначала)
         monthBuckets.sort(Comparator.comparing(MonthBucket::getYearMonth).reversed());
+        // Инициализация пустого массива фоток и заголовков. Заполнение monthBuckets индексами
+        adapter.initListFromCounters(monthBuckets);
+        // Инициализируем headerAdapterPositions
+        monthBuckets.forEach(bucket ->
+                headerAdapterPositions.put(bucket.getYearMonth(), bucket.getStartIndexPhoto())
+        );
         // Инициализируем быстрый скроллер по месяцам
         setupMonthFastScroller();
         // Загружаем первый месяц
@@ -141,23 +142,16 @@ public class PhotosFragment extends Fragment implements OnBackPressedListener, O
         isLoadingMonth = true;
         MonthBucket bucket = monthBuckets.get(nextMonthIndexToLoad);
         YearMonth ym = bucket.getYearMonth();
-
-        // Добавить заголовок секции в адаптер (если его ещё нет)
-        if (!headerAdapterPositions.containsKey(ym)) {
-            int headerPos = adapter.addHeader(ym);
-            headerAdapterPositions.put(ym, headerPos);
-        }
-
         // Подгрузка фоток этого месяца
-        var observer = new PhotoObserver(ym, this::observeOnNext, this::observeOnCompleted, this::observeOnError);
+        var observer = new PhotoObserver(bucket, this::observeOnNext, this::observeOnCompleted, this::observeOnError);
         grpcService.getPhotosByDate(bucket.getStartFilter(), bucket.getEndFilter(), observer);
     }
 
-    public void observeOnNext(YearMonth yearMonth, ShortMediaInfoDto item) {
+    public void observeOnNext(MonthBucket bucket, ShortMediaInfoDto item) {
         // ВАЖНО: observer будет звать add в фоне — переносим в главный поток
         mainHandler.post(() -> {
             if (!isViewActive || adapter == null) return;
-            adapter.addPhoto(yearMonth, item);
+            adapter.addPhoto(bucket, item);
         });
     }
 

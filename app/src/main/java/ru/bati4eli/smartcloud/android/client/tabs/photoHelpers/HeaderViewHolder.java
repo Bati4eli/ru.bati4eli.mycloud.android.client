@@ -13,10 +13,10 @@ import java.time.YearMonth;
 import java.util.Locale;
 
 
-public class HeaderVH extends AbstractViewHolder<HeaderItem> {
+public class HeaderViewHolder extends AbstractViewHolder<HeaderItem> {
     private TextView title;
 
-    public HeaderVH(@NonNull ViewGroup parent) {
+    public HeaderViewHolder(@NonNull ViewGroup parent) {
         super(parent, R.layout.item_month_header);
         title = itemView.findViewById(R.id.headerTitle);
     }
