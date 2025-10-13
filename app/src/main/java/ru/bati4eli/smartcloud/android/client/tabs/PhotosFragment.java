@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,14 +29,19 @@ import ru.bati4eli.smartcloud.android.client.tabs.photoHelpers.PhotoAdapter;
 import ru.bati4eli.smartcloud.android.client.tabs.photoHelpers.PhotoObserver;
 import ru.bati4eli.smartcloud.android.client.tabs.photoHelpers.models.MonthBucket;
 import ru.bati4eli.smartcloud.android.client.tabs.photoHelpers.models.PhotoItem;
+import ru.bati4eli.smartcloud.android.client.utils.MyUtils;
 
 import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static ru.bati4eli.smartcloud.android.client.tabs.photoHelpers.models.ItemTypes.VT_HEADER;
 import static ru.bati4eli.smartcloud.android.client.utils.MyUtils.calculateItemSize;
@@ -43,9 +49,7 @@ import static ru.bati4eli.smartcloud.android.client.utils.MyUtils.calculateItemS
 public class PhotosFragment extends Fragment implements OnBackPressedListener, OnItemClickListener<PhotoItem> {
 
     private static final int SPAN_COUNT = 4;
-    private static final int PREFETCH_THRESHOLD = 40;   // подгрузить следующий месяц заранее
-    private boolean isLoadingMonth = false;
-    private int nextMonthIndexToLoad = 0;
+
     private TabPhotosBinding binding;
     private PhotoAdapter adapter;
     private RecyclerView photosRecyclerView;
@@ -90,8 +94,6 @@ public class PhotosFragment extends Fragment implements OnBackPressedListener, O
         loadMonthCounters();
 
         setupScrollListeners();
-        // binding.swipeRefreshLayout.setOnRefreshListener(this::updateSubFiles);
-        // updateSubFiles();
         return binding.getRoot();
     }
 
@@ -136,15 +138,21 @@ public class PhotosFragment extends Fragment implements OnBackPressedListener, O
 
     @SuppressLint("NewApi")
     private void loadNextMonthIfNeeded() {
-        if (isLoadingMonth) return;
-        if (nextMonthIndexToLoad >= monthBuckets.size()) return;
-
-        isLoadingMonth = true;
-        MonthBucket bucket = monthBuckets.get(nextMonthIndexToLoad);
-        YearMonth ym = bucket.getYearMonth();
-        // Подгрузка фоток этого месяца
-        var observer = new PhotoObserver(bucket, this::observeOnNext, this::observeOnCompleted, this::observeOnError);
-        grpcService.getPhotosByDate(bucket.getStartFilter(), bucket.getEndFilter(), observer);
+        int firstVisible = gridLayoutManager.findFirstVisibleItemPosition();
+        firstVisible = Math.max(firstVisible, 0);
+        int lastVisible = gridLayoutManager.findLastVisibleItemPosition();
+        // Сбор всех бакетов которые отображаются на экране сейчас и загрузка их!
+        IntStream.rangeClosed(firstVisible, lastVisible)
+                .mapToObj(i -> adapter.getBucketByIndex(i)).collect(Collectors.toSet())
+                .stream()
+                .filter(bucket -> !bucket.isLoaded()) // только те бакеты что не были загружены
+                .forEach(bucket -> {
+                    // Подгрузка фоток этого месяца
+                    // TODO Нужно организовать очередь задач на подгрузку!!
+                    //TODO Сейчас все еще дублируются запросы на дозагрузку!
+                    var observer = new PhotoObserver(bucket, this::observeOnNext, this::observeOnCompleted, this::observeOnError);
+                    grpcService.getPhotosByDate(bucket.getStartFilter(), bucket.getEndFilter(), observer);
+                });
     }
 
     public void observeOnNext(MonthBucket bucket, ShortMediaInfoDto item) {
@@ -156,25 +164,12 @@ public class PhotosFragment extends Fragment implements OnBackPressedListener, O
     }
 
     public void observeOnCompleted() {
-        mainHandler.post(() -> {
-            if (!isViewActive) return;
-            // отмечаем, что месяц загружен, двигаемся к следующему
-            nextMonthIndexToLoad++;
-            isLoadingMonth = false;
-            // если выбрана цель догрузки до конкретного месяца — продолжаем
-            if (targetMonthIndex != -1 && nextMonthIndexToLoad <= targetMonthIndex) {
-                loadNextMonthIfNeeded();
-            } else {
-                targetMonthIndex = -1;
-                // если пользователь уже близко к концу — загрузим следующий
-                maybePrefetchNext();
-            }
-        });
+
     }
 
     public void observeOnError(Throwable t) {
         mainHandler.post(() -> {
-            isLoadingMonth = false;
+            //isLoadingMonth = false;
             if (isViewActive && getContext() != null) {
                 Toast.makeText(getContext(), "Ошибка загрузки фото: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
@@ -186,9 +181,10 @@ public class PhotosFragment extends Fragment implements OnBackPressedListener, O
         int lastVisible = gridLayoutManager.findLastVisibleItemPosition();
         int total = adapter.getItemCount();
         if (total <= 0 || lastVisible == RecyclerView.NO_POSITION) return;
-        if (total - lastVisible < PREFETCH_THRESHOLD) {
-            loadNextMonthIfNeeded();
-        }
+        Log.i("INDEX", "maybePrefetchNext: lastVisible=" + lastVisible + ", total=" + total);
+        //if (total - lastVisible < PREFETCH_THRESHOLD) {
+        loadNextMonthIfNeeded();
+        //}
     }
 
     // ----------------------------------------
@@ -211,7 +207,7 @@ public class PhotosFragment extends Fragment implements OnBackPressedListener, O
         if (firstVisiblePos == RecyclerView.NO_POSITION) return;
         YearMonth ym = adapter.getMonthForPosition(firstVisiblePos);
         if (ym != null) {
-            stickyMonthTextView.setText(formatMonth(ym));
+            stickyMonthTextView.setText(MyUtils.getLabelYearAndMonth(ym));
         }
     }
 
@@ -228,9 +224,9 @@ public class PhotosFragment extends Fragment implements OnBackPressedListener, O
             if (idx >= 0) {
                 // Если этот месяц ещё не загрузили, последовательно догружаем до него
                 targetMonthIndex = idx;
-                if (nextMonthIndexToLoad <= idx) {
-                    loadNextMonthIfNeeded();
-                }
+                // if (nextMonthIndexToLoad <= idx) {
+                //     loadNextMonthIfNeeded();
+                // }
                 // После добавления заголовка map заполнится; сделаем пост-скролл
                 mainHandler.postDelayed(() -> {
                     Integer hp = headerAdapterPositions.get(ym);
@@ -249,14 +245,6 @@ public class PhotosFragment extends Fragment implements OnBackPressedListener, O
             }
         }
         return -1;
-    }
-
-    @SuppressLint("NewApi")
-    private String formatMonth(YearMonth ym) {
-        // Формат MM.YYYY
-        int m = ym.getMonthValue();
-        int y = ym.getYear();
-        return String.format(Locale.getDefault(), "%02d.%04d", m, y);
     }
 
     @Override

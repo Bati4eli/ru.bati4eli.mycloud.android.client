@@ -1,5 +1,6 @@
 package ru.bati4eli.smartcloud.android.client.utils;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -16,11 +17,11 @@ import ru.bati4eli.smartcloud.android.client.R;
 import ru.bati4eli.smartcloud.android.client.model.ShortInfo;
 import ru.bati4eli.smartcloud.android.client.service.GrpcService;
 import ru.bati4eli.smartcloud.android.client.service.MiserableDI;
-import ru.bati4eli.smartcloud.android.client.tabs.PhotosFragment;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.time.OffsetDateTime;
+import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.HashSet;
@@ -31,6 +32,13 @@ import static ru.bati4eli.smartcloud.android.client.utils.Constants.TAG;
 
 
 public class MyUtils {
+    @SuppressLint("NewApi")
+    public static String getLabelYearAndMonth(YearMonth ym) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("LLLL", Locale.getDefault());
+        String label = ym.format(formatter);
+        label = ym.getYear() + " " + label.substring(0, 1).toUpperCase(Locale.getDefault()) + label.substring(1);
+        return label;
+    }
 
     public static void mkdir(String folderName) {
         File directory = new File(Constants.APP_DIRECTORY, folderName);

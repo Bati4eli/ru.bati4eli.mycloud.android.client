@@ -35,6 +35,7 @@ public class PhotoViewHolder extends AbstractViewHolder<PhotoItem> {
     @Override
     public void bind(PhotoItem item, OnItemClickListener<PhotoItem> listener) {
         try {
+            Log.d(TAG, "Binding PhotoItem FileId: " + item.getPhoto().getFileId());
             setOnClick(item, listener);
             setupIcon(ShortInfo.of(item.getPhoto()), binding.photoIcon, DownloadType.PREVIEW_SQUARE);
         } catch (Throwable e) {

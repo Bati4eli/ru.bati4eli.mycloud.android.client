@@ -23,7 +23,7 @@
             android:layout_margin="12dp"
             android:background="@android:color/transparent"
             android:textColor="@android:color/white"
-            android:textSize="16sp"
+            android:textSize="18sp"
             android:padding="6dp"
             android:elevation="4dp"
             android:text="--.--"
@@ -32,7 +32,7 @@
     <!-- Быстрый скроллер по месяцам (горизонтальный) -->
     <com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
             android:id="@+id/monthFastScrollRv"
-            android:layout_width="60dp"
+            android:layout_width="100dp"
             android:layout_height="match_parent"
             android:layout_gravity="right"
             android:background="#66000000"

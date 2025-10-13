@@ -9,8 +9,7 @@ import ru.bati4eli.smartcloud.android.client.tabs.common.AbstractViewHolder;
 import ru.bati4eli.smartcloud.android.client.tabs.common.OnItemClickListener;
 import ru.bati4eli.smartcloud.android.client.tabs.photoHelpers.models.HeaderItem;
 
-import java.time.YearMonth;
-import java.util.Locale;
+import static ru.bati4eli.smartcloud.android.client.utils.MyUtils.getLabelYearAndMonth;
 
 
 public class HeaderViewHolder extends AbstractViewHolder<HeaderItem> {
@@ -24,8 +23,7 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderItem> {
     @SuppressLint("NewApi")
     @Override
     public void bind(HeaderItem item, OnItemClickListener<HeaderItem> listener) {
-        YearMonth ym = item.getYearMonth();
-        String label = String.format(Locale.getDefault(), "%02d.%04d", ym.getMonthValue(), ym.getYear());
+        String label = getLabelYearAndMonth(item.getYearMonth());
         title.setText(label);
     }
 

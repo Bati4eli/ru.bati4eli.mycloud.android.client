@@ -13,6 +13,11 @@ public abstract class BaseStreamObserver<TYPE> implements StreamObserver<TYPE>  
         return working.get();
     }
 
+    @Override
+    public void onCompleted() {
+        working.set(false);
+    }
+
     public final void waiting() {
         while (isWorking()) {
         }

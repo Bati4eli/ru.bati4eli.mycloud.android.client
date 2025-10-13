@@ -2,16 +2,17 @@ package ru.bati4eli.smartcloud.android.client.tabs.photoHelpers.models;
 
 import android.annotation.SuppressLint;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import ru.bati4eli.mycloud.repo.DateCounterResponse;
 
 import java.time.OffsetDateTime;
 import java.time.YearMonth;
 import java.time.ZoneOffset;
-import java.time.temporal.ChronoUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
 @Data
+@EqualsAndHashCode
 @SuppressLint("NewApi")
 public class MonthBucket {
     private final YearMonth yearMonth;

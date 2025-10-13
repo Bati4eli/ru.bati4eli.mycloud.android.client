@@ -1,10 +1,10 @@
 <!-- item_month_header.xml -->
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-          android:id="@+id/headerTitle"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:padding="12dp"
-          android:textStyle="bold"
-          android:textSize="16sp"
-          android:background="#eeeeee"
-          android:text="01.2024" />
+<com.joanzapata.iconify.widget.IconTextView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/headerTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="12dp"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:text="01.2024"/>

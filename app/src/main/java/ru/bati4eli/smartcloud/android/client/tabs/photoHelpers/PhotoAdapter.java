@@ -32,7 +32,7 @@ import static ru.bati4eli.smartcloud.android.client.utils.Constants.TAG;
 
 @Accessors(chain = true)
 public class PhotoAdapter extends RecyclerView.Adapter<AbstractViewHolder<Item>> {
-    private List<Item> items = new ArrayList();
+    private List<Item> items = new ArrayList<>();
     private int pixelSize = 120;
     private GrpcService grpcService = MiserableDI.get(GrpcService.class);
 
@@ -49,8 +49,8 @@ public class PhotoAdapter extends RecyclerView.Adapter<AbstractViewHolder<Item>>
      */
     public void initListFromCounters(List<MonthBucket> monthBuckets) {
         monthBuckets.forEach(bucket -> {
-            items.add(new HeaderItem(bucket));
-            bucket.setStartIndexPhoto(items.size() - 1); // Начало будет указывать на заголовок бакета
+            int headerPosition = addHeader(bucket);    // Добавляем заголовок
+            bucket.setStartIndexPhoto(headerPosition); // Начало будет указывать на заголовок бакета
             for (long i = 0; i < bucket.getAmount(); i++) {
                 items.add(new PhotoItem(bucket));
             }
@@ -63,27 +63,18 @@ public class PhotoAdapter extends RecyclerView.Adapter<AbstractViewHolder<Item>>
     public @interface ViewType {
     }
 
-//    public int addHeader(YearMonth ym) {
-//        HeaderItem header = new HeaderItem(ym);
-//        items.add(header);
-//        int pos = items.size() - 1;
-//        notifyItemInserted(pos);
-//        return pos;
-//    }
-//
-//    public void addPhoto(YearMonth ym, ShortMediaInfoDto photo) {
-//        // Гарантируем, что перед фотками соответствующего месяца уже есть заголовок.
-//        // Здесь упрощённо: считаем, что заголовок добавлен ранее через addHeader().
-//        PhotoItem pi = new PhotoItem(ym, photo);
-//        items.add(pi);
-//        notifyItemInserted(items.size() - 1);
-//    }
-
+    private int addHeader(MonthBucket bucket) {
+        items.add(new HeaderItem(bucket));
+        int position = items.size() - 1;
+        notifyItemInserted(position);
+        return position;
+    }
 
     public void addPhoto(MonthBucket bucket, ShortMediaInfoDto mediaInfoDto) {
         int index = bucket.getIndex().incrementAndGet(); // инкрементируем индекс в бакете для вставки
+        Log.d(TAG, "PhotoAdapter addPhoto: getFileId=" + mediaInfoDto.getFileId() + ", index=" + index);
         if (index > bucket.getEndIndexPhoto()) {
-            Log.w(TAG, "Индекс вышел за рамки вставки! Требуется пересборка списка счетчиков!");
+            Log.w(TAG, "Index out of bound! bucket = " + bucket.getYearMonth() + ", index=" + index + ", endIndexPhoto=" + bucket.getEndIndexPhoto());
             return;
         }
         PhotoItem item = (PhotoItem) items.get(index);
@@ -130,18 +121,16 @@ public class PhotoAdapter extends RecyclerView.Adapter<AbstractViewHolder<Item>>
     @Override
     public void onBindViewHolder(@NonNull @NotNull AbstractViewHolder holder, int position) {
         Item it = items.get(position);
-        if (holder instanceof HeaderViewHolder && it instanceof HeaderItem) {
-            HeaderItem hi = (HeaderItem) it;
-            holder.bind(hi, null);
-        } else if (holder instanceof PhotoViewHolder && it instanceof PhotoItem) {
-            PhotoItem pi = (PhotoItem) it;
-            holder.bind(pi, listener);
-        }
+        holder.bind(it, listener);
     }
 
     @Override
     public int getItemCount() {
-        return items.size() + 1;
+        return items.size();
+    }
+
+    public MonthBucket getBucketByIndex(int index) {
+        return items.get(index).getBucket();
     }
 
 }

@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import ru.bati4eli.smartcloud.android.client.R;
 import ru.bati4eli.smartcloud.android.client.tabs.photoHelpers.models.MonthBucket;
+import ru.bati4eli.smartcloud.android.client.utils.MyUtils;
 
 import java.time.YearMonth;
 import java.util.List;
@@ -41,7 +42,7 @@ public class MonthFastScrollerAdapter extends RecyclerView.Adapter<MonthFastScro
     public void onBindViewHolder(@NonNull VH holder, int position) {
         MonthBucket b = buckets.get(position);
         YearMonth ym = b.getYearMonth();
-        holder.title.setText(String.format(Locale.getDefault(), "%02d.%04d", ym.getMonthValue(), ym.getYear()));
+        holder.title.setText(MyUtils.getLabelYearAndMonth(ym));
         holder.itemView.setOnClickListener(v -> onClick.onClick(ym));
     }
 

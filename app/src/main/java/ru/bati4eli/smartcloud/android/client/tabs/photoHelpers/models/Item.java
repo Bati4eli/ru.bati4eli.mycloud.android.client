@@ -4,5 +4,6 @@ import java.time.YearMonth;
 
 public interface Item {
     YearMonth getYearMonth();
+    MonthBucket getBucket();
 }
 
