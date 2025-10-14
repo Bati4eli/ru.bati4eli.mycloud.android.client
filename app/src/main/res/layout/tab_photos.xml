@@ -3,7 +3,6 @@
              android:id="@+id/root"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
-             xmlns:app="http://schemas.android.com/apk/res-auto"
              tools:context=".tabs.PhotosFragment">
 
     <!-- Список фотографий -->
@@ -18,18 +17,19 @@
     <!-- Плавающий текущий месяц -->
     <TextView
             android:id="@+id/stickyMonthTextView"
-            android:layout_width="wrap_content"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:layout_margin="12dp"
-            android:background="@android:color/transparent"
+            android:background="@drawable/rounded_black"
             android:textColor="@android:color/white"
+            android:textAlignment="center"
             android:textSize="18sp"
             android:padding="6dp"
             android:elevation="4dp"
             android:text="--.--"
-            android:layout_gravity="top|start" />
+            android:layout_gravity="top|center"/>
 
-    <!-- Быстрый скроллер по месяцам (горизонтальный) -->
+    <!-- Быстрый скроллер по месяцам (Вертикальный) -->
     <com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
             android:id="@+id/monthFastScrollRv"
             android:layout_width="100dp"
@@ -37,5 +37,6 @@
             android:layout_gravity="right"
             android:background="#66000000"
             android:paddingStart="8dp"
-            android:paddingEnd="8dp" />
+            android:paddingEnd="8dp"
+            android:visibility="invisible"/>
 </FrameLayout>
