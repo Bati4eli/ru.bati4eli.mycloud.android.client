@@ -14,7 +14,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import lombok.var;
 import ru.bati4eli.mycloud.repo.ShortMediaInfoDto;
@@ -24,7 +23,6 @@ import ru.bati4eli.smartcloud.android.client.service.GrpcService;
 import ru.bati4eli.smartcloud.android.client.service.MiserableDI;
 import ru.bati4eli.smartcloud.android.client.tabs.common.OnBackPressedListener;
 import ru.bati4eli.smartcloud.android.client.tabs.common.OnItemClickListener;
-import ru.bati4eli.smartcloud.android.client.tabs.photoHelpers.MonthFastScrollerAdapter;
 import ru.bati4eli.smartcloud.android.client.tabs.photoHelpers.PhotoAdapter;
 import ru.bati4eli.smartcloud.android.client.tabs.photoHelpers.PhotoObserver;
 import ru.bati4eli.smartcloud.android.client.tabs.photoHelpers.models.MonthBucket;
@@ -44,21 +42,17 @@ import static ru.bati4eli.smartcloud.android.client.tabs.photoHelpers.models.Ite
 import static ru.bati4eli.smartcloud.android.client.utils.MyUtils.calculateItemSize;
 
 public class PhotosFragment extends Fragment implements OnBackPressedListener, OnItemClickListener<PhotoItem> {
-
     private static final int SPAN_COUNT = 4;
-
     private TabPhotosBinding binding;
-    private PhotoAdapter adapter;
-    private RecyclerView photosRecyclerView;
-    private RecyclerView monthFastScrollRv;             // быстрый скролл по месяцам (горизонтальный)
+    private PhotoAdapter adapter;                       // адаптер фото
+    private RecyclerView photosRecyclerView;            // фото вью
     private TextView stickyMonthTextView;               // плавающий текущий месяц
-    private GridLayoutManager gridLayoutManager;        // быстрый скролл по месяцам (горизонтальный)
-    private GrpcService grpcService = MiserableDI.get(GrpcService.class);
+    private GridLayoutManager gridLayoutManager;        // менеджер фото
+    private final GrpcService grpcService = MiserableDI.get(GrpcService.class);
     private final List<MonthBucket> monthBuckets = new ArrayList<>();
     private final Map<YearMonth, Integer> headerAdapterPositions = new LinkedHashMap<>();
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
     private boolean isViewActive = false;
-    private int targetMonthIndex = -1;
 
     @SuppressLint("ClickableViewAccessibility")
     @Nullable
@@ -66,7 +60,6 @@ public class PhotosFragment extends Fragment implements OnBackPressedListener, O
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = TabPhotosBinding.inflate(inflater, container, false);
         photosRecyclerView = binding.photosRecyclerView;
-        monthFastScrollRv = binding.monthFastScrollRv;
         stickyMonthTextView = binding.stickyMonthTextView;
 
         int spacing = getSpacing();
@@ -89,8 +82,8 @@ public class PhotosFragment extends Fragment implements OnBackPressedListener, O
         isViewActive = true;
 
         loadMonthCounters();
-
         setupScrollListeners();
+
         return binding.getRoot();
     }
 
@@ -127,8 +120,6 @@ public class PhotosFragment extends Fragment implements OnBackPressedListener, O
         monthBuckets.forEach(bucket ->
                 headerAdapterPositions.put(bucket.getYearMonth(), bucket.getStartIndexPhoto())
         );
-        // Инициализируем быстрый скроллер по месяцам
-        setupMonthFastScroller();
         // Загружаем первый месяц
         loadNextMonthIfNeeded();
     }
@@ -178,7 +169,7 @@ public class PhotosFragment extends Fragment implements OnBackPressedListener, O
         int lastVisible = gridLayoutManager.findLastVisibleItemPosition();
         int total = adapter.getItemCount();
         if (total <= 0 || lastVisible == RecyclerView.NO_POSITION) return;
-        Log.i("INDEX", "maybePrefetchNext: lastVisible=" + lastVisible + ", total=" + total);
+        Log.d("INDEX", "maybePrefetchNext: lastVisible=" + lastVisible + ", total=" + total);
         //if (total - lastVisible < PREFETCH_THRESHOLD) {
         loadNextMonthIfNeeded();
         //}
@@ -208,42 +199,6 @@ public class PhotosFragment extends Fragment implements OnBackPressedListener, O
         }
     }
 
-    private void setupMonthFastScroller() {
-        MonthFastScrollerAdapter fastAdapter = new MonthFastScrollerAdapter(monthBuckets, ym -> {
-            // Прокрутить к заголовку этого месяца
-            Integer headerPos = headerAdapterPositions.get(ym);
-            if (headerPos != null) {
-                photosRecyclerView.scrollToPosition(headerPos);
-                return;
-            }
-            // Если не загружен — проскроллим к ближайшему и инициируем догрузку
-            int idx = indexOfMonth(ym);
-            if (idx >= 0) {
-                // Если этот месяц ещё не загрузили, последовательно догружаем до него
-                targetMonthIndex = idx;
-                // if (nextMonthIndexToLoad <= idx) {
-                //     loadNextMonthIfNeeded();
-                // }
-                // После добавления заголовка map заполнится; сделаем пост-скролл
-                mainHandler.postDelayed(() -> {
-                    Integer hp = headerAdapterPositions.get(ym);
-                    if (hp != null) photosRecyclerView.scrollToPosition(hp);
-                }, 100);
-            }
-        });
-        monthFastScrollRv.setLayoutManager(new LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false));
-        monthFastScrollRv.setAdapter(fastAdapter);
-    }
-
-    private int indexOfMonth(YearMonth ym) {
-        for (int i = 0; i < monthBuckets.size(); i++) {
-            if (monthBuckets.get(i).getYearMonth().equals(ym)) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
     @Override
     public void onDestroyView() {
         super.onDestroyView();
@@ -251,9 +206,6 @@ public class PhotosFragment extends Fragment implements OnBackPressedListener, O
         if (photosRecyclerView != null) {
             photosRecyclerView.clearOnScrollListeners();
             photosRecyclerView.setAdapter(null);
-        }
-        if (monthFastScrollRv != null) {
-            monthFastScrollRv.setAdapter(null);
         }
         adapter = null;
         binding = null;

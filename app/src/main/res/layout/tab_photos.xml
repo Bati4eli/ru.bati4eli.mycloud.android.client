@@ -29,14 +29,4 @@
             android:text="--.--"
             android:layout_gravity="top|center"/>
 
-    <!-- Быстрый скроллер по месяцам (Вертикальный) -->
-    <com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
-            android:id="@+id/monthFastScrollRv"
-            android:layout_width="100dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="right"
-            android:background="#66000000"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
-            android:visibility="invisible"/>
 </FrameLayout>
