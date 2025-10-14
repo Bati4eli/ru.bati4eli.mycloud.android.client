@@ -79,7 +79,6 @@ public class PhotoAdapter extends RecyclerView.Adapter<AbstractViewHolder<Item>>
         }
         PhotoItem item = (PhotoItem) items.get(index);
         item.setPhoto(mediaInfoDto);
-        item.setLoaded(true);
         bucket.setLoaded(true);
         notifyItemChanged(index);
     }

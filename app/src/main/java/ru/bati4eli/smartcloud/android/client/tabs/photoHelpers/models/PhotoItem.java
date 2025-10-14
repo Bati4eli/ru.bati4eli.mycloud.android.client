@@ -14,7 +14,6 @@ public class PhotoItem implements Item {
     private final YearMonth yearMonth;
     private final MonthBucket bucket;
     private ShortMediaInfoDto photo;
-    private boolean loaded = false;
 
     public PhotoItem(MonthBucket bucket) {
         this.yearMonth = bucket.getYearMonth();

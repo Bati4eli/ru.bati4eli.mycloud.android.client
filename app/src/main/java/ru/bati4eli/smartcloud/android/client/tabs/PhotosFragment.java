@@ -32,9 +32,11 @@ import ru.bati4eli.smartcloud.android.client.utils.MyUtils;
 import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -50,6 +52,7 @@ public class PhotosFragment extends Fragment implements OnBackPressedListener, O
     private GridLayoutManager gridLayoutManager;        // менеджер фото
     private final GrpcService grpcService = MiserableDI.get(GrpcService.class);
     private final List<MonthBucket> monthBuckets = new ArrayList<>();
+    private final Set<MonthBucket> processedBucket = new HashSet<>();
     private final Map<YearMonth, Integer> headerAdapterPositions = new LinkedHashMap<>();
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
     private boolean isViewActive = false;
@@ -136,10 +139,11 @@ public class PhotosFragment extends Fragment implements OnBackPressedListener, O
                 .filter(bucket -> !bucket.isLoaded()) // только те бакеты что не были загружены
                 .forEach(bucket -> {
                     // Подгрузка фоток этого месяца
-                    // TODO Нужно организовать очередь задач на подгрузку!!
-                    //TODO Сейчас все еще дублируются запросы на дозагрузку!
-                    var observer = new PhotoObserver(bucket, this::observeOnNext, this::observeOnCompleted, this::observeOnError);
-                    grpcService.getPhotosByDate(bucket.getStartFilter(), bucket.getEndFilter(), observer);
+                    if (!processedBucket.contains(bucket)) {
+                        processedBucket.add(bucket);
+                        var observer = new PhotoObserver(bucket, this::observeOnNext, this::observeOnCompleted, this::observeOnError);
+                        grpcService.getPhotosByDate(bucket.getStartFilter(), bucket.getEndFilter(), observer);
+                    }
                 });
     }
 
