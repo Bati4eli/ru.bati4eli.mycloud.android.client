@@ -3,10 +3,10 @@ package ru.bati4eli.smartcloud.android.client.model;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import ru.bati4eli.mycloud.repo.GrpcFile;
-import ru.bati4eli.mycloud.repo.RespAlbumInfo;
 import ru.bati4eli.mycloud.repo.ShortMediaInfoDto;
 import ru.bati4eli.mycloud.repo.TypeOfFile;
 import ru.bati4eli.smartcloud.android.client.tabs.albumsHelper.AlbumCardModel;
+import ru.bati4eli.smartcloud.android.client.tabs.albumsHelper.FaceCardModel;
 
 /**
  * ДТО для скачивания файлов или превью.
@@ -35,6 +35,13 @@ public class ShortInfo {
     public static ShortInfo of(AlbumCardModel albumInfo) {
         return new ShortInfo()
                 .setFileId(albumInfo.getFileId())
+                .setType(TypeOfFile.IMAGE)
+                .setFileName(null);
+    }
+
+    public static ShortInfo of(FaceCardModel src) {
+        return new ShortInfo()
+                .setFileId(src.getFaceId())
                 .setType(TypeOfFile.IMAGE)
                 .setFileName(null);
     }

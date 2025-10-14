@@ -15,7 +15,10 @@ public class Constants {
     public static void setAppDirectory(File filesDir) {
         APP_DIRECTORY = filesDir;
         Log.d(TAG, "setAppDirectory: " + APP_DIRECTORY);
-        MyUtils.mkdir("PREVIEWS");
-        MyUtils.mkdir("ORIGIN");
+
+        for (DefaultFolders folder : DefaultFolders.values()) {
+            File dir = mkdir(folder.name());
+            folder.setUpDirectory(dir);
+        }
     }
 }

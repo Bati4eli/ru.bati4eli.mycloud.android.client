@@ -1,17 +1,16 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="180dp"
-                android:layout_height="180dp"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
                 android:layout_margin="2dp"
 >
     <ImageView
-            android:id="@+id/album_image"
+            android:id="@+id/face_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
             android:src="@drawable/ic_albums"
             android:clipToOutline="true"
-            android:background="@drawable/rounded_background"
-            android:tint="#80000000"
+            android:background="@drawable/rounded_circle"
     />
 
     <TextView
@@ -25,21 +24,6 @@
             android:layout_marginTop="4dp"
             android:text="test album"
             android:paddingLeft="8dp"/>
-
-
-    <com.joanzapata.iconify.widget.IconTextView
-            android:id="@+id/awesome_icon"
-            android:text="{fa}"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@android:color/white"
-            android:shadowColor="@android:color/black"
-            android:shadowRadius="4"
-            android:textSize="30sp"
-            android:layout_marginLeft="4dp"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-    />
 
     <TextView
             android:id="@+id/amount_text"

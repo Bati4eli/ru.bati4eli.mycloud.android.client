@@ -6,7 +6,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import ru.bati4eli.mycloud.repo.DownloadType;
 import ru.bati4eli.smartcloud.android.client.R;
-import ru.bati4eli.smartcloud.android.client.databinding.AlbumCardBinding;
+import ru.bati4eli.smartcloud.android.client.databinding.CardAlbumBinding;
 import ru.bati4eli.smartcloud.android.client.model.ShortInfo;
 import ru.bati4eli.smartcloud.android.client.tabs.common.AbstractViewHolder;
 import ru.bati4eli.smartcloud.android.client.tabs.common.OnItemClickListener;
@@ -15,11 +15,11 @@ import static ru.bati4eli.smartcloud.android.client.utils.Constants.TAG;
 
 public class AlbumViewHolder extends AbstractViewHolder<AlbumCardModel> {
 
-    private AlbumCardBinding binding;
+    private CardAlbumBinding binding;
 
     public AlbumViewHolder(@NonNull ViewGroup parent) {
-        super(parent, R.layout.album_card);
-        binding = AlbumCardBinding.bind(super.itemView);
+        super(parent, R.layout.card_album);
+        binding = CardAlbumBinding.bind(super.itemView);
     }
 
     @SuppressLint("SetTextI18n")

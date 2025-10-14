@@ -4,7 +4,7 @@ import lombok.Data;
 import ru.bati4eli.mycloud.repo.RespAlbumInfo;
 
 @Data
-public class AlbumCardModel {
+public class AlbumCardModel implements AlbumInterface {
 
     private final String fontAwesomeIcon;
     private final String label;
@@ -14,9 +14,9 @@ public class AlbumCardModel {
     private final String albumName;
     private final Integer amount;
     // for map
-    private final Double latitude;
-    private final Double longitude;
-    private final Double radiusKm;
+    private Double latitude;
+    private Double longitude;
+    private Double radiusKm;
 
     public AlbumCardModel(RespAlbumInfo albumInfo, String fontAwesomeIcon, String label) {
         // from AlbumInfo
@@ -31,5 +31,4 @@ public class AlbumCardModel {
         this.fontAwesomeIcon = fontAwesomeIcon;
         this.label = label;
     }
-
 }

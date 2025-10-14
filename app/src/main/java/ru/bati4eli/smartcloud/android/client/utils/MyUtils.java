@@ -40,11 +40,12 @@ public class MyUtils {
         return label;
     }
 
-    public static void mkdir(String folderName) {
+    public static File mkdir(String folderName) {
         File directory = new File(Constants.APP_DIRECTORY, folderName);
         if (!directory.exists()) {
             directory.mkdirs();
         }
+        return directory;
     }
 
     public static boolean previewExists(ShortInfo info, DownloadType downloadType) {
@@ -52,11 +53,19 @@ public class MyUtils {
     }
 
     public static String getFilePath(ShortInfo info, DownloadType downloadType) {
-        if (downloadType == DownloadType.ORIGIN) {
-            return Constants.APP_DIRECTORY + "/ORIGIN/" + info.getFileName();
-        } else {
-            return Constants.APP_DIRECTORY + "/PREVIEWS/" + info.getFileId() + "_" + downloadType.name() + ".jpg";
+        switch (downloadType) {
+            case ORIGIN:
+                return DefaultFolders.ORIGIN.getFolder() + "/" + info.getFileName();
+            case PREVIEW_MINI:
+            case PREVIEW_SQUARE:
+            case PREVIEW_BIG:
+                return DefaultFolders.PREVIEWS.getFolder() + "/" + info.getFileId() + "_" + downloadType.name() + ".jpg";
+            case FACE:
+                return DefaultFolders.FACES.getFolder() + "/" + info.getFileId() + ".jpg";
+            default:
+                return null;
         }
+
     }
 
     public static void setupPreviewAsync(ShortInfo info, ImageView fileIcon, DownloadType downloadType) {

@@ -29,9 +29,10 @@ public abstract class AbstractViewHolder<TYPE> extends RecyclerView.ViewHolder {
     }
 
     protected static void setupIcon(ShortInfo info, ImageView fileIcon, DownloadType downloadType) {
-        if (info.getType() == TypeOfFile.FOLDER) {
+        TypeOfFile type = info.getType();
+        if (type == TypeOfFile.FOLDER) {
             fileIcon.setImageResource(R.drawable.ic_folder);
-        } else if (info.getType() == TypeOfFile.IMAGE || info.getType() == TypeOfFile.VIDEO) {
+        } else if (type == TypeOfFile.IMAGE || type == TypeOfFile.VIDEO ) {
             setupPreviewAsync(info, fileIcon, downloadType);
         } else {
             // Если загрузка не удалась, возможно, использовать иконку файла по умолчанию

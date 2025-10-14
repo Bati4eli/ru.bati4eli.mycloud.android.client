@@ -114,7 +114,7 @@ public class PhotosFragment extends Fragment implements OnBackPressedListener, O
     @SuppressLint("NewApi")
     private void loadMonthCounters() {
         // Получаем итератор счетчиков месяцев
-        grpcService.getMonthCounters().forEachRemaining(counter -> monthBuckets.add(new MonthBucket(counter)));
+        grpcService.getMonthCounters().forEach(counter -> monthBuckets.add(new MonthBucket(counter)));
         // Преобразуем в YearMonth + amount, сортируем по убыванию даты (новые сначала)
         monthBuckets.sort(Comparator.comparing(MonthBucket::getYearMonth).reversed());
         // Инициализация пустого массива фоток и заголовков. Заполнение monthBuckets индексами
@@ -142,7 +142,7 @@ public class PhotosFragment extends Fragment implements OnBackPressedListener, O
                     if (!processedBucket.contains(bucket)) {
                         processedBucket.add(bucket);
                         var observer = new PhotoObserver(bucket, this::observeOnNext, this::observeOnCompleted, this::observeOnError);
-                        grpcService.getPhotosByDate(bucket.getStartFilter(), bucket.getEndFilter(), observer);
+                        grpcService.findMediaFilesByDate(bucket.getStartFilter(), bucket.getEndFilter(), observer);
                     }
                 });
     }
@@ -156,7 +156,6 @@ public class PhotosFragment extends Fragment implements OnBackPressedListener, O
     }
 
     public void observeOnCompleted() {
-
     }
 
     public void observeOnError(Throwable t) {

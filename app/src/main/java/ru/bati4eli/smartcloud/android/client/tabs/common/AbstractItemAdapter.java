@@ -31,14 +31,7 @@ public abstract class AbstractItemAdapter<TYPE> extends RecyclerView.Adapter<Abs
         }
         items.add(item);
         notifyItemInserted(items.size() - 1);
-        //notifyItemChanged(items.size() - 1);
     }
-
-//    public AbstractItemAdapter<TYPE> addAll(List<TYPE> list) {
-//        items.addAll(list);
-//        notifyDataSetChanged();
-//        return this;
-//    }
 
     @Override
     public int getItemCount() {

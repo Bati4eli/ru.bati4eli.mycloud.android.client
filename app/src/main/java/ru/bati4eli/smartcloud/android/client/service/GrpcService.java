@@ -17,7 +17,6 @@ import ru.bati4eli.mycloud.repo.ReqAlbumInfo;
 import ru.bati4eli.mycloud.repo.ReqFilterMedias;
 import ru.bati4eli.mycloud.repo.RespAlbumInfo;
 import ru.bati4eli.mycloud.repo.ShortFaceDto;
-import ru.bati4eli.mycloud.repo.ShortMediaInfoDto;
 import ru.bati4eli.mycloud.users.JwtRequest;
 import ru.bati4eli.mycloud.users.JwtResponse;
 import ru.bati4eli.mycloud.users.UserPrivateServiceGrpc;
@@ -30,7 +29,6 @@ import ru.bati4eli.smartcloud.android.client.tabs.photoHelpers.PhotoObserver;
 import ru.bati4eli.smartcloud.android.client.utils.ParametersUtil;
 
 import java.time.OffsetDateTime;
-import java.util.Iterator;
 
 import static ru.bati4eli.smartcloud.android.client.utils.Constants.TAG;
 
@@ -114,31 +112,23 @@ public class GrpcService {
         return responseObserver;
     }
 
-    public Iterator<ShortFaceDto> getFaces() {
+    public StreamObserverIterator<ShortFaceDto> getFaces() {
+        Log.i(TAG, "REQUEST getFaces()");
         GetFacesReq req = GetFacesReq.newBuilder().build();
         StreamObserverIterator<ShortFaceDto> responseObserver = new StreamObserverIterator<>();
         mediaService.getFaces(req, responseObserver);
         return responseObserver;
     }
 
-    public Iterator<DateCounterResponse> getMonthCounters() {
+    public StreamObserverIterator<DateCounterResponse> getMonthCounters() {
         ReqFilterMedias req = ReqFilterMedias.newBuilder().build();
         StreamObserverIterator<DateCounterResponse> responseObserver = new StreamObserverIterator<>();
         mediaService.findMediaFilesCounters(req, responseObserver);
         return responseObserver;
     }
 
-    public StreamObserverIterator<ShortMediaInfoDto> getAllPhotos() {
-        ReqFilterMedias request = ReqFilterMedias.newBuilder()
-                .build();
-        var observer = new StreamObserverIterator<ShortMediaInfoDto>();
-        mediaService.findMediaFiles(request, observer);
-        observer.waiting();
-        return observer;
-    }
-
-    public void getPhotosByDate(OffsetDateTime start, OffsetDateTime end, PhotoObserver observer) {
-        Log.i(TAG, "LOADING getPhotosByDate " + start.toString() + " TO " + end.toString());
+    public void findMediaFilesByDate(OffsetDateTime start, OffsetDateTime end, PhotoObserver observer) {
+        Log.d(TAG, "LOADING getPhotosByDate " + start.toString() + " TO " + end.toString());
         ReqFilterMedias request = ReqFilterMedias.newBuilder()
                 .setDateStart(start.toString())
                 .setDateEnd(end.toString())
