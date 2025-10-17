@@ -35,9 +35,25 @@ public class MyUtils {
     @SuppressLint("NewApi")
     public static String getLabelYearAndMonth(YearMonth ym) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("LLLL", Locale.getDefault());
-        String label = ym.format(formatter);
-        label = ym.getYear() + " " + label.substring(0, 1).toUpperCase(Locale.getDefault()) + label.substring(1);
-        return label;
+        String monthName = ym.format(formatter);
+        monthName = monthName.substring(0, 1).toUpperCase(Locale.getDefault()) + monthName.substring(1);
+        return ym.getYear() + " " + monthName;
+    }
+
+    public static String formatSeconds(int totalSeconds) {
+        if (totalSeconds < 0) {
+            throw new IllegalArgumentException("Количество секунд не может быть отрицательным");
+        }
+        int hours = totalSeconds / 3600;
+        int minutes = (totalSeconds % 3600) / 60;
+        int seconds = totalSeconds % 60;
+        if (hours == 0) {
+            // Формат MM:SS
+            return String.format("%02d:%02d", minutes, seconds);
+        } else {
+            // Формат HH:MM:SS (часы без ограничения сверху)
+            return String.format("%02d:%02d:%02d", hours, minutes, seconds);
+        }
     }
 
     public static File mkdir(String folderName) {

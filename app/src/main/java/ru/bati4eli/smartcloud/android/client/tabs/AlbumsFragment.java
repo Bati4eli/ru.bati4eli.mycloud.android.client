@@ -23,6 +23,7 @@ import ru.bati4eli.smartcloud.android.client.tabs.albumsHelper.FaceAdapter;
 import ru.bati4eli.smartcloud.android.client.tabs.albumsHelper.FaceCardModel;
 import ru.bati4eli.smartcloud.android.client.tabs.common.OnBackPressedListener;
 import ru.bati4eli.smartcloud.android.client.tabs.common.OnItemClickListener;
+import ru.bati4eli.smartcloud.android.client.utils.FAConstants;
 
 import java.util.Iterator;
 
@@ -30,6 +31,7 @@ import static ru.bati4eli.smartcloud.android.client.utils.Constants.TAG;
 import static ru.bati4eli.smartcloud.android.client.utils.MyUtils.calculateSpanCount;
 
 public class AlbumsFragment extends Fragment implements OnBackPressedListener, OnItemClickListener<AlbumInterface> {
+
     private TabAlbumsBinding binding;
     private GrpcService grpcService = MiserableDI.get(GrpcService.class);
 
@@ -45,11 +47,11 @@ public class AlbumsFragment extends Fragment implements OnBackPressedListener, O
             binding.recyclerYourAlbums.setLayoutManager(new GridLayoutManager(getContext(), spanCount));
 
             grpcService.getAlbums(AlbumType.AT_FAVORITE)
-                    .ifPresent(album -> addAlbum(adapter, album, "{fa-star #ffe600}", "Favorite"));
+                    .ifPresent(album -> addAlbum(adapter, album, FAConstants.FA_GOLD_STAR, "Favorite"));
             grpcService.getAlbums(AlbumType.AT_PHOTO)
-                    .ifPresent(album -> addAlbum(adapter, album, "{fa-camera @color/ocean}", "Photos"));
+                    .ifPresent(album -> addAlbum(adapter, album, FAConstants.FA_CAMERA_COLOR_OCEAN, "Photos"));
             grpcService.getAlbums(AlbumType.AT_VIDEO)
-                    .ifPresent(album -> addAlbum(adapter, album, "{fa-video-camera @color/ocean}", "Videos"));
+                    .ifPresent(album -> addAlbum(adapter, album, FAConstants.FA_VIDEO_CAMERA_COLOR_OCEAN, "Videos"));
 
             // Background in the photo
             AlbumAdapter backgroundAdapter = new AlbumAdapter(this);

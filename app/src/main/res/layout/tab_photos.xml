@@ -20,13 +20,13 @@
             android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:layout_margin="12dp"
-            android:background="@drawable/rounded_black"
+            android:background="@drawable/rounded_black_transparent"
             android:textColor="@android:color/white"
             android:textAlignment="center"
             android:textSize="18sp"
             android:padding="6dp"
             android:elevation="4dp"
-            android:text="--.--"
+            android:text="2035 May"
             android:layout_gravity="top|center"/>
 
 </FrameLayout>
