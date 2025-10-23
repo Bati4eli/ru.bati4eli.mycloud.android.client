@@ -41,9 +41,12 @@ public class PhotoViewHolder extends AbstractViewHolder<PhotoItem> {
     public void bind(PhotoItem item, OnItemClickListener<PhotoItem> listener) {
         try {
             ShortMediaInfoDto photo = item.getPhoto();
-            binding.videoInfoTxt.setVisibility(photo.getMediaType() == TypeOfFile.VIDEO ? View.VISIBLE : View.INVISIBLE);
-            binding.videoInfoTxt.setText(FA_VIDEO_CAMERA + " " + MyUtils.formatSeconds(photo.getVideoDurationSec())); //  @color/white
+            if (photo == null) {
+                return;
+            }
             Log.d(TAG, "Binding PhotoItem FileId: " + photo.getFileId());
+            binding.videoInfoTxt.setVisibility(photo.getMediaType() == TypeOfFile.VIDEO ? View.VISIBLE : View.INVISIBLE);
+            binding.videoInfoTxt.setText(FA_VIDEO_CAMERA + " " + MyUtils.formatSeconds(photo.getVideoDurationSec()));
             setOnClick(item, listener);
             setupIcon(ShortInfo.of(photo), binding.photoIcon, DownloadType.PREVIEW_SQUARE);
         } catch (Throwable e) {

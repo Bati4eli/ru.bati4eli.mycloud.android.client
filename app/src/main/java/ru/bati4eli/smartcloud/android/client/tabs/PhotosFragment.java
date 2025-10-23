@@ -41,6 +41,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static ru.bati4eli.smartcloud.android.client.tabs.photoHelpers.models.ItemTypes.VT_HEADER;
+import static ru.bati4eli.smartcloud.android.client.utils.Constants.TAG;
 import static ru.bati4eli.smartcloud.android.client.utils.MyUtils.calculateItemSize;
 
 public class PhotosFragment extends Fragment implements OnBackPressedListener, OnItemClickListener<PhotoItem> {
@@ -61,6 +62,7 @@ public class PhotosFragment extends Fragment implements OnBackPressedListener, O
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        Log.i(TAG,"PhotosFragment.onCreateView()");
         binding = TabPhotosBinding.inflate(inflater, container, false);
         photosRecyclerView = binding.photosRecyclerView;
         stickyMonthTextView = binding.stickyMonthTextView;

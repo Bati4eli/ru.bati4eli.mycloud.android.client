@@ -100,12 +100,6 @@ public class AlbumsFragment extends Fragment implements OnBackPressedListener, O
     @Override
     public void onBackPressed(Runnable superOnBackPressed) { /* Ваш код */ }
 
-    private RespAlbumInfo getFirst(Iterator<RespAlbumInfo> it) {
-        if (it != null && it.hasNext())
-            return it.next();
-        return null;
-    }
-
     @Override
     public void onItemClick(int position, AlbumInterface o) {
         if(o instanceof FaceCardModel) {
