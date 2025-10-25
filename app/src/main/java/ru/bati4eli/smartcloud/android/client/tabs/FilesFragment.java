@@ -23,11 +23,11 @@ import ru.bati4eli.smartcloud.android.client.enums.ViewTypeEnum;
 import ru.bati4eli.smartcloud.android.client.service.GrpcService;
 import ru.bati4eli.smartcloud.android.client.service.MiserableDI;
 import ru.bati4eli.smartcloud.android.client.service.observers.AdapterItemsObserver;
-import ru.bati4eli.smartcloud.android.client.tabs.fileHelpers.BottomSheetSortingSettings;
-import ru.bati4eli.smartcloud.android.client.tabs.fileHelpers.FileAdapter;
 import ru.bati4eli.smartcloud.android.client.tabs.common.OnBackPressedListener;
 import ru.bati4eli.smartcloud.android.client.tabs.common.OnChangedSortOrView;
 import ru.bati4eli.smartcloud.android.client.tabs.common.OnItemClickListener;
+import ru.bati4eli.smartcloud.android.client.tabs.fileHelpers.BottomSheetSortingSettings;
+import ru.bati4eli.smartcloud.android.client.tabs.fileHelpers.FileAdapter;
 import ru.bati4eli.smartcloud.android.client.utils.GrpcFileComparator;
 import ru.bati4eli.smartcloud.android.client.utils.ParametersUtil;
 

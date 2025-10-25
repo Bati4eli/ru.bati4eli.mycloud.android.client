@@ -8,7 +8,6 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
-import ru.bati4eli.smartcloud.android.client.databinding.ActivityMainBinding;
 import ru.bati4eli.smartcloud.android.client.databinding.ActivityStartBinding;
 import ru.bati4eli.smartcloud.android.client.service.MiserableDI;
 import ru.bati4eli.smartcloud.android.client.utils.Constants;

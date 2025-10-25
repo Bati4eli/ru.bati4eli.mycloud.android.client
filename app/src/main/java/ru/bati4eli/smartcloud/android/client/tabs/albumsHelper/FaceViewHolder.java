@@ -17,9 +17,10 @@ public class FaceViewHolder extends AbstractViewHolder<FaceCardModel> {
 
     private CardFaceBinding binding;
 
-    public FaceViewHolder(@NonNull ViewGroup parent) {
+    public FaceViewHolder(@NonNull ViewGroup parent, int pixelSize) {
         super(parent, R.layout.card_face);
         binding = CardFaceBinding.bind(super.itemView);
+        super.setupLayoutSize(pixelSize, pixelSize);
     }
 
     @SuppressLint("SetTextI18n")

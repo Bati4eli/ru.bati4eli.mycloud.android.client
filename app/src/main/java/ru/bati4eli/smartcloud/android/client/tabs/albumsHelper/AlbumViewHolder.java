@@ -17,9 +17,10 @@ public class AlbumViewHolder extends AbstractViewHolder<AlbumCardModel> {
 
     private CardAlbumBinding binding;
 
-    public AlbumViewHolder(@NonNull ViewGroup parent) {
+    public AlbumViewHolder(@NonNull ViewGroup parent, int pixelSize) {
         super(parent, R.layout.card_album);
         binding = CardAlbumBinding.bind(super.itemView);
+        super.setupLayoutSize(pixelSize, pixelSize);
     }
 
     @SuppressLint("SetTextI18n")

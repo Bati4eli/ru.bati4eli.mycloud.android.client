@@ -1,7 +1,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
+                android:layout_width="300dp"
+                android:layout_height="300dp"
                 android:layout_margin="2dp"
+                android:padding="@dimen/face_spacing"
 >
     <ImageView
             android:id="@+id/face_image"

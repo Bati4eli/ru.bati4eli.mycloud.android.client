@@ -9,8 +9,16 @@ import ru.bati4eli.smartcloud.android.client.tabs.common.OnItemClickListener;
 
 public class AlbumAdapter extends AbstractItemAdapter<AlbumCardModel> {
 
+    private int pixelSize;
+
     public AlbumAdapter(OnItemClickListener listener) {
         super(listener);
+    }
+
+    public AlbumAdapter setPixelSize(int size) {
+        this.pixelSize = size;
+        notifyDataSetChanged();
+        return this;
     }
 
     @Override
@@ -22,6 +30,6 @@ public class AlbumAdapter extends AbstractItemAdapter<AlbumCardModel> {
     @NotNull
     @Override
     public AbstractViewHolder<AlbumCardModel> onCreateViewHolder(@NonNull @NotNull ViewGroup viewGroup, int i) {
-        return new AlbumViewHolder(viewGroup);
+        return new AlbumViewHolder(viewGroup, pixelSize);
     }
 }

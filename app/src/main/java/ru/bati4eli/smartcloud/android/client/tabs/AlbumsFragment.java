@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import ru.bati4eli.mycloud.repo.AlbumType;
 import ru.bati4eli.mycloud.repo.RespAlbumInfo;
 import ru.bati4eli.mycloud.repo.ShortFaceDto;
+import ru.bati4eli.smartcloud.android.client.R;
 import ru.bati4eli.smartcloud.android.client.databinding.TabAlbumsBinding;
 import ru.bati4eli.smartcloud.android.client.service.GrpcService;
 import ru.bati4eli.smartcloud.android.client.service.MiserableDI;
@@ -25,12 +26,13 @@ import ru.bati4eli.smartcloud.android.client.tabs.common.OnBackPressedListener;
 import ru.bati4eli.smartcloud.android.client.tabs.common.OnItemClickListener;
 import ru.bati4eli.smartcloud.android.client.utils.FAConstants;
 
-import java.util.Iterator;
-
 import static ru.bati4eli.smartcloud.android.client.utils.Constants.TAG;
-import static ru.bati4eli.smartcloud.android.client.utils.MyUtils.calculateSpanCount;
+import static ru.bati4eli.smartcloud.android.client.utils.MyUtils.calculateItemSize;
 
 public class AlbumsFragment extends Fragment implements OnBackPressedListener, OnItemClickListener<AlbumInterface> {
+
+    private static final int ALBUM_SPAN_COUNT = 3;
+    private static final int FACE_SPAN_COUNT = 4;
 
     private TabAlbumsBinding binding;
     private GrpcService grpcService = MiserableDI.get(GrpcService.class);
@@ -39,12 +41,16 @@ public class AlbumsFragment extends Fragment implements OnBackPressedListener, O
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = TabAlbumsBinding.inflate(inflater, container, false);
-        int spanCount = calculateSpanCount(this, 105);
+
+        int albumSize = calculateItemSize(this, getAlbumSpacing(), ALBUM_SPAN_COUNT);
+        int faceSize = calculateItemSize(this, getFaceSpacing(), FACE_SPAN_COUNT);
+
         try {
             // Your albums (favorite, photos, videos)
-            AlbumAdapter adapter = new AlbumAdapter(this);
+            AlbumAdapter adapter = new AlbumAdapter(this)
+                    .setPixelSize(albumSize);
             binding.recyclerYourAlbums.setAdapter(adapter);
-            binding.recyclerYourAlbums.setLayoutManager(new GridLayoutManager(getContext(), spanCount));
+            binding.recyclerYourAlbums.setLayoutManager(new GridLayoutManager(getContext(), ALBUM_SPAN_COUNT));
 
             grpcService.getAlbums(AlbumType.AT_FAVORITE)
                     .ifPresent(album -> addAlbum(adapter, album, FAConstants.FA_GOLD_STAR, "Favorite"));
@@ -54,28 +60,30 @@ public class AlbumsFragment extends Fragment implements OnBackPressedListener, O
                     .ifPresent(album -> addAlbum(adapter, album, FAConstants.FA_VIDEO_CAMERA_COLOR_OCEAN, "Videos"));
 
             // Background in the photo
-            AlbumAdapter backgroundAdapter = new AlbumAdapter(this);
+            AlbumAdapter backgroundAdapter = new AlbumAdapter(this)
+                    .setPixelSize(albumSize);
             binding.recyclerBackground.setAdapter(backgroundAdapter);
-            binding.recyclerBackground.setLayoutManager(new GridLayoutManager(getContext(), spanCount));
+            binding.recyclerBackground.setLayoutManager(new GridLayoutManager(getContext(), ALBUM_SPAN_COUNT));
             grpcService.getAlbums(AlbumType.AT_BACKGROUND)
                     .forEach(albumInfo ->
                             addAlbum(backgroundAdapter, albumInfo, "", albumInfo.getAlbumName())
                     );
 
             // Cameras
-            AlbumAdapter camerasAdapter = new AlbumAdapter(this);
+            AlbumAdapter camerasAdapter = new AlbumAdapter(this)
+                    .setPixelSize(albumSize);
             binding.recyclerCameras.setAdapter(camerasAdapter);
-            binding.recyclerCameras.setLayoutManager(new GridLayoutManager(getContext(), spanCount));
+            binding.recyclerCameras.setLayoutManager(new GridLayoutManager(getContext(), ALBUM_SPAN_COUNT));
             grpcService.getAlbums(AlbumType.AT_CAMERAS)
                     .forEach(albumInfo ->
                             addAlbum(camerasAdapter, albumInfo, "", albumInfo.getAlbumId() + "\n" + albumInfo.getAlbumName())
                     );
 
             // Faces
-            int faceSpan = calculateSpanCount(this, 90);
-            FaceAdapter facesAdapter = new FaceAdapter(this);
+            FaceAdapter facesAdapter = new FaceAdapter(this)
+                    .setPixelSize(faceSize);
             binding.recyclerFaces.setAdapter(facesAdapter);
-            binding.recyclerFaces.setLayoutManager(new GridLayoutManager(getContext(), faceSpan));
+            binding.recyclerFaces.setLayoutManager(new GridLayoutManager(getContext(), FACE_SPAN_COUNT));
             grpcService.getFaces().forEach(faceDto -> addFace(facesAdapter, faceDto));
         } catch (Throwable e) {
             Log.e(TAG, e.getMessage());
@@ -97,17 +105,31 @@ public class AlbumsFragment extends Fragment implements OnBackPressedListener, O
         }
     }
 
+    /**
+     * отступы между плитками.
+     */
+    private int getAlbumSpacing() {
+        return super.getResources().getDimensionPixelSize(R.dimen.album_spacing);
+    }
+
+    /**
+     * отступы между плитками.
+     */
+    private int getFaceSpacing() {
+        return super.getResources().getDimensionPixelSize(R.dimen.face_spacing);
+    }
+
     @Override
     public void onBackPressed(Runnable superOnBackPressed) { /* Ваш код */ }
 
     @Override
     public void onItemClick(int position, AlbumInterface o) {
-        if(o instanceof FaceCardModel) {
+        if (o instanceof FaceCardModel) {
             FaceCardModel model = (FaceCardModel) o;
             Toast.makeText(getActivity(), "Id лица:" + model.getFaceId(), Toast.LENGTH_SHORT).show();
             return;
         }
-        if(o instanceof AlbumCardModel) {
+        if (o instanceof AlbumCardModel) {
             AlbumCardModel model = (AlbumCardModel) o;
             Toast.makeText(getActivity(), "Album: " + model.getAlbumName(), Toast.LENGTH_SHORT).show();
             return;

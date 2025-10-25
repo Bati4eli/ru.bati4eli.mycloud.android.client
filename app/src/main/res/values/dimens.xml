@@ -2,4 +2,6 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="radio_icon_size">20dp</dimen>
     <dimen name="photo_spacing">1dp</dimen>
+    <dimen name="album_spacing">2dp</dimen>
+    <dimen name="face_spacing">2dp</dimen>
 </resources>

@@ -24,14 +24,7 @@ public class PhotoViewHolder extends AbstractViewHolder<PhotoItem> {
     public PhotoViewHolder(@NonNull ViewGroup parent, int pixelSize) {
         super(parent, R.layout.item_photo_layout);
         binding = ItemPhotoLayoutBinding.bind(super.itemView);
-        ViewGroup.LayoutParams params = itemView.getLayoutParams();
-        if (params == null) {
-            params = new ViewGroup.LayoutParams(pixelSize, pixelSize);
-        } else {
-            params.width = pixelSize;
-            params.height = pixelSize;
-        }
-        itemView.setLayoutParams(params);
+        super.setupLayoutSize(pixelSize, pixelSize);
     }
 
     /**

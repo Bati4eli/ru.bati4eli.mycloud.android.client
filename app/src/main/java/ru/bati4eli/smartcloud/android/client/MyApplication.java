@@ -22,7 +22,6 @@ public class MyApplication extends Application {
         logUncaughtException();
 
         Iconify
-//                .with(new MyFontAwesomeModule())
                 .with(new FontAwesomeModule())
                 .with(new EntypoModule())
                 .with(new TypiconsModule())
